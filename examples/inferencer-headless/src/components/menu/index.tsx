@@ -1,18 +1,20 @@
-import { useMenu } from "@refinedev/core";
-import { NavLink } from "react-router-dom";
+import { useLogout, useMenu } from "@refinedev/core";
+import { NavLink } from "react-router";
 
 export const Menu = () => {
-    const { menuItems } = useMenu();
+  const { mutate: logout } = useLogout();
+  const { menuItems } = useMenu();
 
-    return (
-        <nav className="menu">
-            <ul>
-                {menuItems.map((item) => (
-                    <li key={item.key}>
-                        <NavLink to={item.route}>{item.label}</NavLink>
-                    </li>
-                ))}
-            </ul>
-        </nav>
-    );
+  return (
+    <nav className="menu">
+      <ul>
+        {menuItems.map((item) => (
+          <li key={item.key}>
+            <NavLink to={item.route ?? "/"}>{item.label}</NavLink>
+          </li>
+        ))}
+      </ul>
+      <button onClick={() => logout()}>Logout</button>
+    </nav>
+  );
 };

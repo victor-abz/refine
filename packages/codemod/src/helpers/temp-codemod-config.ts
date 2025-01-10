@@ -1,76 +1,75 @@
 import fs from "fs";
 
 type ConfigFileSchema = {
-    install: {
-        [packageName: string]: string;
-    };
-    uninstall: string[];
+  install: {
+    [packageName: string]: string;
+  };
+  uninstall: string[];
 };
 
 const empty: ConfigFileSchema = {
-    install: {},
-    uninstall: [],
+  install: {},
+  uninstall: [],
 };
 
 export const CONFIG_FILE_NAME = ".refine-codemod.json";
 
 export class CodemodConfig {
-    filename: string;
+  filename: string;
 
-    constructor(filename: string) {
-        this.filename = filename;
+  constructor(filename: string) {
+    this.filename = filename;
+  }
+
+  private readFile(): ConfigFileSchema {
+    try {
+      const file = fs.readFileSync(this.filename, "utf8");
+      if (file) {
+        return JSON.parse(file) as ConfigFileSchema;
+      }
+      try {
+        fs.writeFileSync(this.filename, JSON.stringify(empty));
+      } catch (_error) {}
+
+      return empty;
+    } catch (error) {
+      return empty;
     }
+  }
 
-    private readFile(): ConfigFileSchema {
-        try {
-            const file = fs.readFileSync(this.filename, "utf8");
-            if (file) {
-                return JSON.parse(file) as ConfigFileSchema;
-            } else {
-                try {
-                    fs.writeFileSync(this.filename, JSON.stringify(empty));
-                } catch (_error) {}
+  private updateFile(data: ConfigFileSchema): void {
+    try {
+      fs.writeFileSync(this.filename, JSON.stringify(data));
+    } catch (error) {}
+  }
 
-                return empty;
-            }
-        } catch (error) {
-            return empty;
-        }
-    }
+  addPackage(packageName: string, version?: string): void {
+    const file = this.readFile();
 
-    private updateFile(data: ConfigFileSchema): void {
-        try {
-            fs.writeFileSync(this.filename, JSON.stringify(data));
-        } catch (error) {}
-    }
+    file.install[packageName] = version ?? "latest";
 
-    addPackage(packageName: string, version?: string): void {
-        const file = this.readFile();
+    this.updateFile(file);
+  }
 
-        file.install[packageName] = version ?? "latest";
+  removePackage(packageName: string): void {
+    const file = this.readFile();
 
-        this.updateFile(file);
-    }
+    file.uninstall.push(packageName);
 
-    removePackage(packageName: string): void {
-        const file = this.readFile();
+    this.updateFile(file);
+  }
 
-        file.uninstall.push(packageName);
+  getInstalls(): { [packageName: string]: string } {
+    return this.readFile().install;
+  }
 
-        this.updateFile(file);
-    }
+  getUninstalls(): string[] {
+    return this.readFile().uninstall;
+  }
 
-    getInstalls(): { [packageName: string]: string } {
-        return this.readFile().install;
-    }
-
-    getUninstalls(): string[] {
-        return this.readFile().uninstall;
-    }
-
-    destroy(): void {
-        try {
-            fs.unlinkSync(this.filename);
-        } catch (error) {}
-    }
+  destroy(): void {
+    try {
+      fs.unlinkSync(this.filename);
+    } catch (error) {}
+  }
 }

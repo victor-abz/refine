@@ -13,7 +13,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
           class="css-gqssyb"
         >
           <div
-            class="chakra-stack css-15lgeks"
+            class="chakra-stack css-9hjtr8"
           >
             <button
               aria-label="back"
@@ -22,7 +22,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="icon icon-tabler icon-tabler-arrow-left"
+                class="tabler-icon tabler-icon-arrow-left "
                 fill="none"
                 focusable="false"
                 height="24"
@@ -35,27 +35,13 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M0 0h24v24H0z"
-                  fill="none"
-                  stroke="none"
+                  d="M5 12l14 0"
                 />
-                <line
-                  x1="5"
-                  x2="19"
-                  y1="12"
-                  y2="12"
+                <path
+                  d="M5 12l6 6"
                 />
-                <line
-                  x1="5"
-                  x2="11"
-                  y1="12"
-                  y2="18"
-                />
-                <line
-                  x1="5"
-                  x2="11"
-                  y1="12"
-                  y2="6"
+                <path
+                  d="M5 12l6 -6"
                 />
               </svg>
             </button>
@@ -69,12 +55,60 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
         <div
           class="css-i08qke"
         >
-          <a
-            href="/posts"
+          <div
+            class="css-oquf3a"
           >
+            <a
+              data-discover="true"
+              href="/posts"
+            >
+              <button
+                class="chakra-button refine-list-button css-4xx2wk"
+                title=""
+                type="button"
+              >
+                <span
+                  class="chakra-button__icon css-1wh2kri"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="tabler-icon tabler-icon-list "
+                    fill="none"
+                    focusable="false"
+                    height="20"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 6l11 0"
+                    />
+                    <path
+                      d="M9 12l11 0"
+                    />
+                    <path
+                      d="M9 18l11 0"
+                    />
+                    <path
+                      d="M5 6l0 .01"
+                    />
+                    <path
+                      d="M5 12l0 .01"
+                    />
+                    <path
+                      d="M5 18l0 .01"
+                    />
+                  </svg>
+                </span>
+                Posts
+              </button>
+            </a>
             <button
-              class="chakra-button refine-list-button css-4xx2wk"
-              title=""
+              class="chakra-button refine-refresh-button css-4xx2wk"
               type="button"
             >
               <span
@@ -82,7 +116,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
               >
                 <svg
                   aria-hidden="true"
-                  class="icon icon-tabler icon-tabler-list"
+                  class="tabler-icon tabler-icon-refresh "
                   fill="none"
                   focusable="false"
                   height="20"
@@ -95,87 +129,16 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M0 0h24v24H0z"
-                    fill="none"
-                    stroke="none"
+                    d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"
                   />
-                  <line
-                    x1="9"
-                    x2="20"
-                    y1="6"
-                    y2="6"
-                  />
-                  <line
-                    x1="9"
-                    x2="20"
-                    y1="12"
-                    y2="12"
-                  />
-                  <line
-                    x1="9"
-                    x2="20"
-                    y1="18"
-                    y2="18"
-                  />
-                  <line
-                    x1="5"
-                    x2="5"
-                    y1="6"
-                    y2="6.01"
-                  />
-                  <line
-                    x1="5"
-                    x2="5"
-                    y1="12"
-                    y2="12.01"
-                  />
-                  <line
-                    x1="5"
-                    x2="5"
-                    y1="18"
-                    y2="18.01"
+                  <path
+                    d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"
                   />
                 </svg>
               </span>
-              Posts
+              Refresh
             </button>
-          </a>
-          <button
-            class="chakra-button refine-refresh-button css-4xx2wk"
-            type="button"
-          >
-            <span
-              class="chakra-button__icon css-1wh2kri"
-            >
-              <svg
-                aria-hidden="true"
-                class="icon icon-tabler icon-tabler-refresh"
-                fill="none"
-                focusable="false"
-                height="20"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M0 0h24v24H0z"
-                  fill="none"
-                  stroke="none"
-                />
-                <path
-                  d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"
-                />
-                <path
-                  d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"
-                />
-              </svg>
-            </span>
-            Refresh
-          </button>
+          </div>
         </div>
       </div>
       <div
@@ -534,7 +497,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
           >
             <svg
               aria-hidden="true"
-              class="icon icon-tabler icon-tabler-device-floppy"
+              class="tabler-icon tabler-icon-device-floppy "
               fill="none"
               focusable="false"
               height="20"
@@ -547,20 +510,13 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M0 0h24v24H0z"
-                fill="none"
-                stroke="none"
-              />
-              <path
                 d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"
               />
-              <circle
-                cx="12"
-                cy="14"
-                r="2"
+              <path
+                d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"
               />
-              <polyline
-                points="14 4 14 8 8 8 8 4"
+              <path
+                d="M14 4l0 4l-6 0l0 -4"
               />
             </svg>
           </span>
@@ -570,6 +526,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
     </div>
   </div>
   <div
+    class="refine-inferencer--code-viewer"
     style="position: sticky; bottom: 24px; padding-top: 24px; left: 0px; right: 0px; width: 100%; z-index: 10; display: flex; justify-content: center; transition: all 0.2s ease; opacity: 1; transform: translateY(0);"
   >
     <div
@@ -647,6 +604,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
     </div>
   </div>
   <div
+    class="refine-inferencer--code-viewer-modal"
     style="position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 9999; background-color: rgba(0, 0, 0, 0.5); transition: all 0.2s ease; opacity: 0; pointer-events: none; display: flex; justify-content: center; align-items: center;"
   >
     <div
@@ -1315,7 +1273,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                 queryResult 
+                 query 
               </span>
               <span
                 class="token punctuation"
@@ -1378,7 +1336,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                        resetField
+                        setValue
               </span>
               <span
                 class="token punctuation"
@@ -1537,7 +1495,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                 queryResult
+                 query
               </span>
               <span
                 class="token operator"
@@ -1883,7 +1841,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
                 class="token function"
                 style="color: rgb(220, 220, 170);"
               >
-                resetField
+                setValue
               </span>
               <span
                 class="token punctuation"
@@ -1896,6 +1854,39 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
                 style="color: rgb(206, 145, 120);"
               >
                 "category.id"
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                ,
+              </span>
+              <span
+                class="token plain"
+              >
+                 postsData
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                category
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                id
               </span>
               <span
                 class="token punctuation"
@@ -2320,7 +2311,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
                 class="token function"
                 style="color: rgb(220, 220, 170);"
               >
-                resetField
+                setValue
               </span>
               <span
                 class="token punctuation"
@@ -2333,6 +2324,39 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
                 style="color: rgb(206, 145, 120);"
               >
                 "user.id"
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                ,
+              </span>
+              <span
+                class="token plain"
+              >
+                 postsData
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                user
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                id
               </span>
               <span
                 class="token punctuation"
@@ -2710,7 +2734,7 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
                 class="token function"
                 style="color: rgb(220, 220, 170);"
               >
-                resetField
+                setValue
               </span>
               <span
                 class="token punctuation"
@@ -2723,6 +2747,28 @@ exports[`ChakraEditInferencer should match the snapshot 1`] = `
                 style="color: rgb(206, 145, 120);"
               >
                 "tags"
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                ,
+              </span>
+              <span
+                class="token plain"
+              >
+                 postsData
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                tags
               </span>
               <span
                 class="token punctuation"

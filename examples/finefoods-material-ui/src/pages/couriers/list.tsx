@@ -1,138 +1,145 @@
-import React from "react";
-import {
-    useTranslate,
-    IResourceComponentsProps,
-    useDelete,
-    useNavigation,
-} from "@refinedev/core";
-import { useDataGrid, List } from "@refinedev/mui";
-import { Stack, Avatar, Typography, Tooltip } from "@mui/material";
-import { DataGrid, GridColumns, GridActionsCellItem } from "@mui/x-data-grid";
-import { Edit, Close } from "@mui/icons-material";
+import { type PropsWithChildren, useMemo } from "react";
+import { useGo, useNavigation, useTranslate } from "@refinedev/core";
+import { CreateButton, EditButton, useDataGrid } from "@refinedev/mui";
+import { useLocation } from "react-router";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import { CourierRating, CourierStatus, RefineListView } from "../../components";
+import type { ICourier } from "../../interfaces";
 
-import { ICourier } from "interfaces";
+export const CourierList = ({ children }: PropsWithChildren) => {
+  const go = useGo();
+  const { pathname } = useLocation();
+  const { createUrl } = useNavigation();
+  const t = useTranslate();
 
-export const CourierList: React.FC<IResourceComponentsProps> = () => {
-    const { show, edit } = useNavigation();
-    const t = useTranslate();
-    const { mutate: mutateDelete } = useDelete();
+  const { dataGridProps } = useDataGrid<ICourier>({
+    pagination: {
+      pageSize: 10,
+    },
+  });
 
-    const { dataGridProps } = useDataGrid<ICourier>({
-        initialPageSize: 10,
-        initialSorter: [
-            {
-                field: "id",
-                order: "desc",
-            },
-        ],
-    });
-
-    const columns = React.useMemo<GridColumns<ICourier>>(
-        () => [
-            {
-                field: "name",
-                headerName: t("couriers.fields.name"),
-                renderCell: function render({ row }) {
-                    return (
-                        <Stack alignItems="center" direction="row" spacing={2}>
-                            <Avatar
-                                alt={`${row.name} ${row.surname}`}
-                                src={row.avatar?.[0]?.url}
-                            />
-                            <Typography variant="body2">
-                                {row.name} {row.surname}
-                            </Typography>
-                        </Stack>
-                    );
-                },
-                flex: 1,
-                minWidth: 200,
-            },
-            {
-                field: "gsm",
-                headerName: t("couriers.fields.gsm"),
-                flex: 1,
-                minWidth: 200,
-            },
-            {
-                field: "email",
-                headerName: t("couriers.fields.email"),
-                flex: 1,
-                minWidth: 300,
-            },
-            {
-                field: "address",
-                headerName: t("couriers.fields.address"),
-                renderCell: function render({ row }) {
-                    return (
-                        <Tooltip title={row.address}>
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden",
-                                }}
-                            >
-                                {row.address}
-                            </Typography>
-                        </Tooltip>
-                    );
-                },
-                flex: 1,
-                minWidth: 300,
-            },
-            {
-                field: "actions",
-                headerName: t("table.actions"),
-                type: "actions",
-                getActions: function render({ row }) {
-                    return [
-                        // @ts-expect-error `@mui/x-data-grid@5.17.12` broke the props of `GridActionsCellItem` and requires `onResize` and `onResizeCapture` props which should be optional.
-                        <GridActionsCellItem
-                            key={1}
-                            label={t("buttons.edit")}
-                            icon={<Edit color="success" />}
-                            onClick={() => edit("couriers", row.id)}
-                            showInMenu
-                        />,
-                        // @ts-expect-error `@mui/x-data-grid@5.17.12` broke the props of `GridActionsCellItem` and requires `onResize` and `onResizeCapture` props which should be optional.
-                        <GridActionsCellItem
-                            key={2}
-                            label={t("buttons.delete")}
-                            icon={<Close color="error" />}
-                            onClick={() => {
-                                mutateDelete({
-                                    resource: "couriers",
-                                    id: row.id,
-                                    mutationMode: "undoable",
-                                });
-                            }}
-                            showInMenu
-                        />,
-                    ];
-                },
-            },
-        ],
-        [t],
-    );
-
-    return (
-        <List wrapperProps={{ sx: { paddingX: { xs: 2, md: 0 } } }}>
-            <DataGrid
-                {...dataGridProps}
-                columns={columns}
-                autoHeight
-                rowsPerPageOptions={[10, 20, 50, 100]}
-                density="comfortable"
-                sx={{
-                    "& .MuiDataGrid-cell:hover": {
-                        cursor: "pointer",
-                    },
-                }}
-                onRowClick={(row) => {
-                    show("couriers", row.id);
-                }}
+  const columns = useMemo<GridColDef<ICourier>[]>(
+    () => [
+      {
+        field: "id",
+        headerName: "ID #",
+        width: 64,
+        display: "flex",
+        renderCell: function render({ row }) {
+          return <Typography>#{row.id}</Typography>;
+        },
+      },
+      {
+        field: "avatar",
+        headerName: t("couriers.fields.avatar.label"),
+        width: 64,
+        display: "flex",
+        renderCell: function render({ row }) {
+          return (
+            <Avatar
+              alt={`${row.name} ${row.surname}`}
+              src={row.avatar?.[0]?.url}
+              sx={{ width: 32, height: 32 }}
             />
-        </List>
-    );
+          );
+        },
+      },
+      {
+        field: "name",
+        width: 188,
+        headerName: t("couriers.fields.name.label"),
+      },
+      {
+        field: "licensePlate",
+        width: 112,
+        headerName: t("couriers.fields.licensePlate.label"),
+      },
+      {
+        field: "gsm",
+        width: 132,
+        headerName: t("couriers.fields.gsm.label"),
+      },
+      {
+        field: "store",
+        minWidth: 156,
+        flex: 1,
+        headerName: t("couriers.fields.store.label"),
+        display: "flex",
+        renderCell: function render({ row }) {
+          return <Typography>{row.store?.title}</Typography>;
+        },
+      },
+      {
+        field: "rating",
+        width: 156,
+        headerName: t("couriers.fields.rating.label"),
+        renderCell: function render({ row }) {
+          return <CourierRating courier={row} />;
+        },
+      },
+      {
+        field: "status",
+        width: 156,
+        headerName: t("couriers.fields.status.label"),
+        renderCell: function render({ row }) {
+          return <CourierStatus value={row?.status} />;
+        },
+      },
+      {
+        field: "actions",
+        headerName: t("table.actions"),
+        type: "actions",
+        renderCell: function render({ row }) {
+          return (
+            <EditButton
+              hideText
+              recordItemId={row.id}
+              svgIconProps={{
+                color: "action",
+              }}
+            />
+          );
+        },
+      },
+    ],
+    [t],
+  );
+
+  return (
+    <>
+      <RefineListView
+        headerButtons={() => [
+          <CreateButton
+            key="create"
+            variant="contained"
+            size="medium"
+            sx={{ height: "40px" }}
+            onClick={() => {
+              go({
+                to: `${createUrl("couriers")}`,
+                query: {
+                  to: pathname,
+                },
+                options: {
+                  keepQuery: true,
+                },
+                type: "replace",
+              });
+            }}
+          >
+            {t("couriers.actions.add")}
+          </CreateButton>,
+        ]}
+      >
+        <DataGrid
+          {...dataGridProps}
+          columns={columns}
+          pageSizeOptions={[10, 20, 50, 100]}
+        />
+      </RefineListView>
+      {children}
+    </>
+  );
 };

@@ -1,64 +1,89 @@
-import { CrudFilters, LogicalFilter } from "@refinedev/core";
+import type {
+  CrudFilters,
+  LogicalFilter,
+  ConditionalFilter,
+} from "@refinedev/core";
 import { mapOperator } from "./mapOperator";
-import { stringify, parse } from "qs";
+import qs from "qs";
 
 export const generateNestedFilterField = (field: string) => {
-    const fields = field.split(".");
+  const fields = field.split(".");
 
-    if (fields.length > 1) {
-        let fieldQuery = "";
-        fields.map((v) => (fieldQuery += `[${v}]`));
-        return fieldQuery;
+  if (fields.length > 1) {
+    let fieldQuery = "";
+
+    fields.forEach((v) => {
+      fieldQuery += `[${v}]`;
+    });
+
+    return fieldQuery;
+  }
+  return `[${fields[0]}]`;
+};
+
+const generateLogicalFilter = (filter: LogicalFilter, parent = ""): string => {
+  const { field, operator, value } = filter;
+
+  let rawQuery = "";
+
+  const mappedOperator = mapOperator(operator);
+
+  if (Array.isArray(value)) {
+    value.map((val, index) => {
+      rawQuery += `&filters${parent}${generateNestedFilterField(
+        field,
+      )}[$${mappedOperator}][${index}]=${val}`;
+    });
+  } else {
+    rawQuery += `&filters${parent}${generateNestedFilterField(
+      field,
+    )}[$${mappedOperator}]=${value}`;
+  }
+  return rawQuery;
+};
+
+const generateConditionalFilter = (
+  filter: ConditionalFilter,
+  parent = "",
+): string => {
+  let rawQuery = "";
+
+  filter.value.map((item, index) => {
+    if (item.operator !== "or" && item.operator !== "and" && "field" in item) {
+      rawQuery += generateLogicalFilter(
+        item,
+        `${parent}[$${filter.operator}][${index}]`,
+      );
     } else {
-        return `[${fields[0]}]`;
+      rawQuery += generateConditionalFilter(
+        item,
+        `${parent}[$${filter.operator}][${index}]`,
+      );
     }
+  });
+  return rawQuery;
 };
 
 export const generateFilter = (filters?: CrudFilters) => {
-    let rawQuery = "";
+  let rawQuery = "";
 
-    if (filters) {
-        filters.map((filter) => {
-            if (
-                filter.operator !== "or" &&
-                filter.operator !== "and" &&
-                "field" in filter
-            ) {
-                const { field, operator, value } = filter;
+  if (filters) {
+    filters.map((filter) => {
+      if (
+        filter.operator !== "or" &&
+        filter.operator !== "and" &&
+        "field" in filter
+      ) {
+        rawQuery += generateLogicalFilter(filter);
+      } else {
+        rawQuery += generateConditionalFilter(filter);
+      }
+    });
+  }
 
-                const mapedOperator = mapOperator(operator);
+  const parsedQuery = qs.parse(rawQuery, { depth: 15 });
 
-                if (Array.isArray(value)) {
-                    value.map((val, index) => {
-                        rawQuery += `&filters${generateNestedFilterField(
-                            field,
-                        )}[$${mapedOperator}][${index}]=${val}`;
-                    });
-                } else {
-                    rawQuery += `&filters${generateNestedFilterField(
-                        field,
-                    )}[$${mapedOperator}]=${value}`;
-                }
-            } else {
-                const { value } = filter;
+  const queryFilters = qs.stringify(parsedQuery, { encodeValuesOnly: true });
 
-                value.map((item, index) => {
-                    const { field, operator, value } = item as LogicalFilter;
-
-                    const mapedOperator = mapOperator(operator);
-
-                    rawQuery += `&filters[$${
-                        filter.operator
-                    }][${index}]${generateNestedFilterField(
-                        field,
-                    )}[$${mapedOperator}]=${value}`;
-                });
-            }
-        });
-    }
-
-    const parsedQuery = parse(rawQuery);
-    const queryFilters = stringify(parsedQuery, { encodeValuesOnly: true });
-
-    return queryFilters;
+  return queryFilters;
 };

@@ -3,19 +3,10 @@ title: ReactJS Frameworks You Should Know Before Start Developing B2B/Internal A
 description: We have listed Open source ReactJS frameworks that will help and speed you up while developing internal-tool applications.
 slug: best-internal-tool-react-frameworks
 authors: melih
-tags:
-    [
-        comparison
-    ]
+tags: [comparison]
 image: https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/placeholder.png
 hide_table_of_contents: false
 ---
-
-
-
-
-
-
 
 ## Best Internal Tool Frameworks for ReactJS
 
@@ -31,10 +22,10 @@ Internal tools manage the activities your company or product needs, such as trac
 
 Internal Tool React.js Frameworks that we will review:
 
--   [Blitz.js](https://blitzjs.com/)
--   [Refine](https://refine.dev/)
--   [Redwood.js](https://redwoodjs.com/)
--   [React Admin](https://marmelab.com/react-admin/)
+- [Blitz.js](https://blitzjs.com/)
+- [Refine](https://refine.dev/)
+- [Redwood.js](https://redwoodjs.com/)
+- [React Admin](https://github.com/marmelab/react-admin)
 
 ## 1. Blitz.js
 
@@ -42,11 +33,11 @@ Internal Tool React.js Frameworks that we will review:
 
 ### Key Features
 
--   The zero-api data layer
--   Authentication
--   Authorization
--   Conventions
--   New app templates
+- The zero-api data layer
+- Authentication
+- Authorization
+- Conventions
+- New app templates
 
 ### Installation
 
@@ -62,9 +53,9 @@ npm install -g blitz
 
 ## Refine
 
-[**refine**](https://refine.dev/) is a React-based framework for rapid building of internal tools. It's is a a collection of helper hooks, components and providers. They are all decoupled from your UI components and business logic, so they never keep you from customizing your UI or coding your own flow.
+[**Refine**](https://refine.dev/) is a React-based framework for rapid building of internal tools. It's is a a collection of helper hooks, components and providers. They are all decoupled from your UI components and business logic, so they never keep you from customizing your UI or coding your own flow.
 
-**refine** offers lots of out-of-the box functionality for rapid development, without compromising extreme customizability. Use-cases include, but are not limited to admin panels, B2B applications and dashboards
+**Refine** offers lots of out-of-the box functionality for rapid development, without compromising extreme customizability. Use-cases include, but are not limited to admin panels, B2B applications and dashboards
 
 ### Key Features​
 
@@ -74,29 +65,22 @@ npm install -g blitz
 
 📦 Out-of-the-box : Routing, networking, authentication, state management, i18n and UI.
 
-🔌 Backend Agnostic : Connects to any custom backend. Built-in support for REST API, GraphQL, NestJs CRUD, Airtable, Strapi, Strapi v4, Strapi GraphQL, Supabase, Hasura, Nhost, Appwrite, Medusa, Firebase, and Directus.
+🔌 Backend Agnostic : Connects to any custom backend. Built-in support for REST API, GraphQL, NestJs CRUD, Airtable, Strapi, Strapi v4, Strapi GraphQL, Supabase, Hasura, Appwrite, Medusa, Firebase, and Directus.
 
 📝 Native Typescript Core : You can always opt out for plain JavaScript.
 
-🐜 Enterprise UI : Works seamlessly with Ant Design System. (Support for multiple UI frameworks is on the Roadmap)
+🐜 Enterprise UI : Works seamlessly with Ant Design. (Support for multiple UI frameworks is on the Roadmap)
 
 📝 Boilerplate-free Code : Keeps your codebase clean and readable.
 
 ### Installation
 
-You can quickly create the project containing **refine** and all the features you will use with it, thanks to **refine**'s Project Creator CLI (Superplate). No extra setup required!
+You can quickly create the project containing **Refine** and all the features you will use with it, thanks to **Refine**'s Project Creator CLI (Superplate). No extra setup required!
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/superplate.gif" alt="Refine Project Creator CLI" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/superplate.gif" alt="Refine Project Creator CLI" />
 <br />
 
-If you want, you can manually install the refine packages.
+If you want, you can manually install the Refine packages.
 
 ```bash
 npm i @refinedev/core @refinedev/antd
@@ -106,27 +90,13 @@ npm i @refinedev/core @refinedev/antd
 
 [**Refine** Admin Panel Example](https://example.admin.refine.dev/?current=1&pageSize=5)
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/refine-admin-panel.png" alt="Refine Admin Panel Example" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/refine-admin-panel.png" alt="Refine Admin Panel Example" />
 
 <br/>
 
 [**Refine** Headless + Tailwind CSS Client(B2C) Example](https://example.refine.dev/)
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/refine_client.png" alt="Refine Client Example" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/refine_client.png" alt="Refine Client Example" />
 
 ## 3. RedwoodJS
 
@@ -136,13 +106,13 @@ Redwood includes deploy support for Netlify, Vercel, Render.com, AWS and more. B
 
 ### Key Features
 
--   Database and Data migrations
--   Automatic page-based code-splitting
--   Cells: a declarative way to fetch data from the backend API
--   Scaffold generator for CRUD operations specific to a DB table
--   Simple but powerful GraphQL Directives to validate access or transform resolved data
--   Simple but powerful routing (all routes defined in one file) with dynamic (typed)
--   Opinionated defaults for formatting, file organization, Webpack, Babel, and more
+- Database and Data migrations
+- Automatic page-based code-splitting
+- Cells: a declarative way to fetch data from the backend API
+- Scaffold generator for CRUD operations specific to a DB table
+- Simple but powerful GraphQL Directives to validate access or transform resolved data
+- Simple but powerful routing (all routes defined in one file) with dynamic (typed)
+- Opinionated defaults for formatting, file organization, Webpack, Babel, and more
 
 ### Installation
 
@@ -154,27 +124,20 @@ Redwood includes deploy support for Netlify, Vercel, Render.com, AWS and more. B
 
 [Link](https://github.com/redwoodjs/example-blog)
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/redwood.png" alt="Redwood Example" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/redwood.png" alt="Redwood Example" />
 
 ## 4. React Admin
 
-[React Admin](https://marmelab.com/react-admin/) is a frontend Framework for building data-driven applications running in the browser, on top of REST/GraphQL APIs, using React and Material Design.
+[React Admin](https://github.com/marmelab/react-admin) is a frontend Framework for building data-driven applications running in the browser, on top of REST/GraphQL APIs, using React and Material Design.
 
 ### Key Features
 
--   Powered by material-ui, redux, react-final-form, react-router and a few more
--   Adapts to any backend (REST, GraphQL, SOAP, etc.)
--   Internationalization (i18n)
--   Supports any authentication provider (REST API, OAuth, Basic Auth, ...)
--   Can be included in another React app
--   Powered by material-ui, redux, react-final-form, react-router and a few more
+- Powered by material-ui, redux, react-final-form, react-router and a few more
+- Adapts to any backend (REST, GraphQL, SOAP, etc.)
+- Internationalization (i18n)
+- Supports any authentication provider (REST API, OAuth, Basic Auth, ...)
+- Can be included in another React app
+- Powered by material-ui, redux, react-final-form, react-router and a few more
 
 ### Installation
 
@@ -188,20 +151,11 @@ yarn add react-admin
 
 ### React Admin Example
 
-[Link](https://marmelab.com/react-admin-demo/#/)
-
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/react_admin.png" alt="React Admin Example" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-03-16-internal-tool-frameworks/react_admin.png" alt="React Admin Example" />
 
 <br/>
 <br/>
 
 In this article, we have listed the popular open-source ReactJS internal-tool frameworks. If you want a more detailed review article, you can like and share this article. Thank you for your interest and reading.
 
-[For more information about **refine** ->](https://refine.dev/docs/)
+[For more information about **Refine** ->](https://refine.dev/docs/)

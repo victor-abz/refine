@@ -3,7 +3,6 @@ id: command-palette
 title: Command Palette
 ---
 
-
 **refine** supports the command palette feature and use the
 [**kbar**][kbar]. **kbar** is a fully extensible `cmd` + `k`(MacOS) or `ctrl` + `k`(Linux/Windows) interface for your site.
 
@@ -11,9 +10,8 @@ title: Command Palette
 
 Install the [@pankod/refine-kbar][refine-kbar] library.
 
-```bash
-npm i @pankod/refine-kbar
-```
+<InstallPackagesCommand args="@pankod/refine-kbar"/>
+
 ## Basic Usage
 
 First of all, you need to import the `@pankod/refine-kbar` library and we will use `RefineKbarProvider` to wrap the whole application.
@@ -27,55 +25,48 @@ import { RefineKbarProvider } from "@pankod/refine-kbar";
 
 import { PostList, PostCreate, PostEdit, PostShow } from "pages/posts";
 import {
-    CategoriesList,
-    CategoriesCreate,
-    CategoriesEdit,
+  CategoriesList,
+  CategoriesCreate,
+  CategoriesEdit,
 } from "pages/categories";
 
 // highlight-start
 export const OffLayoutArea: React.FC = () => {
-    return <RefineKbar />;
+  return <RefineKbar />;
 };
 // highlight-end
 
 const App: React.FC = () => {
-    return (
-        <RefineKbarProvider>
-            <Refine
-                resources={[
-                    {
-                        name: "posts",
-                        list: PostList,
-                        create: PostCreate,
-                        edit: PostEdit,
-                        show: PostShow,
-                        icon: <Icons.StarOutlined />,
-                        canDelete: true,
-                    },
-                    {
-                        name: "categories",
-                        list: CategoriesList,
-                        create: CategoriesCreate,
-                        edit: CategoriesEdit,
-                        canDelete: true,
-                    },
-                ]}
-                //highlight-next-line
-                OffLayoutArea={OffLayoutArea}
-            />
-        </RefineKbarProvider>
-    );
+  return (
+    <RefineKbarProvider>
+      <Refine
+        resources={[
+          {
+            name: "posts",
+            list: PostList,
+            create: PostCreate,
+            edit: PostEdit,
+            show: PostShow,
+            icon: <Icons.StarOutlined />,
+            canDelete: true,
+          },
+          {
+            name: "categories",
+            list: CategoriesList,
+            create: CategoriesCreate,
+            edit: CategoriesEdit,
+            canDelete: true,
+          },
+        ]}
+        //highlight-next-line
+        OffLayoutArea={OffLayoutArea}
+      />
+    </RefineKbarProvider>
+  );
 };
 ```
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/packages/command-palette/kbar/refine-kbar-example.gif" alt="Refine Kbar Example" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/packages/command-palette/kbar/refine-kbar-example.gif" alt="Refine Kbar Example" />
 
 <br/>
 
@@ -104,12 +95,12 @@ You can use the `createAction` to create a new action and use the `useRegisterAc
 import { createAction, useRegisterActions } from "@pankod/refine-kbar";
 
 const customAction = createAction({
-    name: "my custom action",
-    section: "custom-actions",
-    perform: () => {
-        console.log("onSelect my custom action");
-    },
-    priority: Priority.HIGH,
+  name: "my custom action",
+  section: "custom-actions",
+  perform: () => {
+    console.log("onSelect my custom action");
+  },
+  priority: Priority.HIGH,
 });
 
 useRegisterActions(customAction);
@@ -125,7 +116,7 @@ useRegisterActions(customAction);
 
 [kbar]: https://github.com/timc1/kbar
 [kbar-actions]: https://kbar.vercel.app/docs/concepts/actions
-[refine-kbar]: https://github.com/refinedev/refine/tree/master/packages/kbar
+[refine-kbar]: https://github.com/refinedev/refine/tree/v3/packages/kbar
 [access-contol]: https://refine.dev/docs/core/providers/accessControl-provider/
-[usecanwithoutcache]: https://github.com/refinedev/refine/blob/master/packages/core/src/hooks/accessControl/useCanWithoutCache.ts
-[refine-finefoods]: https://github.com/refinedev/refine/blob/master/examples/finefoods-material-ui/src/hooks/useOrderCustomKbarActions/index.tsx
+[usecanwithoutcache]: https://github.com/refinedev/refine/blob/v3/packages/core/src/hooks/accessControl/useCanWithoutCache.ts
+[refine-finefoods]: https://github.com/refinedev/refine/blob/v3/examples/finefoods-material-ui/src/hooks/useOrderCustomKbarActions/index.tsx

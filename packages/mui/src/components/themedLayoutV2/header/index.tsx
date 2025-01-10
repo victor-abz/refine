@@ -1,53 +1,56 @@
 import React from "react";
 import {
-    useGetIdentity,
-    useActiveAuthProvider,
-    pickNotDeprecated,
+  useGetIdentity,
+  useActiveAuthProvider,
+  pickNotDeprecated,
 } from "@refinedev/core";
-import { AppBar, Stack, Toolbar, Typography, Avatar } from "@mui/material";
 
-import { RefineThemedLayoutV2HeaderProps } from "../types";
+import AppBar from "@mui/material/AppBar";
+import Stack from "@mui/material/Stack";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+
+import type { RefineThemedLayoutV2HeaderProps } from "../types";
+
 import { HamburgerMenu } from "../hamburgerMenu";
 
 export const ThemedHeaderV2: React.FC<RefineThemedLayoutV2HeaderProps> = ({
-    isSticky,
-    sticky,
+  isSticky,
+  sticky,
 }) => {
-    const authProvider = useActiveAuthProvider();
-    const { data: user } = useGetIdentity({
-        v3LegacyAuthProviderCompatible: Boolean(authProvider?.isLegacy),
-    });
+  const authProvider = useActiveAuthProvider();
+  const { data: user } = useGetIdentity({
+    v3LegacyAuthProviderCompatible: Boolean(authProvider?.isLegacy),
+  });
 
-    const prefferedSticky = pickNotDeprecated(sticky, isSticky) ?? true;
+  const prefferedSticky = pickNotDeprecated(sticky, isSticky) ?? true;
 
-    return (
-        <AppBar position={prefferedSticky ? "sticky" : "relative"}>
-            <Toolbar>
-                <HamburgerMenu />
-                <Stack
-                    direction="row"
-                    width="100%"
-                    justifyContent="flex-end"
-                    alignItems="center"
-                >
-                    <Stack
-                        direction="row"
-                        gap="16px"
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        <Typography
-                            sx={{
-                                display: { xs: "none", md: "block" },
-                            }}
-                            variant="subtitle2"
-                        >
-                            {user?.name}
-                        </Typography>
-                        <Avatar src={user?.avatar} alt={user?.name} />
-                    </Stack>
-                </Stack>
-            </Toolbar>
-        </AppBar>
-    );
+  return (
+    <AppBar position={prefferedSticky ? "sticky" : "relative"}>
+      <Toolbar>
+        <HamburgerMenu />
+        <Stack
+          direction="row"
+          width="100%"
+          justifyContent="flex-end"
+          alignItems="center"
+        >
+          <Stack
+            direction="row"
+            gap="16px"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {user?.name && (
+              <Typography variant="subtitle2" data-testid="header-user-name">
+                {user?.name}
+              </Typography>
+            )}
+            {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} />}
+          </Stack>
+        </Stack>
+      </Toolbar>
+    </AppBar>
+  );
 };

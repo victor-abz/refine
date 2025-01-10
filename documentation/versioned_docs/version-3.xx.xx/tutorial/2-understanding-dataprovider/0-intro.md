@@ -2,15 +2,15 @@
 id: index
 title: 1. Data Provider
 tutorial:
-    order: 0
-    prev: false
-    next: tutorial/understanding-dataprovider/swizzle
+  order: 0
+  prev: false
+  next: 3.xx.xx/tutorial/understanding-dataprovider/swizzle
 ---
 
 import SupportedDataProviders from "@site/src/partials/data-provider/supported-data-providers.md";
 
 :::info
-The data provider unit is optional for the tutorial and can be skipped to next unit - <UIConditional is="headless">[Adding CRUD Pages](/docs/tutorial/adding-crud-pages/headless/index)</UIConditional><UIConditional is="antd">[Adding CRUD Pages](/docs/tutorial/adding-crud-pages/antd/index)</UIConditional><UIConditional is="mantine">[Adding CRUD Pages](/docs/tutorial/adding-crud-pages/mantine/index)</UIConditional><UIConditional is="chakra-ui">[Adding CRUD Pages](/docs/tutorial/adding-crud-pages/chakra-ui/index)</UIConditional><UIConditional is="mui">[Adding CRUD Pages](/docs/tutorial/adding-crud-pages/mui/index)</UIConditional>
+The data provider unit is optional for the tutorial and can be skipped to next unit - <UIConditional is="headless">[Adding CRUD Pages](/docs/3.xx.xx/tutorial/adding-crud-pages/headless/index)</UIConditional><UIConditional is="antd">[Adding CRUD Pages](/docs/3.xx.xx/tutorial/adding-crud-pages/antd/index)</UIConditional><UIConditional is="mantine">[Adding CRUD Pages](/docs/3.xx.xx/tutorial/adding-crud-pages/mantine/index)</UIConditional><UIConditional is="chakra-ui">[Adding CRUD Pages](/docs/3.xx.xx/tutorial/adding-crud-pages/chakra-ui/index)</UIConditional><UIConditional is="mui">[Adding CRUD Pages](/docs/3.xx.xx/tutorial/adding-crud-pages/mui/index)</UIConditional>
 if desired.
 :::
 
@@ -25,7 +25,7 @@ We'll see how to create data provider in the next sections.
 Data providers can communicate with `REST`, `GraphQL`, `RPC`, and `SOAP` based API's. You can imagine the data provider is an adapter between refine and the API.
 
 <div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/providers/data-provider/tutorial_dataprovider_flog.png" />
+    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/providers/data-provider/api-consuming-flow.png" />
 </div>
 <br/>
 <br/>
@@ -57,7 +57,7 @@ These methods are used to perform data operations by **refine**.
 
 **refine** comes with different data providers out of the box, but the one we’re interested in and will be using in this tutorial is the `refine-simple-rest` data provider, a data provider for communicating with RESTful APIs.
 
-[Refer to the `refine-simple-rest` source code &#8594](https://github.com/refinedev/refine/tree/next/packages/simple-rest)
+[Refer to the `refine-simple-rest` source code &#8594](https://github.com/refinedev/refine/tree/v3/packages/simple-rest)
 
 ## Using Data Providers in refine
 
@@ -73,7 +73,7 @@ import dataProvider from "@pankod/refine-simple-rest";
 />;
 ```
 
-You can refer to the **refine** component [dataProvider](/docs/api-reference/core/components/refine-config/#dataprovider) prop documentation for more detailed information.
+You can refer to the **refine** component [dataProvider](/docs/3.xx.xx/api-reference/core/components/refine-config/#dataprovider) prop documentation for more detailed information.
 
 ## How are data provider methods used in the app?
 
@@ -85,22 +85,22 @@ To illustrate this internal connection, imagine we want to get all records from 
 import { useList } from "@pankod/refine-core";
 
 const postUseListResult = useList({
-    resource: "posts",
-    config: {
-        sort: [
-            {
-                field: "id",
-                order: "desc",
-            },
-        ],
-        filters: [
-            {
-                field: "title",
-                operator: "contains",
-                value: "hello",
-            },
-        ],
-    },
+  resource: "posts",
+  config: {
+    sort: [
+      {
+        field: "id",
+        order: "desc",
+      },
+    ],
+    filters: [
+      {
+        field: "title",
+        operator: "contains",
+        value: "hello",
+      },
+    ],
+  },
 });
 ```
 

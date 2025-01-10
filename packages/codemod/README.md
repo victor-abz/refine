@@ -1,10 +1,14 @@
 <div align="center" style="margin: 30px;">
     <a href="https://refine.dev">
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/refine_logo.png"  align="center" />
+    <img alt="refine logo" src="https://refine.ams3.cdn.digitaloceanspaces.com/readme/refine-readme-banner.png">
     </a>
 </div>
 <br/>
-<div align="center"><strong>refine</strong> is a <a href="https://reactjs.org/">React</a>-based framework for building internal tools, rapidly. ✨ It ships with <a href="https://ant.design/">Ant Design System</a>, an enterprise-level UI toolkit.</div>
+<div align="center">refine is an open-source, headless React framework for developers building enterprise web applications.
+
+It eliminates repetitive tasks in CRUD operations and provides industry-standard solutions for critical project components like **authentication**, **access control**, **routing**, **networking**, **state management**, and **i18n**.
+
+</div>
 <br/>
 
 <div align="center">
@@ -14,7 +18,7 @@
 
 ## About Refine
 
-[**refine**](https://refine.dev/) offers lots of out-of-the box functionality for rapid development, without compromising extreme customizability. Use-cases include, but are not limited to *admin panels*, *B2B applications* and *dashboards*.
+[**refine**](https://refine.dev/) offers lots of out-of-the box functionality for rapid development, without compromising extreme customizability. Use-cases include, but are not limited to _admin panels_, _B2B applications_ and _dashboards_.
 
 ## About This Tool
 

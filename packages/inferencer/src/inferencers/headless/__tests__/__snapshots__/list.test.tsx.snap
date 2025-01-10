@@ -93,7 +93,7 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
                 orange
               </td>
               <td>
-                4/2/2022, 4:25:44 AM
+                4/2/2022, 8:25:44 AM
               </td>
               <td>
                 8/10/2021, 8:07:39 AM
@@ -151,7 +151,7 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
                 9/24/2022, 8:33:21 AM
               </td>
               <td>
-                9/1/2021, 3:33:43 AM
+                9/1/2021, 8:33:43 AM
               </td>
               <td>
                 <ul>
@@ -204,13 +204,12 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
           &gt;&gt;
         </button>
         <span>
-          Page
           <strong>
-            1 of 1
+              1 /   1  
           </strong>
         </span>
         <span>
-          | Go to page:
+          | Go to Page: 
           <input
             type="number"
             value="1"
@@ -248,6 +247,7 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
     </div>
   </div>
   <div
+    class="refine-inferencer--code-viewer"
     style="position: sticky; bottom: 24px; padding-top: 24px; left: 0px; right: 0px; width: 100%; z-index: 10; display: flex; justify-content: center; transition: all 0.2s ease; opacity: 1; transform: translateY(0);"
   >
     <div
@@ -325,6 +325,7 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
     </div>
   </div>
   <div
+    class="refine-inferencer--code-viewer-modal"
     style="position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 9999; background-color: rgba(0, 0, 0, 0.5); transition: all 0.2s ease; opacity: 0; pointer-events: none; display: flex; justify-content: center; align-items: center;"
   >
     <div
@@ -444,21 +445,8 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
               </span>
               <span
                 class="token imports"
-              />
-            </div>
-            <div
-              class="token-line"
-              style="color: rgb(156, 220, 254);"
-            >
-              <span
-                class="token imports"
               >
-                    
-              </span>
-              <span
-                class="token imports maybe-class-name"
-              >
-                IResourceComponentsProps
+                 useNavigation
               </span>
               <span
                 class="token imports punctuation"
@@ -468,35 +456,8 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
               </span>
               <span
                 class="token imports"
-              />
-            </div>
-            <div
-              class="token-line"
-              style="color: rgb(156, 220, 254);"
-            >
-              <span
-                class="token imports"
               >
-                    useNavigation
-              </span>
-              <span
-                class="token imports punctuation"
-                style="color: rgb(212, 212, 212);"
-              >
-                ,
-              </span>
-              <span
-                class="token imports"
-              />
-            </div>
-            <div
-              class="token-line"
-              style="color: rgb(156, 220, 254);"
-            >
-              <span
-                class="token imports"
-              >
-                    
+                 
               </span>
               <span
                 class="token imports maybe-class-name"
@@ -511,34 +472,9 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
               </span>
               <span
                 class="token imports"
-              />
-            </div>
-            <div
-              class="token-line"
-              style="color: rgb(156, 220, 254);"
-            >
-              <span
-                class="token imports"
               >
-                    useMany
+                 useMany 
               </span>
-              <span
-                class="token imports punctuation"
-                style="color: rgb(212, 212, 212);"
-              >
-                ,
-              </span>
-              <span
-                class="token imports"
-              />
-            </div>
-            <div
-              class="token-line"
-              style="color: rgb(156, 220, 254);"
-            >
-              <span
-                class="token imports"
-              />
               <span
                 class="token imports punctuation"
                 style="color: rgb(212, 212, 212);"
@@ -769,54 +705,10 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
                  
               </span>
               <span
-                class="token maybe-class-name"
+                class="token function-variable function"
+                style="color: rgb(220, 220, 170);"
               >
                 PostList
-              </span>
-              <span
-                class="token operator"
-                style="color: rgb(212, 212, 212);"
-              >
-                :
-              </span>
-              <span
-                class="token plain"
-              >
-                 
-              </span>
-              <span
-                class="token maybe-class-name"
-              >
-                React
-              </span>
-              <span
-                class="token punctuation"
-                style="color: rgb(212, 212, 212);"
-              >
-                .
-              </span>
-              <span
-                class="token constant"
-                style="color: rgb(100, 102, 149);"
-              >
-                FC
-              </span>
-              <span
-                class="token operator"
-                style="color: rgb(212, 212, 212);"
-              >
-                &lt;
-              </span>
-              <span
-                class="token maybe-class-name"
-              >
-                IResourceComponentsProps
-              </span>
-              <span
-                class="token operator"
-                style="color: rgb(212, 212, 212);"
-              >
-                &gt;
               </span>
               <span
                 class="token plain"
@@ -2326,7 +2218,7 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
                 class="token operator"
                 style="color: rgb(212, 212, 212);"
               >
-                ===
+                ==
               </span>
               <span
                 class="token plain"
@@ -3185,7 +3077,7 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
                 class="token operator"
                 style="color: rgb(212, 212, 212);"
               >
-                ===
+                ==
               </span>
               <span
                 class="token plain"
@@ -12651,16 +12543,6 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
               <span
                 class="token plain-text"
               >
-                                    Page
-              </span>
-            </div>
-            <div
-              class="token-line"
-              style="color: rgb(156, 220, 254);"
-            >
-              <span
-                class="token plain-text"
-              >
                                     
               </span>
               <span
@@ -12680,6 +12562,37 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
                 style="color: rgb(212, 212, 212);"
               >
                 &gt;
+              </span>
+              <span
+                class="token plain-text"
+              />
+            </div>
+            <div
+              class="token-line"
+              style="color: rgb(156, 220, 254);"
+            >
+              <span
+                class="token plain-text"
+              >
+                                        
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                {
+              </span>
+              <span
+                class="token string"
+                style="color: rgb(206, 145, 120);"
+              >
+                " "
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                }
               </span>
               <span
                 class="token plain-text"
@@ -12771,38 +12684,7 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
               <span
                 class="token plain-text"
               >
-                 of
-              </span>
-              <span
-                class="token punctuation"
-                style="color: rgb(212, 212, 212);"
-              >
-                {
-              </span>
-              <span
-                class="token string"
-                style="color: rgb(206, 145, 120);"
-              >
-                " "
-              </span>
-              <span
-                class="token punctuation"
-                style="color: rgb(212, 212, 212);"
-              >
-                }
-              </span>
-              <span
-                class="token plain-text"
-              />
-            </div>
-            <div
-              class="token-line"
-              style="color: rgb(156, 220, 254);"
-            >
-              <span
-                class="token plain-text"
-              >
-                                        
+                 / 
               </span>
               <span
                 class="token punctuation"
@@ -12827,6 +12709,24 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
                 style="color: rgb(212, 212, 212);"
               >
                 )
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                }
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                {
+              </span>
+              <span
+                class="token string"
+                style="color: rgb(206, 145, 120);"
+              >
+                " "
               </span>
               <span
                 class="token punctuation"
@@ -12938,8 +12838,29 @@ exports[`HeadlessListInferencer should match the snapshot 1`] = `
               <span
                 class="token plain-text"
               >
-                                    | Go to page:
+                                    | Go to Page:
               </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                {
+              </span>
+              <span
+                class="token string"
+                style="color: rgb(206, 145, 120);"
+              >
+                " "
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                }
+              </span>
+              <span
+                class="token plain-text"
+              />
             </div>
             <div
               class="token-line"

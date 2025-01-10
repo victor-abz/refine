@@ -1,53 +1,68 @@
-import { IResourceComponentsProps } from "@refinedev/core";
 import { Edit, useForm, useSelect } from "@refinedev/antd";
 import { Form, Select, Input } from "antd";
 
-import { IContact } from "interfaces";
+import type { IContact } from "../../interfaces";
 
-export const EditContact: React.FC<IResourceComponentsProps> = () => {
-    const { formProps, saveButtonProps, queryResult } = useForm<IContact>({
-        meta: { populate: ["client"] },
-    });
+export const EditContact = () => {
+  const {
+    formProps,
+    saveButtonProps,
+    query: queryResult,
+  } = useForm<IContact>({
+    meta: { populate: ["client"] },
+  });
 
-    const defaultClientCompany = queryResult?.data?.data;
+  const { selectProps } = useSelect({
+    resource: "clients",
+    optionValue: "id",
+    optionLabel: "name",
+    pagination: {
+      mode: "server",
+    },
+  });
 
-    const { selectProps } = useSelect({
-        resource: "clients",
-        defaultValue: defaultClientCompany?.client?.id,
-        optionValue: "id",
-        optionLabel: "name",
-
-        pagination: {
-            mode: "server",
-        },
-    });
-
-    return (
-        <Edit saveButtonProps={saveButtonProps}>
-            <Form
-                {...formProps}
-                layout="vertical"
-                wrapperCol={{ md: 18, lg: 16 }}
-            >
-                <Form.Item label="First Name" name="first_name">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Last Name" name="last_name">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Client Company" name={["client", "id"]}>
-                    <Select {...selectProps} />
-                </Form.Item>
-                <Form.Item label="Phone Number" name="phone_number">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Email" name="email">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Job" name="job">
-                    <Input />
-                </Form.Item>
-            </Form>
-        </Edit>
-    );
+  return (
+    <Edit saveButtonProps={saveButtonProps}>
+      <Form {...formProps} layout="vertical" wrapperCol={{ md: 18, lg: 16 }}>
+        <Form.Item
+          label="First Name"
+          name="first_name"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Last Name"
+          name="last_name"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Client Company"
+          name={["client", "id"]}
+          rules={[{ required: true }]}
+        >
+          <Select {...selectProps} />
+        </Form.Item>
+        <Form.Item
+          label="Phone Number"
+          name="phone_number"
+          rules={[{ type: "number", transform: (value) => Number(value) }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, type: "email" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item label="Job" name="job">
+          <Input />
+        </Form.Item>
+      </Form>
+    </Edit>
+  );
 };

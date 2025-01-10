@@ -1,107 +1,127 @@
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { getXRay } from "@refinedev/devtools-internal";
+import { type UseMutationResult, useMutation } from "@tanstack/react-query";
 
 import { useAuthBindingsContext, useLegacyAuthContext } from "@contexts/auth";
-import { OnErrorResponse } from "../../../interfaces";
 import { useGo, useLogout, useNavigation, useRouterType } from "@hooks";
+import { useKeys } from "@hooks/useKeys";
+
+import type { OnErrorResponse } from "../../../contexts/auth/types";
 
 export type UseOnErrorLegacyProps = {
-    v3LegacyAuthProviderCompatible: true;
+  v3LegacyAuthProviderCompatible: true;
 };
 
 export type UseOnErrorProps = {
-    v3LegacyAuthProviderCompatible?: false;
+  v3LegacyAuthProviderCompatible?: false;
 };
 
 export type UseOnErrorCombinedProps = {
-    v3LegacyAuthProviderCompatible: boolean;
+  v3LegacyAuthProviderCompatible: boolean;
 };
 
 export type UseOnErrorLegacyReturnType = UseMutationResult<
-    void,
-    string | undefined,
-    any,
-    unknown
+  void,
+  string | undefined,
+  any,
+  unknown
 >;
 
 export type UseOnErrorReturnType = UseMutationResult<
-    OnErrorResponse,
-    unknown,
-    unknown,
-    unknown
+  OnErrorResponse,
+  unknown,
+  unknown,
+  unknown
 >;
 export type UseOnErrorCombinedReturnType = UseMutationResult<
-    OnErrorResponse | void,
-    unknown,
-    unknown,
-    unknown
+  OnErrorResponse | void,
+  unknown,
+  unknown,
+  unknown
 >;
 
 export function useOnError(
-    props: UseOnErrorLegacyProps,
+  props: UseOnErrorLegacyProps,
 ): UseOnErrorLegacyReturnType;
 
 export function useOnError(props?: UseOnErrorProps): UseOnErrorReturnType;
 
 export function useOnError(
-    props?: UseOnErrorCombinedProps,
+  props?: UseOnErrorCombinedProps,
 ): UseOnErrorCombinedReturnType;
 
 /**
  * `useOnError` calls the `checkError` method from the {@link https://refine.dev/docs/core/providers/auth-provider `authProvider`} under the hood.
  *
- * @see {@link https://refine.dev/docs/core/hooks/auth/useCheckError} for more details.
+ * @see {@link https://refine.dev/docs/api-reference/core/hooks/auth/useCheckError} for more details.
  *
  */
 export function useOnError({
-    v3LegacyAuthProviderCompatible = false,
+  v3LegacyAuthProviderCompatible = false,
 }: UseOnErrorProps | UseOnErrorLegacyProps = {}):
-    | UseOnErrorReturnType
-    | UseOnErrorLegacyReturnType {
-    const routerType = useRouterType();
-    const go = useGo();
-    const { replace } = useNavigation();
+  | UseOnErrorReturnType
+  | UseOnErrorLegacyReturnType {
+  const routerType = useRouterType();
+  const go = useGo();
+  const { replace } = useNavigation();
 
-    const { checkError: legacyCheckErrorFromContext } = useLegacyAuthContext();
-    const { onError: onErrorFromContext } = useAuthBindingsContext();
+  const { checkError: legacyCheckErrorFromContext } = useLegacyAuthContext();
+  const { onError: onErrorFromContext } = useAuthBindingsContext();
 
-    const { mutate: legacyLogout } = useLogout({
-        v3LegacyAuthProviderCompatible: Boolean(v3LegacyAuthProviderCompatible),
-    });
-    const { mutate: logout } = useLogout({
-        v3LegacyAuthProviderCompatible: Boolean(v3LegacyAuthProviderCompatible),
-    });
+  const { keys, preferLegacyKeys } = useKeys();
 
-    const mutation = useMutation(["useCheckError"], onErrorFromContext, {
-        onSuccess: ({ logout: shouldLogout, redirectTo }) => {
+  const { mutate: legacyLogout } = useLogout({
+    v3LegacyAuthProviderCompatible: Boolean(v3LegacyAuthProviderCompatible),
+  });
+  const { mutate: logout } = useLogout({
+    v3LegacyAuthProviderCompatible: Boolean(v3LegacyAuthProviderCompatible),
+  });
+
+  const mutation = useMutation<OnErrorResponse, unknown, unknown, unknown>({
+    mutationKey: keys().auth().action("onError").get(preferLegacyKeys),
+    ...(onErrorFromContext
+      ? {
+          mutationFn: onErrorFromContext,
+          onSuccess: ({ logout: shouldLogout, redirectTo }) => {
             if (shouldLogout) {
-                logout({ redirectPath: redirectTo });
-                return;
+              logout({ redirectPath: redirectTo });
+              return;
             }
 
             if (redirectTo) {
-                if (routerType === "legacy") {
-                    replace(redirectTo);
-                } else {
-                    go({ to: redirectTo, type: "replace" });
-                }
-                return;
+              if (routerType === "legacy") {
+                replace(redirectTo);
+              } else {
+                go({ to: redirectTo, type: "replace" });
+              }
+              return;
             }
-        },
-    });
+          },
+        }
+      : {
+          mutationFn: () => ({}) as Promise<OnErrorResponse>,
+        }),
+    meta: {
+      ...getXRay("useOnError", preferLegacyKeys),
+    },
+  });
 
-    const v3LegacyAuthProviderCompatibleMutation = useMutation(
-        ["useCheckError", "v3LegacyAuthProviderCompatible"],
-        legacyCheckErrorFromContext,
-        {
-            onError: (redirectPath?: string) => {
-                legacyLogout({ redirectPath });
-            },
-        },
-    );
+  const v3LegacyAuthProviderCompatibleMutation = useMutation({
+    mutationKey: [
+      ...keys().auth().action("onError").get(preferLegacyKeys),
+      "v3LegacyAuthProviderCompatible",
+    ],
+    mutationFn: legacyCheckErrorFromContext,
+    onError: (redirectPath?: string) => {
+      legacyLogout({ redirectPath });
+    },
+    meta: {
+      ...getXRay("useOnError", preferLegacyKeys),
+    },
+  });
 
-    return v3LegacyAuthProviderCompatible
-        ? v3LegacyAuthProviderCompatibleMutation
-        : mutation;
+  return v3LegacyAuthProviderCompatible
+    ? v3LegacyAuthProviderCompatibleMutation
+    : mutation;
 }
 
 /**

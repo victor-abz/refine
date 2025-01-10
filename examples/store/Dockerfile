@@ -1,22 +1,41 @@
-FROM node:18-alpine
+FROM refinedev/node:18 AS base
 
-WORKDIR /opt/app
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-RUN apk add git openssh-client
+ENV CI true
 
-ENV NODE_ENV development
+FROM base AS deps
 
-COPY package*.json ./
-COPY .npmrc ./
+COPY package.json pnpm-lock.yaml .npmrc ./
 
-RUN npm install
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 
-COPY . /opt/app
+FROM base AS builder
 
-RUN npm run bootstrap -- --scope store
-RUN npm run build -- --scope store
+COPY --from=deps /app/refine/node_modules ./node_modules
 
-#Example client
-WORKDIR /opt/app/examples/store
+COPY . .
 
-CMD npm run start:prod
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
+
+RUN pnpm run build --scope store --skipNxCache
+
+FROM base AS runner
+
+ENV NODE_ENV production
+
+COPY --from=builder /app/refine/examples/store/public ./public
+
+COPY --from=builder --chown=refine:nodejs /app/refine/examples/store/.next/standalone ./
+COPY --from=builder --chown=refine:nodejs /app/refine/examples/store/.next/static ./examples/store/.next/static
+
+USER refine
+
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "./examples/store/server.js"]

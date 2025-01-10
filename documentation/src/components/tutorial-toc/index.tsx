@@ -1,297 +1,334 @@
-import React from "react";
+import React, { type HTMLAttributes, useState } from "react";
 import snarkdown from "snarkdown";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import { useWindowSize } from "@docusaurus/theme-common";
 // @ts-expect-error no types
 import { useDoc } from "@docusaurus/theme-common/internal";
-
-// @ts-expect-error no types
-import DocItemTOCMobile from "@theme/DocItem/TOC/Mobile";
-// @ts-expect-error no types
-import DocItemTOCDesktop from "@theme/DocItem/TOC/Desktop";
+import { useHistory, useLocation } from "@docusaurus/router";
+import clsx from "clsx";
 
 import { useCurrentTutorial } from "../../hooks/use-current-tutorial";
-import { useLocation } from "@docusaurus/router";
 import { UnitCircle } from "../unit-circle";
 import { TutorialCircle } from "../tutorial-circle";
-import { SelectTutorialFramework } from "../select-tutorial-framework";
 import { useTutorialUIPackage } from "../../hooks/use-tutorial-ui-package";
-import { PreferredUIPackage } from "../../context/TutorialUIPackageContext";
-// import { useTutorialConfig } from "../../hooks/use-tutorial-config";
-// import useGlobalData from "@docusaurus/useGlobalData";
-import { HTMLAttributes } from "react";
+import type { PreferredUIPackage } from "../../context/TutorialUIPackageContext";
+
 const uiNames: Record<PreferredUIPackage, string> = {
-    headless: "Headless",
-    antd: "Ant Design",
-    mui: "Material UI",
-    mantine: "Mantine",
-    "chakra-ui": "Chakra UI",
+  headless: "Headless",
+  antd: "Ant Design",
+  mui: "Material UI",
+  mantine: "Mantine",
+  "chakra-ui": "Chakra UI",
 };
 const baseIconUrl =
-    "https://refine.ams3.digitaloceanspaces.com/website/static/icons/colored/ui-framework-";
+  "https://refine.ams3.cdn.digitaloceanspaces.com/website/static/icons/colored/ui-framework-";
 
 type LinkWithIdProps = HTMLAttributes<HTMLAnchorElement> & {
-    id: string;
-    isCurrent?: boolean;
-    dangerouslySetInnerHTML?: { __html: string };
+  id: string;
+  isCurrent?: boolean;
+  dangerouslySetInnerHTML?: { __html: string };
 };
 
 const LinkWithId = ({
-    id,
-    isCurrent,
-    className,
-    dangerouslySetInnerHTML,
-    ...rest
+  id,
+  isCurrent,
+  className,
+  dangerouslySetInnerHTML,
+  ...rest
 }: LinkWithIdProps) => {
-    const toUrl = useBaseUrl(`/docs/${id}`, { forcePrependBaseUrl: true });
+  const toUrl = useBaseUrl(`/docs/${id}`, { forcePrependBaseUrl: true });
 
-    return (
-        <a
-            {...rest}
-            href={toUrl}
-            className={`${className || ""} ${
-                isCurrent ? "text-black" : "text-gray-600 hover:text-black"
-            }`}
-            dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-        />
-    );
+  return (
+    <a
+      {...rest}
+      href={toUrl}
+      className={clsx(
+        className,
+        isCurrent
+          ? "text-gray-800 dark:text-gray-0"
+          : " hover:!text-refine-link-light active:!text-refine-link-light dark:hover:!text-refine-link-dark dark:active:!text-refine-link-dark",
+      )}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: explicitly disabled
+      dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+    />
+  );
 };
 
-const markdownConverter = (text) => {
-    const numericStartRegexp = /^\d+\.\s?/g;
-    const numericStart = text.match(numericStartRegexp)?.[0] || "";
-    const numericStartIgnore = text.replace(numericStartRegexp, "");
+const markdownConverter = (text: string) => {
+  const numericStartRegexp = /^\d+\.\s?/g;
+  // use this to get the numeric start
+  const _numericStart = text.match(numericStartRegexp)?.[0] || "";
+  const numericStartIgnore = text.replace(numericStartRegexp, "");
 
-    const marked = snarkdown(numericStartIgnore);
+  const marked = snarkdown(numericStartIgnore);
 
-    return `${numericStart}${marked}`;
+  return `${marked}`;
 };
 
 const TutorialUIStatus = () => {
-    const { preferred: preferredUIPackage } = useTutorialUIPackage();
+  const { preferred: preferredUIPackage } = useTutorialUIPackage();
 
-    return (
-        <div className="tutorial--framework-select--container">
-            <div className="tutorial--framework-select--wrapper rounded-md">
-                <div className="tutorial--framework-select__title">
-                    CURRENT UI FRAMEWORK
-                </div>
-                <div className="tutorial--framework-select__box">
-                    <div className="flex items-center gap-2">
-                        <img
-                            src={`${baseIconUrl}${preferredUIPackage}.svg`}
-                            className="h-auto w-5"
-                        />
-                        <span className="font-semibold">
-                            {uiNames[preferredUIPackage]}
-                        </span>
-                    </div>
-                    <div>
-                        <LinkWithId
-                            id="tutorial/introduction/select-framework"
-                            className="tutorial--framework-select--button"
-                        >
-                            change
-                        </LinkWithId>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="mt-4">
+      <div className={clsx("rounded", " bg-gray-50 dark:bg-gray-800", "p-4")}>
+        <div className={clsx("font-semibold text-sm leading-6")}>
+          Current Framework
         </div>
-    );
+        <div className={clsx("flex items-center justify-between", "pt-3")}>
+          <div className="flex items-center gap-2">
+            <img
+              src={`${baseIconUrl}${preferredUIPackage}.svg`}
+              className="h-auto w-6"
+            />
+            <span className="text-sm leading-6">
+              {uiNames[preferredUIPackage]}
+            </span>
+          </div>
+          <div>
+            <LinkWithId
+              id="tutorial/introduction/select-framework"
+              className={clsx(
+                "underline",
+                "text-sm",
+                "text-refine-link-light",
+                "dark:text-refine-link-dark",
+              )}
+            >
+              Change
+            </LinkWithId>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export const TutorialTOC = ({ isMobile }: { isMobile?: boolean }) => {
-    // const tutorialConfig = useTutorialConfig();
-    const {
-        /* frontMatter, */ toc,
-        metadata: { id: currentDocId },
-    } = useDoc();
-    const currentTutorial = useCurrentTutorial();
+type TocLinkProps = {
+  item: any;
+  activeId?: string;
+  setActiveId?: React.Dispatch<React.SetStateAction<string>>;
+};
 
-    const { hash } = useLocation();
+const TocLink: React.FC<TocLinkProps> = ({ item, activeId, setActiveId }) => {
+  const location = useLocation();
+  const history = useHistory();
+  const { hash: locationHash } = location;
 
-    const [selectedUnit, setSelectedUnit] = React.useState(
-        currentTutorial.unit,
+  React.useEffect(() => {
+    const targetElement = document.getElementById(item.id);
+
+    if (targetElement) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const hash = `#${item.id}`;
+              if (hash !== locationHash) {
+                setActiveId(item.id);
+                window.history.replaceState({}, "", hash);
+              }
+            }
+          });
+        },
+        {
+          rootMargin: "0px 0px -80% 0px",
+        },
+      );
+
+      observer.observe(targetElement);
+
+      return () => {
+        observer.unobserve(targetElement);
+      };
+    }
+  }, [item.id]);
+
+  return (
+    <a
+      href={`#${item.id}`}
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: explicitly disabled
+      dangerouslySetInnerHTML={{ __html: item.value }}
+      className={clsx(
+        "text-gray-800 dark:text-gray-0 hover:!text-refine-link active:!text-refine-link dark:hover:!text-refine-link-dark dark:active:!text-refine-link-dark",
+        activeId === item.id &&
+          "!text-refine-link-light dark:!text-refine-link-dark",
+      )}
+    />
+  );
+};
+
+export const TutorialTOC = () => {
+  const {
+    toc,
+    metadata: { id: currentDocId },
+  } = useDoc();
+  const currentTutorial = useCurrentTutorial();
+  const { hash } = useLocation();
+
+  const baseActiveId = `${hash}`.replace("#", "");
+
+  const [selectedUnit, setSelectedUnit] = useState(currentTutorial.unit);
+  const [activeId, setActiveId] = React.useState<string | undefined>(
+    baseActiveId,
+  );
+
+  React.useEffect(() => {
+    setActiveId(baseActiveId);
+  }, [baseActiveId]);
+
+  const renderTocItem = (item: (typeof toc)[number]) => {
+    return (
+      <li
+        key={item.id}
+        style={{
+          marginLeft: (item.level - 2) * 12,
+        }}
+        className="mb-1"
+      >
+        <TocLink item={item} activeId={activeId} setActiveId={setActiveId} />
+      </li>
     );
+  };
 
-    // const test = useGlobalData();
+  const renderTOC = () => {
+    if (toc.length === 0) return null;
+    return <ul className="mt-1 list-none pl-0">{toc.map(renderTocItem)}</ul>;
+  };
 
-    const renderTocItem = (item: (typeof toc)[number]) => {
-        return (
-            <li
-                key={item.id}
-                style={{
-                    marginLeft: (item.level - 2) * 12,
-                }}
-                className="mb-1"
-            >
-                <a
-                    dangerouslySetInnerHTML={{ __html: item.value }}
-                    href={`#${item.id}`}
-                    className={`tutorial__item--toc-item ${
-                        `${hash}`.slice(1) === item.id ? "active" : ""
-                    }`}
-                ></a>
-            </li>
-        );
-    };
-
-    const renderTOC = () => {
-        if (toc.length === 0) return null;
-        return (
-            <ul className="mt-1 list-none pl-0">{toc.map(renderTocItem)}</ul>
-        );
-    };
-
-    const renderUnitItem = (
-        doc: NonNullable<
-            typeof currentTutorial
-        >["units"][number]["docs"][number],
-    ) => {
-        const formattedTitle = markdownConverter(doc.title);
-
-        return (
-            <li key={doc.id} className="flex flex-row items-start gap-2 pb-2">
-                <div className="mt-0.5 h-5 w-5 flex-shrink-0">
-                    <TutorialCircle id={doc.id} width="100%" height="100%" />
-                </div>
-                <div className="flex flex-col gap-2">
-                    <LinkWithId
-                        id={doc.id}
-                        isCurrent={doc.current}
-                        className={`tutorial__item-link ${
-                            currentDocId === doc.id ? "font-semibold" : ""
-                        } leading-[22px] ${
-                            doc.current
-                                ? "hover:cursor-default hover:no-underline"
-                                : ""
-                        }`}
-                        dangerouslySetInnerHTML={{ __html: formattedTitle }}
-                    />
-
-                    {doc.current && renderTOC()}
-                </div>
-            </li>
-        );
-    };
-
-    const renderUnitDocs = (
-        unit?: NonNullable<typeof currentTutorial>["units"][number],
-    ) => {
-        return (
-            <div>
-                <ul className="list-none pl-0">
-                    {unit?.docs
-                        .sort((a, b) =>
-                            `${a.title}`?.localeCompare(`${b.title}`),
-                        )
-                        .map(renderUnitItem)}
-                </ul>
-            </div>
-        );
-    };
-
-    const renderUnitTab = (unit: (typeof currentTutorial)["units"][number]) => {
-        return (
-            <button
-                key={unit.no}
-                type="button"
-                onClick={() => setSelectedUnit(unit.unit)}
-                style={{
-                    backgroundColor:
-                        unit.unit === selectedUnit
-                            ? "var(--tutorial-toc-bg-color)"
-                            : "transparent",
-                    boxShadow:
-                        unit.unit === selectedUnit
-                            ? "0 -1px 0px 0px rgb(255 255 255 / 10%)"
-                            : "none",
-                }}
-                className={`${
-                    unit.unit === selectedUnit
-                        ? "tutorial__item--unit-item"
-                        : ""
-                } -mb-1 flex h-[30px] w-[28px] cursor-pointer items-start justify-center rounded-tl-[24px] rounded-tr-[24px] border-none px-[3.5px] pt-0 font-semibold`}
-            >
-                <UnitCircle unit={unit.unit} width="100%" height="28px" />
-            </button>
-        );
-    };
-
-    const currentUnit:
-        | NonNullable<typeof currentTutorial>["units"][number]
-        | undefined = currentTutorial?.units.find(
-        (unit) => unit.unit === selectedUnit,
-    );
-
-    const isFirstUnit =
-        currentTutorial?.units?.find((el) => el?.unit === currentTutorial?.unit)
-            ?.no === 1;
+  const renderUnitItem = (
+    doc: NonNullable<typeof currentTutorial>["units"][number]["docs"][number],
+  ) => {
+    const formattedTitle = markdownConverter(doc.title);
+    const unitNo = doc.title.split(".")[0];
 
     return (
-        <div
-            className="max-h-[calc(100vh-6rem] sticky top-[5rem]"
-            style={{
-                color: "var(--tutorial-toc-text-color)",
-            }}
-        >
-            <div className="unit-tabs mb-1 flex gap-0.5">
-                {currentTutorial?.units.map(renderUnitTab)}
-            </div>
-            <div
-                className={`unit-list-container rounded-md px-3 py-3 ${
-                    currentUnit?.no === 1 ? "rounded-tl-none" : ""
-                }`}
-                style={{
-                    backgroundColor: "var(--tutorial-toc-bg-color)",
-                }}
-            >
-                <div
-                    className="mb-2 text-sm font-bold"
-                    style={{
-                        color: "var(--tutorial-toc-text-color)",
-                    }}
-                >
-                    {currentUnit?.title ?? currentUnit?.unit ?? "-"}
-                </div>
-                <div className="text-sm">{renderUnitDocs(currentUnit)}</div>
-            </div>
-            {!isFirstUnit &&
-                currentDocId !== "tutorial/introduction/select-framework" && (
-                    <TutorialUIStatus />
-                )}
+      <li
+        key={doc.id}
+        className={clsx("flex flex-row items-start gap-2", "pb-4")}
+      >
+        <div className={clsx("mt-0.5", "h-8 w-8", "flex-shrink-0")}>
+          <TutorialCircle
+            id={doc.id}
+            width="100%"
+            height="100%"
+            unitNo={Number.isNaN(Number(unitNo)) ? undefined : unitNo}
+            isCurrent={doc.current}
+          />
         </div>
+        <div className="flex flex-col gap-2 pt-[6px]">
+          <LinkWithId
+            id={doc.id}
+            isCurrent={doc.current}
+            className={clsx("leading-[22px]", "no-underline", {
+              "text-gray-900 dark:text-white": currentDocId === doc.id,
+              "hover:cursor-default hover:no-underline hover:text-gray-900":
+                doc.current,
+            })}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: explicitly disabled
+            dangerouslySetInnerHTML={{ __html: formattedTitle }}
+          />
+
+          {doc.current && renderTOC()}
+        </div>
+      </li>
     );
+  };
+
+  const renderUnitDocs = (
+    unit?: NonNullable<typeof currentTutorial>["units"][number],
+  ) => {
+    return (
+      <div>
+        <ul className={clsx("list-none", "pl-0")}>
+          {unit?.docs
+            .sort((a, b) => `${a.title}`?.localeCompare(`${b.title}`))
+            .map(renderUnitItem)}
+        </ul>
+      </div>
+    );
+  };
+
+  const renderUnitTab = (unit: (typeof currentTutorial)["units"][number]) => {
+    return (
+      <button
+        key={unit.no}
+        type="button"
+        data-unit-title={unit.title}
+        data-unit-no={unit.no}
+        data-unit-current={unit.unit === selectedUnit ? "true" : undefined}
+        onClick={() => setSelectedUnit(unit.unit)}
+        className={clsx(
+          "tutorial-unit",
+          unit.unit === selectedUnit &&
+            "bg-gradient-to-t from-gray-50 dark:from-gray-700 from-40% to-gray-200 dark:to-gray-600",
+          "-mb-1",
+          "flex items-center justify-center",
+          "w-[40px] h-[44px]",
+          "cursor-pointer",
+          "rounded-tl-[24px] rounded-tr-[24px]",
+          "border-none",
+          "font-semibold",
+        )}
+      >
+        <UnitCircle
+          unit={unit.unit}
+          width="32px"
+          height="32px"
+          isSelected={unit.unit === selectedUnit}
+        />
+      </button>
+    );
+  };
+
+  const currentUnit:
+    | NonNullable<typeof currentTutorial>["units"][number]
+    | undefined = currentTutorial?.units.find(
+    (unit) => unit.unit === selectedUnit,
+  );
+
+  const isFirstUnit =
+    currentTutorial?.units?.find((el) => el?.unit === currentTutorial?.unit)
+      ?.no === 1;
+
+  return (
+    <div className={clsx("tutorial-tracker", "max-h-[calc(100vh-6rem]")}>
+      <div
+        className={clsx(
+          "tutorial-units",
+          "mb-1 px-2",
+          "flex items-center gap-0.5",
+        )}
+      >
+        {currentTutorial?.units.map(renderUnitTab)}
+      </div>
+      <div
+        className={clsx(
+          "rounded",
+          "pt-6 px-3 pb-2",
+          "bg-gray-50 dark:bg-gray-700",
+        )}
+      >
+        {/* <div className={clsx("mb-2", "text-sm font-bold")}>
+                    {currentUnit?.title ?? currentUnit?.unit ?? "-"}
+                </div> */}
+        <div className={clsx("text-sm")}>{renderUnitDocs(currentUnit)}</div>
+      </div>
+      {!isFirstUnit &&
+        currentDocId !== "tutorial/introduction/select-framework" && (
+          <TutorialUIStatus />
+        )}
+    </div>
+  );
 };
 
 export const useDocTOCwithTutorial = () => {
-    const tutorial = useCurrentTutorial();
-    const { frontMatter, toc } = useDoc();
-    const windowSize = useWindowSize();
-    const hidden = frontMatter.hide_table_of_contents;
-    const canRender = (!hidden && toc.length > 0) || tutorial?.isTutorial;
-    const mobile = canRender ? (
-        tutorial?.isTutorial ? (
-            windowSize === "mobile" ? (
-                <div className="my-4">
-                    <TutorialTOC isMobile />
-                </div>
-            ) : null
-        ) : (
-            <DocItemTOCMobile />
-        )
-    ) : undefined;
-    const desktop =
-        canRender && (windowSize === "desktop" || windowSize === "ssr") ? (
-            tutorial?.isTutorial ? (
-                <TutorialTOC />
-            ) : (
-                <DocItemTOCDesktop />
-            )
-        ) : undefined;
-    return {
-        hidden,
-        mobile,
-        desktop,
-    };
+  const tutorial = useCurrentTutorial();
+  const { frontMatter, toc } = useDoc();
+  const hidden = frontMatter.hide_table_of_contents;
+  const canRender = (!hidden && toc.length > 0) || tutorial?.isTutorial;
+  const tutorialTOC = canRender ? <TutorialTOC /> : undefined;
+
+  return {
+    hidden,
+    tutorialTOC,
+  };
 };

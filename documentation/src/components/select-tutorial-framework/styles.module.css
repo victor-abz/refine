@@ -19,16 +19,17 @@
 
 .cardSelected {
     background: var(--tutorial-card-bg-hover);
-    box-shadow: 2.7px 5.3px 10.7px 0px #2A2A4240;
+    box-shadow: 2.7px 5.3px 10.7px 0px #2a2a4240;
 }
 
-[data-theme="dark"] .cardSelected, [data-theme="dark"] .card:hover {
+[data-theme="dark"] .cardSelected,
+[data-theme="dark"] .card:hover {
     border: 1px solid var(--ifm-color-primary);
 }
 
 .card:hover {
     background: var(--tutorial-card-bg-hover);
-    box-shadow: 2.7px 5.3px 10.7px 0px #2A2A4240;
+    box-shadow: 2.7px 5.3px 10.7px 0px #2a2a4240;
 }
 
 .card span {
@@ -51,9 +52,7 @@
 }
 
 .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 12px;
+    @apply flex items-center flex-wrap gap-4 2xl:gap-8;
 }
 
 .cardsSmall {

@@ -1,62 +1,96 @@
 import { useCallback } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
-import { useResource } from "@hooks/resource";
-import { queryKeys, pickDataProvider } from "@definitions";
-import { BaseKey, IQueryKeys } from "../../interfaces";
+import {
+  type InvalidateOptions,
+  type InvalidateQueryFilters,
+  useQueryClient,
+} from "@tanstack/react-query";
+
+import { pickDataProvider } from "@definitions";
+import { useKeys, useResource } from "@hooks";
+
+import type { BaseKey, IQueryKeys } from "../../contexts/data/types";
 
 export type UseInvalidateProp = {
-    resource?: string;
-    id?: BaseKey;
-    dataProviderName?: string;
-    invalidates: Array<keyof IQueryKeys> | false;
+  resource?: string;
+  id?: BaseKey;
+  dataProviderName?: string;
+  invalidates: Array<keyof IQueryKeys> | false;
+  invalidationFilters?: InvalidateQueryFilters;
+  invalidationOptions?: InvalidateOptions;
 };
 
-export const useInvalidate = (): ((props: UseInvalidateProp) => void) => {
-    const { resources } = useResource();
-    const queryClient = useQueryClient();
+export const useInvalidate = (): ((
+  props: UseInvalidateProp,
+) => Promise<void>) => {
+  const { resources } = useResource();
+  const queryClient = useQueryClient();
+  const { keys, preferLegacyKeys } = useKeys();
 
-    const invalidate = useCallback(
-        ({
-            resource,
-            dataProviderName,
-            invalidates,
-            id,
-        }: UseInvalidateProp) => {
-            if (invalidates === false) {
-                return;
-            }
-            const queryKey = queryKeys(
-                resource,
-                pickDataProvider(resource, dataProviderName, resources),
-            );
+  const invalidate = useCallback(
+    async ({
+      resource,
+      dataProviderName,
+      invalidates,
+      id,
+      invalidationFilters = { type: "all", refetchType: "active" },
+      invalidationOptions = { cancelRefetch: false },
+    }: UseInvalidateProp) => {
+      if (invalidates === false) {
+        return;
+      }
+      const dp = pickDataProvider(resource, dataProviderName, resources);
 
-            invalidates.forEach((key) => {
-                switch (key) {
-                    case "all":
-                        queryClient.invalidateQueries(queryKey.all);
-                        break;
-                    case "list":
-                        queryClient.invalidateQueries(queryKey.list());
-                        break;
-                    case "many":
-                        queryClient.invalidateQueries(queryKey.many());
-                        break;
-                    case "resourceAll":
-                        queryClient.invalidateQueries(queryKey.resourceAll);
-                        break;
-                    case "detail":
-                        queryClient.invalidateQueries(
-                            queryKey.detail(id || ""),
-                        );
-                        break;
-                    default:
-                        break;
-                }
-            });
-        },
-        [],
-    );
+      const queryKey = keys()
+        .data(dp)
+        .resource(resource ?? "");
 
-    return invalidate;
+      await Promise.all(
+        invalidates.map((key) => {
+          switch (key) {
+            case "all":
+              return queryClient.invalidateQueries(
+                keys().data(dp).get(preferLegacyKeys),
+                invalidationFilters,
+                invalidationOptions,
+              );
+            case "list":
+              return queryClient.invalidateQueries(
+                queryKey.action("list").get(preferLegacyKeys),
+                invalidationFilters,
+                invalidationOptions,
+              );
+            case "many":
+              return queryClient.invalidateQueries(
+                queryKey.action("many").get(preferLegacyKeys),
+                invalidationFilters,
+                invalidationOptions,
+              );
+            case "resourceAll":
+              return queryClient.invalidateQueries(
+                queryKey.get(preferLegacyKeys),
+                invalidationFilters,
+                invalidationOptions,
+              );
+            case "detail":
+              return queryClient.invalidateQueries(
+                queryKey
+                  .action("one")
+                  .id(id || "")
+                  .get(preferLegacyKeys),
+                invalidationFilters,
+                invalidationOptions,
+              );
+            default:
+              return;
+          }
+        }),
+      );
+
+      return;
+    },
+    [],
+  );
+
+  return invalidate;
 };

@@ -1,16 +1,16 @@
-import React from "react";
+import React, { type PropsWithChildren } from "react";
 
-import { ILiveContext, ILiveContextProvider } from "./ILiveContext";
+import type { ILiveContext } from "./types";
 
-export const LiveContext = React.createContext<ILiveContext>(undefined);
+export const LiveContext = React.createContext<ILiveContext>({});
 
-export const LiveContextProvider: React.FC<ILiveContextProvider> = ({
-    liveProvider,
-    children,
+export const LiveContextProvider: React.FC<PropsWithChildren<ILiveContext>> = ({
+  liveProvider,
+  children,
 }) => {
-    return (
-        <LiveContext.Provider value={liveProvider}>
-            {children}
-        </LiveContext.Provider>
-    );
+  return (
+    <LiveContext.Provider value={{ liveProvider }}>
+      {children}
+    </LiveContext.Provider>
+  );
 };

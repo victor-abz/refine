@@ -6,15 +6,13 @@ sidebar_label: Auth0 Login
 
 [Auth0](https://auth0.com/) is a flexible, drop-in solution for adding authentication and authorization services to your applications. Your team and organization can avoid the cost, time, and risk that comes with building your own solution to authenticate and authorize users. You can check the [Auth0 document](https://auth0.com/docs) for details.
 
-We will show you how to use Auth0 with refine
+We will show you how to use Auth0 with Refine
 
 ### Installation
 
 Run the following command within your project directory to install the Auth0 React SDK:
 
-```
-npm install @auth0/auth0-react
-```
+<InstallPackagesCommand args="@auth0/auth0-react"/>
 
 #### Configure the Auth0Provider component
 
@@ -32,97 +30,100 @@ import App from "./App";
 const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
-    <React.StrictMode>
-        // highlight-start
-        <Auth0Provider
-            domain="YOUR_DOMAIN"
-            clientId="YOUR_CLIENT_ID"
-            redirectUri={window.location.origin}
-        >
-            <App />
-        </Auth0Provider>
-        // highlight-end
-    </React.StrictMode>,
+  <React.StrictMode>
+    // highlight-start
+    <Auth0Provider
+      domain="YOUR_DOMAIN"
+      clientId="YOUR_CLIENT_ID"
+      redirectUri={window.location.origin}
+    >
+      <App />
+    </Auth0Provider>
+    // highlight-end
+  </React.StrictMode>,
 );
 ```
 
 :::caution
+
 Refer to [**Auth0 docs**](https://auth0.com/docs/quickstart/spa/react#configure-auth0) for detailed configuration.
+
 :::
 
 ### Override `/login` page
 
-First, we need to override the **refine** login page. In this way, we will redirect it to the Auth0 login page. We create a `login.tsx` file in the `/pages` folder.
+First, we need to override the **Refine** login page. In this way, we will redirect it to the Auth0 login page. We create a `login.tsx` file in the `/pages` folder.
 
 ```tsx title="/pages/login.tsx"
-import { Layout, Button } from "antd";
+import { Layout, Button, Space, Typography } from "antd";
+import { ThemedTitleV2 } from "@refinedev/antd";
+// highlight-next-line
 import { useAuth0 } from "@auth0/auth0-react";
 
 export const Login: React.FC = () => {
-    // highlight-next-line
-    const { loginWithRedirect } = useAuth0();
+  // highlight-next-line
+  const { loginWithRedirect } = useAuth0();
 
-    return (
-        <Layout
-            style={{
-                background: `radial-gradient(50% 50% at 50% 50%, #63386A 0%, #310438 100%)`,
-                backgroundSize: "cover",
-            }}
+  return (
+    <Layout
+      style={{
+        height: "100vh",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Space direction="vertical" align="center" size="large">
+        <ThemedTitleV2
+          collapsed={false}
+          wrapperStyles={{
+            fontSize: "22px",
+          }}
+        />
+        <Button
+          type="primary"
+          size="middle"
+          // highlight-next-line
+          onClick={() => loginWithRedirect()}
+          style={{ width: "240px" }}
         >
-            <div style={{ height: "100vh", display: "flex" }}>
-                <div style={{ maxWidth: "200px", margin: "auto" }}>
-                    <div style={{ marginBottom: "28px" }}>
-                        <img src="./refine.svg" alt="Refine" />
-                    </div>
-                    <Button
-                        type="primary"
-                        size="large"
-                        block
-                        //highlight-next-line
-                        onClick={() => loginWithRedirect()}
-                    >
-                        Sign in
-                    </Button>
-                </div>
-            </div>
-        </Layout>
-    );
+          Sign in
+        </Button>
+        <Typography.Text type="secondary">Powered by Auth0</Typography.Text>
+      </Space>
+    </Layout>
+  );
 };
 ```
 
 After clicking the `Login` button, you will be directed to the auth0 login screen.
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/auth0/auth0-login.gif" alt="auth0-login" />
-</div>
-<br/>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/auth0/auth0-login-min.gif" className="border border-gray-200 rounded" alt="auth0-login" />
 
 ## Auth Provider
 
-In refine, authentication and authorization processes are performed with the auth provider. Let's write a provider for Auth0.
+In Refine, authentication and authorization processes are performed with the auth provider. Let's write a provider for Auth0.
+
+<details>
+<summary>Show Code</summary>
+<p>
 
 ```tsx title="App.tsx"
-import { Refine, AuthBindings, Authenticated } from "@refinedev/core";
+import { Refine, AuthProvider, Authenticated } from "@refinedev/core";
 import {
-    ThemedLayoutV2,
-    ReadyPage,
-    notificationProvider,
-    ErrorComponent,
-    RefineThemes,
+  ThemedLayoutV2,
+  ReadyPage,
+  useNotificationProvider,
+  ErrorComponent,
+  RefineThemes,
 } from "@refinedev/antd";
 import dataProvider from "@refinedev/simple-rest";
 import routerProvider, {
-    NavigateToResource,
-    CatchAllNavigate,
-} from "@refinedev/react-router-v6";
+  NavigateToResource,
+  CatchAllNavigate,
+} from "@refinedev/react-router";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router";
 
 import { ConfigProvider } from "antd";
 import "@refinedev/antd/dist/reset.css";
@@ -134,140 +135,128 @@ import axios from "axios";
 const API_URL = "https://api.fake-rest.refine.dev";
 
 const App = () => {
-    const { isLoading, isAuthenticated, user, logout, getIdTokenClaims } =
-        useAuth0();
+  const { isLoading, isAuthenticated, user, logout, getIdTokenClaims } =
+    useAuth0();
 
-    if (isLoading) {
-        return <span>loading...</span>;
-    }
+  if (isLoading) {
+    return <span>loading...</span>;
+  }
 
-    const authProvider: AuthBindings = {
-        login: async () => {
-            return {
-                success: true,
-            };
-        },
-        logout: async () => {
-            logout({ returnTo: window.location.origin });
-            return {
-                success: true,
-            };
-        },
-        onError: async (error) => {
-            console.error(error);
-            return { error };
-        },
-        check: async () => {
-            try {
-                const token = await getIdTokenClaims();
-                if (token) {
-                    axios.defaults.headers.common = {
-                        Authorization: `Bearer ${token.__raw}`,
-                    };
-                    return {
-                        authenticated: true,
-                    };
-                } else {
-                    return {
-                        authenticated: false,
-                        error: {
-                            message: "Check failed",
-                            name: "Token not found",
-                        },
-                        redirectTo: "/login",
-                        logout: true,
-                    };
-                }
-            } catch (error: any) {
-                return {
-                    authenticated: false,
-                    error: new Error(error),
-                    redirectTo: "/login",
-                    logout: true,
-                };
-            }
-
-            return {
-                authenticated: false,
-                error: {
-                    message: "Check failed",
-                    name: "Token not found",
-                },
-                redirectTo: "/login",
-                logout: true,
-            };
-        },
-        getPermissions: async () => null,
-        getIdentity: async () => {
-            if (user) {
-                return {
-                    ...user,
-                    avatar: user.picture,
-                };
-            }
-            return null;
-        },
-    };
-
-    getIdTokenClaims().then((token) => {
+  const authProvider: AuthProvider = {
+    login: async () => {
+      return {
+        success: true,
+      };
+    },
+    logout: async () => {
+      logout({ returnTo: window.location.origin });
+      return {
+        success: true,
+      };
+    },
+    onError: async (error) => {
+      console.error(error);
+      return { error };
+    },
+    check: async () => {
+      try {
+        const token = await getIdTokenClaims();
         if (token) {
-            axios.defaults.headers.common = {
-                Authorization: `Bearer ${token.__raw}`,
-            };
+          axios.defaults.headers.common = {
+            Authorization: `Bearer ${token.__raw}`,
+          };
+          return {
+            authenticated: true,
+          };
+        } else {
+          return {
+            authenticated: false,
+            error: {
+              message: "Check failed",
+              name: "Token not found",
+            },
+            redirectTo: "/login",
+            logout: true,
+          };
         }
-    });
+      } catch (error: any) {
+        return {
+          authenticated: false,
+          error: new Error(error),
+          redirectTo: "/login",
+          logout: true,
+        };
+      }
+    },
+    getPermissions: async () => null,
+    getIdentity: async () => {
+      if (user) {
+        return {
+          ...user,
+          avatar: user.picture,
+        };
+      }
+      return null;
+    },
+  };
 
-    return (
-        <BrowserRouter>
-            <ConfigProvider theme={RefineThemes.Blue}>
-                <Refine
-                    routerProvider={routerProvider}
-                    authProvider={authProvider}
-                    dataProvider={dataProvider(API_URL, axios)}
-                    notificationProvider={notificationProvider}
-                    resources={[
-                        {
-                            name: "posts",
-                            list: "/posts",
-                        },
-                    ]}
-                >
-                    <Routes>
-                        <Route
-                            element={
-                                <Authenticated
-                                    fallback={<CatchAllNavigate to="/login" />}
-                                >
-                                    <ThemedLayoutV2>
-                                        <Outlet />
-                                    </ThemedLayoutV2>
-                                </Authenticated>
-                            }
-                        >
-                            <Route
-                                path="/posts"
-                                element={<div>dummy list page</div>}
-                            />
-                        </Route>
-                        <Route
-                            element={
-                                <Authenticated fallback={<Outlet />}>
-                                    <NavigateToResource />
-                                </Authenticated>
-                            }
-                        >
-                            <Route path="/login" element={<Login />} />
-                        </Route>
-                        <Route path="*" element={<ErrorComponent />} />
-                    </Routes>
-                </Refine>
-            </ConfigProvider>
-        </BrowserRouter>
-    );
+  getIdTokenClaims().then((token) => {
+    if (token) {
+      axios.defaults.headers.common = {
+        Authorization: `Bearer ${token.__raw}`,
+      };
+    }
+  });
+
+  return (
+    <BrowserRouter>
+      <ConfigProvider theme={RefineThemes.Blue}>
+        <Refine
+          routerProvider={routerProvider}
+          authProvider={authProvider}
+          dataProvider={dataProvider(API_URL, axios)}
+          notificationProvider={useNotificationProvider}
+          resources={[
+            {
+              name: "posts",
+              list: "/posts",
+            },
+          ]}
+        >
+          <Routes>
+            <Route
+              element={
+                <Authenticated fallback={<CatchAllNavigate to="/login" />}>
+                  <ThemedLayoutV2>
+                    <Outlet />
+                  </ThemedLayoutV2>
+                </Authenticated>
+              }
+            >
+              <Route path="/posts" element={<div>dummy list page</div>} />
+            </Route>
+            <Route
+              element={
+                <Authenticated fallback={<Outlet />}>
+                  <NavigateToResource />
+                </Authenticated>
+              }
+            >
+              <Route path="/login" element={<Login />} />
+            </Route>
+            <Route path="*" element={<ErrorComponent />} />
+          </Routes>
+        </Refine>
+      </ConfigProvider>
+    </BrowserRouter>
+  );
 };
 
 export default App;
 ```
+
+</p>
+</details>
 
 ### Methods
 
@@ -294,7 +283,9 @@ We can use it with the `user` from the `useAuth0` hook.
 ## Example
 
 :::caution
+
 Auth0 example doesn't work in CodeSandbox embed mode. With [this](https://cv8k99.csb.app/) link, you can open the example in the browser and try it.
+
 :::
 
 <CodeSandboxExample path="auth-auth0" />

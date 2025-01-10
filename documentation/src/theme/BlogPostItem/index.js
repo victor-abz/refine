@@ -3,92 +3,113 @@ import Link from "@docusaurus/Link";
 import { useBlogPost } from "@docusaurus/theme-common/internal";
 import BlogPostItemContainer from "@theme/BlogPostItem/Container";
 
-import { Date, ReadingTime, Spacer } from "@site/src/components/blog/common";
+import { Date as DateComponent } from "@site/src/components/blog/common";
+import clsx from "clsx";
 
 export default function BlogPostItem({ className }) {
-    const { metadata } = useBlogPost();
-    const {
-        permalink,
-        title,
-        date,
-        formattedDate,
-        readingTime,
-        frontMatter,
-        description,
-    } = metadata;
+  const { metadata } = useBlogPost();
+  const {
+    permalink,
+    title,
+    date,
+    formattedDate,
+    frontMatter,
+    description,
+    tags,
+  } = metadata;
 
-    const author = metadata.authors[0];
+  const author = metadata.authors[0];
 
-    return (
-        <BlogPostItemContainer className={className}>
-            <div className="blog-post-item-shadow flex h-full flex-col overflow-hidden rounded-[10px]">
-                <Link itemProp="url" to={permalink}>
-                    <div className="relative m-0 h-40 overflow-hidden pt-[56.25%] hover:brightness-90">
-                        <img
-                            src={`https://refine-web.imgix.net${frontMatter.image?.replace(
-                                "https://refine.ams3.cdn.digitaloceanspaces.com",
-                                "",
-                            )}?w=500`}
-                            alt="Post image"
-                            className="absolute inset-0 h-full w-full rounded-tl-[10px] rounded-tr-[10px] object-cover transition duration-150"
-                            loading="lazy"
-                        />
-                    </div>
-                </Link>
-                <div className="flex h-full flex-col justify-between gap-3 p-3">
-                    <div>
-                        <div className="text-[10px] font-medium text-[#9696B4]">
-                            <Date date={date} formattedDate={formattedDate} />
-                            {typeof readingTime !== "undefined" && (
-                                <>
-                                    <Spacer />
-                                    <ReadingTime readingTime={readingTime} />
-                                </>
-                            )}
-                        </div>
-                        <div className="mt-1">
-                            <Link
-                                itemProp="url"
-                                to={permalink}
-                                className="hover:no-underline"
-                                rel="noopener dofollow"
-                            >
-                                <div className="text-color-base text-base font-bold transition duration-150 hover:text-stone-600">
-                                    {title}
-                                </div>
-                            </Link>
-                            <div className="text-color-base line-clamp-3 mt-1 text-xs">
-                                {description}
-                            </div>
-                        </div>
-                    </div>
-                    <figcaption className="flex items-center space-x-4">
-                        <Link
-                            href={`/blog/author/${author?.key}`}
-                            itemProp="url"
-                        >
-                            <img
-                                src={author?.imageURL}
-                                alt={author?.name}
-                                className="flex h-12 w-12 rounded-full object-cover"
-                                loading="lazy"
-                            />
-                        </Link>
-                        <div className="flex-auto">
-                            <Link
-                                href={`/blog/author/${author?.key}`}
-                                itemProp="url"
-                                className="text-color-base text-xs font-bold"
-                            >
-                                {author?.name}
-                            </Link>
-                            <div className="-mt-0.5 text-[10px] font-medium text-[#9696B4]">
-                                {author?.title}
-                            </div>
-                        </div>
-                    </figcaption>
-                </div>
+  return (
+    <BlogPostItemContainer className={className}>
+      <div>
+        <Link
+          itemProp="url"
+          to={permalink}
+          className={clsx("block", "w-full h-auto", "aspect-[592/334]")}
+        >
+          <div
+            className={clsx(
+              "not-prose relative m-0 hover:brightness-90",
+              "h-full w-full",
+            )}
+          >
+            <img
+              src={`https://refine-web.imgix.net${frontMatter.image?.replace(
+                "https://refine.ams3.cdn.digitaloceanspaces.com",
+                "",
+              )}?h=668`}
+              alt={title}
+              className={clsx(
+                "absolute inset-0 mt-0 h-full w-full rounded-[10px] object-cover",
+              )}
+              loading="lazy"
+            />
+          </div>
+        </Link>
+      </div>
+      <div className="px-4 py-4 md:px-6  md:py-6">
+        <div className={clsx("flex flex-wrap items-center", "mb-6", "gap-3")}>
+          {tags.map((tag) => (
+            <Link
+              className={clsx(
+                "text-xs",
+                "bg-refine-react-3 dark:bg-refine-react-7",
+                "text-refine-react-8 dark:text-refine-react-3",
+                "no-underline",
+                "rounded-full",
+                "px-2 py-1",
+              )}
+              href={tag.permalink}
+              key={tag.permalink}
+            >
+              {tag.label}
+            </Link>
+          ))}
+        </div>
+        <div className="mb-2 md:mb-4">
+          <Link
+            itemProp="url"
+            to={permalink}
+            className="no-underline hover:no-underline"
+            rel="noopener dofollow"
+          >
+            <div
+              className={clsx(
+                "mb-4",
+                "text-gray-700 dark:text-refine-react-3",
+                "text-xl",
+                "font-lg",
+                "font-bold",
+              )}
+            >
+              {title}
             </div>
-        </BlogPostItemContainer>
-    );
+          </Link>
+          <div
+            className={clsx(
+              "line-clamp-3",
+              "text-gray-700 dark:text-refine-react-4",
+              "text-sm",
+            )}
+          >
+            {description}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span
+            className={clsx(
+              "text-gray-600 dark:text-refine-react-5",
+              "text-xs",
+              "leading-6",
+              "no-underline",
+            )}
+          >
+            <DateComponent date={date} formattedDate={formattedDate} />
+          </span>
+        </div>
+      </div>
+    </BlogPostItemContainer>
+  );
 }

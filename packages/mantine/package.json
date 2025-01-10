@@ -1,41 +1,67 @@
 {
   "name": "@refinedev/mantine",
-  "version": "2.14.2",
-  "description": "refine is a React-based framework for building internal tools, rapidly.",
+  "version": "2.35.1",
   "private": false,
-  "main": "dist/index.js",
-  "module": "dist/esm/index.js",
+  "description": "refine is a React-based framework for building internal tools, rapidly.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/refinedev/refine.git",
+    "directory": "packages/mantine"
+  },
+  "license": "MIT",
+  "author": "refine",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "start": "tsup --watch --format esm,cjs,iife --legacy-output",
-    "build": "tsup --format esm,cjs,iife --minify --legacy-output",
+    "attw": "attw --pack .",
+    "build": "tsup && node ../shared/generate-declarations.js",
+    "dev": "tsup --watch",
+    "prepare": "pnpm build",
+    "publint": "publint --strict=true --level=suggestion",
     "test": "jest --passWithNoTests --runInBand",
-    "prepare": "npm run build"
+    "types": "node ../shared/generate-declarations.js"
   },
-  "peerDependencies": {
-    "@refinedev/cli": "^2.0.0",
-    "@refinedev/core": "^4.0.0",
+  "dependencies": {
     "@emotion/react": "^11.8.2",
     "@mantine/core": "^5.10.4",
-    "@mantine/hooks": "^5.10.4",
     "@mantine/form": "^5.10.4",
+    "@mantine/hooks": "^5.10.4",
     "@mantine/notifications": "^5.10.4",
+    "@refinedev/ui-types": "^1.23.1",
+    "@tabler/icons-react": "^3.1.0",
+    "@tanstack/react-query": "^4.10.1",
     "dayjs": "^1.10.7",
-    "@types/react": "^17.0.0 || ^18.0.0",
-    "@types/react-dom": "^17.0.0 || ^18.0.0",
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0"
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
+    "react-markdown": "^6.0.1",
+    "remark-gfm": "^1.0.0",
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@esbuild-plugins/node-resolve": "^0.1.4",
-    "@refinedev/cli": "^2.5.0",
-    "@refinedev/core": "^4.14.3",
-    "@refinedev/ui-tests": "^1.5.0",
+    "@refinedev/cli": "^2.16.42",
+    "@refinedev/core": "^4.57.1",
+    "@refinedev/ui-tests": "^1.15.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/react-hooks": "^8.0.0",
     "@testing-library/user-event": "^14.1.1",
     "@types/jest": "^29.2.4",
+    "@types/lodash": "^4.14.171",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/testing-library__jest-dom": "^5.14.3",
@@ -44,31 +70,24 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.3.1",
     "jest-environment-jsdom": "^29.3.1",
-    "react-router-dom": "^6.8.1",
-    "ts-jest": "^29.0.3",
-    "tsup": "^5.11.13",
-    "typescript": "^4.7.4"
+    "react-router": "^7.0.2",
+    "ts-jest": "^29.1.2",
+    "tsup": "^6.7.0",
+    "typescript": "^5.4.2"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@emotion/react": "^11.8.2",
     "@mantine/core": "^5.10.4",
-    "@mantine/hooks": "^5.10.4",
     "@mantine/form": "^5.10.4",
+    "@mantine/hooks": "^5.10.4",
     "@mantine/notifications": "^5.10.4",
-    "@refinedev/ui-types": "^1.16.0",
+    "@refinedev/cli": "^2.0.0",
+    "@refinedev/core": "^4.46.1",
+    "@types/react": "^17.0.0 || ^18.0.0",
+    "@types/react-dom": "^17.0.0 || ^18.0.0",
     "dayjs": "^1.10.7",
-    "react-markdown": "^6.0.1",
-    "remark-gfm": "^1.0.0",
-    "@tabler/icons": "^1.1.0",
-    "tslib": "^2.3.1"
-  },
-  "author": "refine",
-  "license": "MIT",
-  "gitHead": "829f5a516f98c06f666d6be3e6e6099c75c07719",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/refinedev/refine.git",
-    "directory": "packages/mantine"
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
   },
   "publishConfig": {
     "access": "public"

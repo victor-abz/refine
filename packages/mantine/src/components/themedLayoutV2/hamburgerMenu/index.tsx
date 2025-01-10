@@ -1,53 +1,53 @@
 import React from "react";
 import { ActionIcon, MediaQuery } from "@mantine/core";
 import {
-    IconMenu2,
-    IconIndentDecrease,
-    IconIndentIncrease,
-} from "@tabler/icons";
+  IconMenu2,
+  IconIndentDecrease,
+  IconIndentIncrease,
+} from "@tabler/icons-react";
 
-import { useSiderVisible } from "@hooks";
+import { useThemedLayoutContext } from "@hooks";
 
 export const HamburgerMenu: React.FC = () => {
-    const {
-        siderVisible,
-        setSiderVisible,
-        drawerSiderVisible,
-        setDrawerSiderVisible,
-    } = useSiderVisible();
+  const {
+    siderCollapsed,
+    setSiderCollapsed,
+    mobileSiderOpen,
+    setMobileSiderOpen,
+  } = useThemedLayoutContext();
 
-    return (
-        <>
-            <MediaQuery smallerThan="md" styles={{ display: "none" }}>
-                <ActionIcon
-                    variant="subtle"
-                    color="gray"
-                    sx={{
-                        border: "none",
-                    }}
-                    size="lg"
-                    onClick={() => setDrawerSiderVisible?.(!drawerSiderVisible)}
-                >
-                    {drawerSiderVisible ? (
-                        <IconIndentIncrease size={20} />
-                    ) : (
-                        <IconIndentDecrease size={20} />
-                    )}
-                </ActionIcon>
-            </MediaQuery>
-            <MediaQuery largerThan="md" styles={{ display: "none" }}>
-                <ActionIcon
-                    variant="subtle"
-                    color="gray"
-                    sx={{
-                        border: "none",
-                    }}
-                    size="lg"
-                    onClick={() => setSiderVisible?.(!siderVisible)}
-                >
-                    <IconMenu2 size={20} />
-                </ActionIcon>
-            </MediaQuery>
-        </>
-    );
+  return (
+    <>
+      <MediaQuery smallerThan="md" styles={{ display: "none" }}>
+        <ActionIcon
+          variant="subtle"
+          color="gray"
+          sx={{
+            border: "none",
+          }}
+          size="lg"
+          onClick={() => setSiderCollapsed(!siderCollapsed)}
+        >
+          {siderCollapsed ? (
+            <IconIndentIncrease size={20} />
+          ) : (
+            <IconIndentDecrease size={20} />
+          )}
+        </ActionIcon>
+      </MediaQuery>
+      <MediaQuery largerThan="md" styles={{ display: "none" }}>
+        <ActionIcon
+          variant="subtle"
+          color="gray"
+          sx={{
+            border: "none",
+          }}
+          size="lg"
+          onClick={() => setMobileSiderOpen(!mobileSiderOpen)}
+        >
+          <IconMenu2 size={20} />
+        </ActionIcon>
+      </MediaQuery>
+    </>
+  );
 };

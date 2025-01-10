@@ -1,47 +1,48 @@
 import { useOne } from "@refinedev/core";
 import { useFormContext } from "react-hook-form";
-import { Cart } from "@medusajs/medusa";
+import type { Cart, Country } from "@medusajs/medusa";
 
 import { useCartContext } from "@lib/context";
 import { NativeSelect } from "@components";
 
 interface CountrySelectProps {
-    registerName: string;
+  registerName: string;
 }
 
 export const CountrySelect: React.FC<CountrySelectProps> = ({
-    registerName,
+  registerName,
 }) => {
-    const { cart } = useCartContext();
+  const { cart } = useCartContext();
 
-    const {
-        register,
-        formState: { errors, touchedFields },
-    } = useFormContext();
+  const {
+    register,
+    formState: { errors, touchedFields },
+  } = useFormContext();
 
-    const { data: cartData } = useOne<{ cart: Cart }>({
-        id: cart?.id || "",
-        resource: "carts",
-        queryOptions: {
-            enabled: !!cart?.id,
-        },
-    });
-    const countries = cartData?.data.cart.region.countries;
+  const { data: cartData } = useOne<{ cart: Cart }>({
+    id: cart?.id || "",
+    resource: "carts",
+    queryOptions: {
+      enabled: !!cart?.id,
+    },
+  });
 
-    return (
-        <NativeSelect
-            label="Country/Region"
-            {...register(registerName, {
-                required: "country is required",
-            })}
-            errors={errors}
-            touched={touchedFields}
-        >
-            {countries?.map((country, index) => (
-                <option key={index} value={country.iso_2}>
-                    {country.display_name}
-                </option>
-            ))}
-        </NativeSelect>
-    );
+  const countries: Country[] = cartData?.data.cart?.region.countries;
+
+  return (
+    <NativeSelect
+      label="Country/Region"
+      {...register(registerName, {
+        required: "country is required",
+      })}
+      errors={errors}
+      touched={touchedFields}
+    >
+      {countries?.map((country, index) => (
+        <option key={index} value={country.iso_2}>
+          {country.display_name}
+        </option>
+      ))}
+    </NativeSelect>
+  );
 };

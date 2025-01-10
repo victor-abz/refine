@@ -1,23 +1,23 @@
 import React from "react";
-import { PreferredUIPackage } from "../../context/TutorialUIPackageContext/index";
+import type { PreferredUIPackage } from "../../context/TutorialUIPackageContext/index";
 import { useTutorialUIPackage } from "../../hooks/use-tutorial-ui-package";
 
 type Props = {
-    is?: PreferredUIPackage;
-    children: React.ReactNode;
+  is?: PreferredUIPackage;
+  children: React.ReactNode;
 };
 
 const UIConditional: React.FC<React.PropsWithChildren<Props>> = ({
-    is,
-    children,
+  is,
+  children,
 }) => {
-    const { current } = useTutorialUIPackage();
+  const { current } = useTutorialUIPackage();
 
-    if (is && current === is) {
-        return <>{children}</>;
-    }
+  if (is && current === is) {
+    return <>{children}</>;
+  }
 
-    return null;
+  return null;
 };
 
 export default UIConditional;

@@ -2,7 +2,7 @@
 
 <div align="center" style="margin: 30px;">
     <a href="https://refine.dev">
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/refine_logo.png"  align="center" />
+    <img alt="refine logo" src="https://refine.ams3.cdn.digitaloceanspaces.com/readme/refine-readme-banner.png">
     </a>
 </div>
 <br/>
@@ -20,29 +20,28 @@ Refine offers lots of out-of-the box functionality for rapid development, withou
 ### Running the development server.
 
 ```bash
-    yarn dev
+yarn dev
 ```
 
 ### Building for production.
 
 ```bash
-    yarn build
+yarn build
 ```
 
 ### Running the production server.
 
 ```bash
-    yarn start
+yarn start
 ```
 
 ## Learn More
 
 To learn more about **refine**, please check out the [Documentation](https://refine.dev/docs)
 
-- **Airtable Data Provider** [Docs](https://refine.dev/docs/core/providers/auth-provider/)
-- **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
-- **i18n** [Docs](https://refine.dev/docs/core/providers/i18n-provider/)
-
+-   **Airtable Data Provider** [Docs](https://refine.dev/docs/core/providers/auth-provider/)
+-   **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
+-   **i18n** [Docs](https://refine.dev/docs/core/providers/i18n-provider/)
 
 ## License
 

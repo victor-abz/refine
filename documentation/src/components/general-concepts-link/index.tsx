@@ -1,20 +1,21 @@
+import Admonition from "@theme/Admonition";
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import Admonition from "@theme/Admonition";
 
 const md = `
-All the data related hooks(useTable, useForm, useList etc.) of refine can be given some common properties like \`resource\`, \`meta\` etc.
-> Please refer to [General Concepts](/docs/api-reference/general-concepts) for more information.
+All the data related hooks (useTable, useForm, useList etc.) of Refine can be given some common properties like \`resource\`, \`meta\` etc.
+
+For more information, refer to the [General Concepts documentation](/docs/guides-concepts/general-concepts).
 `;
 
 const GeneralConceptsLink = () => {
-    return (
-        <div>
-            <Admonition type="tip">
-                <ReactMarkdown>{md}</ReactMarkdown>
-            </Admonition>
-        </div>
-    );
+  return (
+    <div>
+      <Admonition type="simple" title="Good to know">
+        <ReactMarkdown>{md}</ReactMarkdown>
+      </Admonition>
+    </div>
+  );
 };
 
 export default GeneralConceptsLink;

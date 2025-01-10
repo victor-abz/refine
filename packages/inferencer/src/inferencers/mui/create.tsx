@@ -1,138 +1,149 @@
 import { Create, useAutocomplete } from "@refinedev/mui";
+
 import { useForm } from "@refinedev/react-hook-form";
-import {
-    Box,
-    Autocomplete,
-    TextField,
-    Checkbox,
-    FormControlLabel,
-} from "@mui/material";
+
+import Box from "@mui/material/Box";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+
 import { Controller } from "react-hook-form";
 
-import { createInferencer } from "@/create-inferencer";
+import { createInferencer } from "../../create-inferencer";
+
 import {
-    jsx,
-    componentName,
-    prettyString,
-    accessor,
-    printImports,
-    isIDKey,
-    dotAccessor,
-    noOp,
-    getVariableName,
-} from "@/utilities";
+  jsx,
+  componentName,
+  accessor,
+  printImports,
+  isIDKey,
+  dotAccessor,
+  noOp,
+  getVariableName,
+  translatePrettyString,
+  getMetaProps,
+  deepHasKey,
+} from "../../utilities";
 
 import { ErrorComponent } from "./error";
 import { LoadingComponent } from "./loading";
-import { SharedCodeViewer } from "@/components/shared-code-viewer";
+import { SharedCodeViewer } from "../../components/shared-code-viewer";
 
-import {
-    InferencerResultComponent,
-    InferField,
-    ImportElement,
-    RendererContext,
-} from "@/types";
-import { getMetaProps } from "@/utilities/get-meta-props";
+import type {
+  InferencerResultComponent,
+  InferField,
+  ImportElement,
+  RendererContext,
+} from "../../types";
 
 /**
  * a renderer function for create page in Material UI
  * @internal used internally from inferencer components
  */
 export const renderer = ({
-    resource,
-    fields,
-    meta,
-    isCustomPage,
+  resource,
+  fields,
+  meta,
+  isCustomPage,
+  i18n,
 }: RendererContext) => {
-    const COMPONENT_NAME = componentName(
-        resource.label ?? resource.name,
-        "create",
-    );
-    const imports: Array<ImportElement> = [
-        ["Create", "@refinedev/mui"],
-        ["Box", "@mui/material"],
-        ["useForm", "@refinedev/react-hook-form"],
-    ];
+  const COMPONENT_NAME = componentName(
+    resource.label ?? resource.name,
+    "create",
+  );
+  const imports: Array<ImportElement> = [
+    ["Create", "@refinedev/mui"],
+    ["Box", "@mui/material"],
+    ["useForm", "@refinedev/react-hook-form"],
+  ];
 
-    const relationFields: (InferField | null)[] = fields.filter(
-        (field) => field?.relation && !field?.fieldable && field?.resource,
-    );
+  if (i18n) {
+    imports.push(["useTranslate", "@refinedev/core"]);
+  }
 
-    const relationHooksCode = relationFields
-        .filter(Boolean)
-        .map((field) => {
-            if (field?.relation && !field.fieldable && field.resource) {
-                imports.push(["useAutocomplete", "@refinedev/mui"]);
+  // has gqlQuery or gqlMutation in "meta"
+  const hasGql = deepHasKey(meta || {}, ["gqlQuery", "gqlMutation"]);
+  if (hasGql) {
+    imports.push(["gql", "graphql-tag", true]);
+  }
 
-                return `
+  const relationFields: (InferField | null)[] = fields.filter(
+    (field) => field?.relation && !field?.fieldable && field?.resource,
+  );
+
+  const relationHooksCode = relationFields
+    .filter(Boolean)
+    .map((field) => {
+      if (field?.relation && !field.fieldable && field.resource) {
+        imports.push(["useAutocomplete", "@refinedev/mui"]);
+
+        return `
                 const { autocompleteProps: ${getVariableName(
-                    field.key,
-                    "AutocompleteProps",
+                  field.key,
+                  "AutocompleteProps",
                 )} } =
                 useAutocomplete({
                     resource: "${field.resource.name}",
                     ${getMetaProps(
-                        field?.resource?.identifier ?? field?.resource?.name,
-                        meta,
-                        "getList",
+                      field?.resource?.identifier ?? field?.resource?.name,
+                      meta,
+                      ["getList"],
                     )}
                 });
             `;
-            }
-            return undefined;
-        })
-        .filter(Boolean);
+      }
+      return undefined;
+    })
+    .filter(Boolean);
 
-    const renderRelationFields = (field: InferField) => {
-        if (field.relation && field.resource) {
-            imports.push(
-                ["Autocomplete", "@mui/material"],
-                ["Controller", "react-hook-form"],
-            );
-            const variableName = getVariableName(
-                field.key,
-                "AutocompleteProps",
-            );
+  const renderRelationFields = (field: InferField) => {
+    if (field.relation && field.resource) {
+      imports.push(
+        ["Autocomplete", "@mui/material"],
+        ["Controller", "react-hook-form"],
+      );
+      const variableName = getVariableName(field.key, "AutocompleteProps");
 
-            const optionLabelProperty = field.relationInfer
-                ? field.relationInfer.accessor
-                    ? typeof field.relationInfer.accessor === "string"
-                        ? field.relationInfer.accessor
-                        : field.relationInfer.accessor[0]
-                    : "title"
-                : "title";
+      const optionLabelProperty = field.relationInfer
+        ? field.relationInfer.accessor
+          ? typeof field.relationInfer.accessor === "string"
+            ? field.relationInfer.accessor
+            : field.relationInfer.accessor[0]
+          : "title"
+        : "title";
 
-            // check optionLabelProperty can be accessed via dot notation
-            const isBracketNotation =
-                optionLabelProperty.includes(".") ||
-                optionLabelProperty.includes("[") ||
-                optionLabelProperty.includes("]") ||
-                optionLabelProperty.includes("-");
+      // check optionLabelProperty can be accessed via dot notation
+      const isBracketNotation =
+        optionLabelProperty.includes(".") ||
+        optionLabelProperty.includes("[") ||
+        optionLabelProperty.includes("]") ||
+        optionLabelProperty.includes("-");
 
-            const optionLabelItemValue = field.accessor
-                ? accessor("item", undefined, field.accessor, false)
-                : "(item?.id ?? item)";
+      const optionLabelItemValue = field.accessor
+        ? accessor("item", undefined, field.accessor, false)
+        : "(item?.id ?? item)";
 
-            const optionEqualValue = field.accessor
-                ? accessor("value", undefined, field.accessor, false)
-                : "(value?.id ?? value)";
+      const optionEqualValue = field.accessor
+        ? accessor("value", undefined, field.accessor, false)
+        : "(value?.id ?? value)";
 
-            const optionChangeValue = field.accessor
-                ? "value"
-                : field.multiple
-                ? "value?.map((item: any) => item?.id ?? item)"
-                : "value?.id ?? value";
+      const optionChangeValue = field.accessor
+        ? "value"
+        : field.multiple
+          ? "value?.map((item: any) => item?.id ?? item)"
+          : "value?.id ?? value";
 
-            return jsx`
+      return jsx`
                 <Controller
                     control={control}
                     name="${dotAccessor(field.key, undefined)}"
                     rules={{ required: "This field is required" }}
                     // eslint-disable-next-line
                     ${
-                        field.multiple
-                            ? "defaultValue={[] as any}"
-                            : "defaultValue={null as any}"
+                      field.multiple
+                        ? "defaultValue={[] as any}"
+                        : "defaultValue={null as any}"
                     }
                     render={({ field }) => (
                         <Autocomplete
@@ -149,9 +160,9 @@ export const renderer = ({
                                             p?.id?.toString() ===
                                             ${optionLabelItemValue}?.toString(),
                                     )?.${
-                                        isBracketNotation
-                                            ? `["${optionLabelProperty}"]`
-                                            : optionLabelProperty
+                                      isBracketNotation
+                                        ? `["${optionLabelProperty}"]`
+                                        : optionLabelProperty
                                     } ?? ""
                                 );
                             }}
@@ -162,20 +173,24 @@ export const renderer = ({
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    label="${prettyString(field.key)}"
+                                    label=${translatePrettyString({
+                                      resource,
+                                      field,
+                                      i18n,
+                                    })}
                                     margin="normal"
                                     variant="outlined"
                                     error={!!${accessor(
-                                        "(errors as any)",
-                                        field.key,
-                                        field.accessor,
-                                        false,
+                                      "(errors as any)",
+                                      field.key,
+                                      field.accessor,
+                                      false,
                                     )}}
                                     helperText={${accessor(
-                                        "(errors as any)",
-                                        field.key,
-                                        field.accessor,
-                                        false,
+                                      "(errors as any)",
+                                      field.key,
+                                      field.accessor,
+                                      false,
                                     )}?.message}
                                     required
                                 />
@@ -184,90 +199,100 @@ export const renderer = ({
                     )}
                 />
             `;
-        }
+    }
+    return undefined;
+  };
+
+  const basicInputFields = (field: InferField) => {
+    if (
+      field.type === "text" ||
+      field.type === "url" ||
+      field.type === "email" ||
+      field.type === "number" ||
+      field.type === "date" ||
+      field.type === "richtext"
+    ) {
+      if (isIDKey(field.key)) {
         return undefined;
-    };
+      }
 
-    const basicInputFields = (field: InferField) => {
-        if (
-            field.type === "text" ||
-            field.type === "url" ||
-            field.type === "email" ||
-            field.type === "number" ||
-            field.type === "date" ||
-            field.type === "richtext"
-        ) {
-            if (isIDKey(field.key)) {
-                return undefined;
-            }
+      imports.push(["TextField", "@mui/material"]);
 
-            imports.push(["TextField", "@mui/material"]);
+      if (field.multiple) {
+        return undefined;
+      }
 
-            if (field.multiple) {
-                return undefined;
-            }
-
-            return jsx`
+      return jsx`
                 <TextField
                     {...register("${dotAccessor(
-                        field.key,
-                        undefined,
-                        field.accessor,
+                      field.key,
+                      undefined,
+                      field.accessor,
                     )}", {
                         required: "This field is required",
                         ${field.type === "number" ? "valueAsNumber: true," : ""}
                     })}
                     error={!!${accessor(
-                        "(errors as any)",
-                        field.key,
-                        field.accessor,
-                        false,
+                      "(errors as any)",
+                      field.key,
+                      field.accessor,
+                      false,
                     )}}
                     helperText={${accessor(
-                        "(errors as any)",
-                        field.key,
-                        field.accessor,
-                        false,
+                      "(errors as any)",
+                      field.key,
+                      field.accessor,
+                      false,
                     )}?.message}
                     margin="normal"
                     fullWidth
-                    InputLabelProps={{ shrink: true }}
+                    slotProps={{
+                        inputLabel: {
+                             shrink: true,
+                        },
+                    }}
                     ${
-                        field.type !== "date" && field.type !== "richtext"
-                            ? `type="${field.type}"`
-                            : ""
+                      field.type !== "date" && field.type !== "richtext"
+                        ? `type="${field.type}"`
+                        : ""
                     }
                     ${field.type === "richtext" ? "multiline" : ""}
-                    label="${prettyString(field.key)}"
+                    label=${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                    })}
                     name="${dotAccessor(field.key, undefined, field.accessor)}"
                 />
             `;
-        }
+    }
+    return undefined;
+  };
+
+  const booleanFields = (field: InferField) => {
+    if (field.type === "boolean") {
+      imports.push(
+        ["Checkbox", "@mui/material"],
+        ["FormControlLabel", "@mui/material"],
+        ["Controller", "react-hook-form"],
+      );
+
+      if (field.multiple) {
         return undefined;
-    };
+      }
 
-    const booleanFields = (field: InferField) => {
-        if (field.type === "boolean") {
-            imports.push(
-                ["Checkbox", "@mui/material"],
-                ["FormControlLabel", "@mui/material"],
-                ["Controller", "react-hook-form"],
-            );
-
-            if (field.multiple) {
-                return undefined;
-            }
-
-            return jsx`
+      return jsx`
                 <Controller
                     control={control}
                     name="${dotAccessor(field.key, undefined, field.accessor)}"
                     // eslint-disable-next-line
                     defaultValue={null as any}
                     render={({ field }) => (
-                        <FormControlLabel label="${prettyString(
-                            field.key,
-                        )}" control={
+                        <FormControlLabel label=${translatePrettyString({
+                          resource,
+                          field,
+                          i18n,
+                        })} control={
                             <Checkbox
                                 {...field}
                                 checked={field.value}
@@ -279,15 +304,15 @@ export const renderer = ({
                     )}
                 />
             `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const dateFields = (field: InferField) => {
-        if (field.type === "date") {
-            const basicRender = basicInputFields(field);
+  const dateFields = (field: InferField) => {
+    if (field.type === "date") {
+      const basicRender = basicInputFields(field);
 
-            return `
+      return `
                 {/*
                     DatePicker component is not included in "@refinedev/mui" package.
                     To use a <DatePicker> component, you can follow the official documentation for Material UI.
@@ -296,35 +321,37 @@ export const renderer = ({
                 */}
                 ${basicRender ?? ""}
                 `;
-        }
+    }
+    return undefined;
+  };
+
+  const renderedFields: Array<string | undefined> = fields.map((field) => {
+    switch (field?.type) {
+      case "text":
+      case "number":
+      case "email":
+      case "url":
+      case "richtext":
+        return basicInputFields(field);
+      case "date":
+        return dateFields(field);
+      case "boolean":
+        return booleanFields(field);
+      case "relation":
+        return renderRelationFields(field);
+      default:
         return undefined;
-    };
+    }
+  });
 
-    const renderedFields: Array<string | undefined> = fields.map((field) => {
-        switch (field?.type) {
-            case "text":
-            case "number":
-            case "email":
-            case "url":
-            case "richtext":
-                return basicInputFields(field);
-            case "date":
-                return dateFields(field);
-            case "boolean":
-                return booleanFields(field);
-            case "relation":
-                return renderRelationFields(field);
-            default:
-                return undefined;
-        }
-    });
+  noOp(imports);
+  const useTranslateHook = i18n && "const translate = useTranslate();";
 
-    noOp(imports);
-
-    return jsx`
+  return jsx`
     ${printImports(imports)}
 
     export const ${COMPONENT_NAME} = () => {
+        ${useTranslateHook}
         const {
             saveButtonProps,
             refineCore: { formLoading },
@@ -333,31 +360,29 @@ export const renderer = ({
             formState: { errors },
         } = useForm(
             ${
-                isCustomPage
-                    ? `{
+              isCustomPage
+                ? `{
                 refineCoreProps: {
                     resource: "${resource.name}",
                     action: "create",
-                    ${getMetaProps(
-                        resource.identifier ?? resource.name,
-                        meta,
-                        "getOne",
-                    )}
+                    ${getMetaProps(resource.identifier ?? resource.name, meta, [
+                      "create",
+                      "getOne",
+                    ])}
                 }
             }`
-                    : getMetaProps(
+                : getMetaProps(resource.identifier ?? resource.name, meta, [
+                      "create",
+                      "getOne",
+                    ])
+                  ? `{
+                        refineCoreProps: { ${getMetaProps(
                           resource.identifier ?? resource.name,
                           meta,
-                          "getOne",
-                      )
-                    ? `{
-                        refineCoreProps: { ${getMetaProps(
-                            resource.identifier ?? resource.name,
-                            meta,
-                            "getOne",
+                          ["create", "getOne"],
                         )} }
                         }`
-                    : ""
+                  : ""
             }
         );
 
@@ -382,19 +407,19 @@ export const renderer = ({
  * @experimental This is an experimental component
  */
 export const CreateInferencer: InferencerResultComponent = createInferencer({
-    type: "create",
-    additionalScope: [
-        ["@refinedev/mui", "RefineMui", { Create, useAutocomplete }],
-        ["@refinedev/react-hook-form", "RefineReactHookForm", { useForm }],
-        [
-            "@mui/material",
-            "MuiMaterial",
-            { Box, Autocomplete, TextField, Checkbox, FormControlLabel },
-        ],
-        ["react-hook-form", "ReactHookForm", { Controller }],
+  type: "create",
+  additionalScope: [
+    ["@refinedev/mui", "RefineMui", { Create, useAutocomplete }],
+    ["@refinedev/react-hook-form", "RefineReactHookForm", { useForm }],
+    [
+      "@mui/material",
+      "MuiMaterial",
+      { Box, Autocomplete, TextField, Checkbox, FormControlLabel },
     ],
-    codeViewerComponent: SharedCodeViewer,
-    loadingComponent: LoadingComponent,
-    errorComponent: ErrorComponent,
-    renderer,
+    ["react-hook-form", "ReactHookForm", { Controller }],
+  ],
+  codeViewerComponent: SharedCodeViewer,
+  loadingComponent: LoadingComponent,
+  errorComponent: ErrorComponent,
+  renderer,
 });

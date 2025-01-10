@@ -1,30 +1,42 @@
-import { QueryObserverResult } from "@tanstack/react-query";
+import type { QueryObserverResult } from "@tanstack/react-query";
+import type { Checkbox } from "antd";
 
-import { CheckboxGroupProps } from "antd/lib/checkbox";
 import {
-    BaseRecord,
-    GetListResponse,
-    HttpError,
-    UseSelectProps,
-    useSelect,
-    BaseKey,
-    pickNotDeprecated,
+  type BaseRecord,
+  type GetListResponse,
+  type HttpError,
+  type UseSelectProps,
+  useSelect,
+  type BaseKey,
+  pickNotDeprecated,
+  type BaseOption,
 } from "@refinedev/core";
 
-export type UseCheckboxGroupReturnType<TData extends BaseRecord = BaseRecord> =
-    {
-        checkboxGroupProps: CheckboxGroupProps;
-        queryResult: QueryObserverResult<GetListResponse<TData>>;
-    };
+export type UseCheckboxGroupReturnType<
+  TData extends BaseRecord = BaseRecord,
+  TOption extends BaseOption = BaseOption,
+> = {
+  checkboxGroupProps: Omit<
+    React.ComponentProps<typeof Checkbox.Group>,
+    "options"
+  > & {
+    options: TOption[];
+  };
+  query: QueryObserverResult<GetListResponse<TData>>;
+  /**
+   * @deprecated Use `query` instead
+   */
+  queryResult: QueryObserverResult<GetListResponse<TData>>;
+};
 
 type UseCheckboxGroupProps<TQueryFnData, TError, TData> = Omit<
-    UseSelectProps<TQueryFnData, TError, TData>,
-    "defaultValue"
+  UseSelectProps<TQueryFnData, TError, TData>,
+  "defaultValue"
 > & {
-    /**
-     * Sets the default value
-     */
-    defaultValue?: BaseKey[];
+  /**
+   * Sets the default value
+   */
+  defaultValue?: BaseKey[];
 };
 
 /**
@@ -39,10 +51,34 @@ type UseCheckboxGroupProps<TQueryFnData, TError, TData> = Omit<
  */
 
 export const useCheckboxGroup = <
-    TQueryFnData extends BaseRecord = BaseRecord,
-    TError extends HttpError = HttpError,
-    TData extends BaseRecord = TQueryFnData,
+  TQueryFnData extends BaseRecord = BaseRecord,
+  TError extends HttpError = HttpError,
+  TData extends BaseRecord = TQueryFnData,
+  TOption extends BaseOption = BaseOption,
 >({
+  resource,
+  sort,
+  sorters,
+  filters,
+  optionLabel,
+  optionValue,
+  queryOptions,
+  fetchSize,
+  pagination,
+  liveMode,
+  defaultValue,
+  selectedOptionsOrder,
+  onLiveEvent,
+  liveParams,
+  meta,
+  metaData,
+  dataProviderName,
+}: UseCheckboxGroupProps<
+  TQueryFnData,
+  TError,
+  TData
+>): UseCheckboxGroupReturnType<TData, TOption> => {
+  const { query, options } = useSelect<TQueryFnData, TError, TData, TOption>({
     resource,
     sort,
     sorters,
@@ -54,39 +90,19 @@ export const useCheckboxGroup = <
     pagination,
     liveMode,
     defaultValue,
+    selectedOptionsOrder,
     onLiveEvent,
     liveParams,
-    meta,
-    metaData,
+    meta: pickNotDeprecated(meta, metaData),
+    metaData: pickNotDeprecated(meta, metaData),
     dataProviderName,
-}: UseCheckboxGroupProps<
-    TQueryFnData,
-    TError,
-    TData
->): UseCheckboxGroupReturnType<TData> => {
-    const { queryResult, options } = useSelect({
-        resource,
-        sort,
-        sorters,
-        filters,
-        optionLabel,
-        optionValue,
-        queryOptions,
-        fetchSize,
-        pagination,
-        liveMode,
-        defaultValue,
-        onLiveEvent,
-        liveParams,
-        meta: pickNotDeprecated(meta, metaData),
-        metaData: pickNotDeprecated(meta, metaData),
-        dataProviderName,
-    });
-    return {
-        checkboxGroupProps: {
-            options,
-            defaultValue,
-        },
-        queryResult,
-    };
+  });
+  return {
+    checkboxGroupProps: {
+      options,
+      defaultValue,
+    },
+    query,
+    queryResult: query,
+  };
 };

@@ -1,99 +1,33 @@
 import { defineConfig } from "tsup";
-import { NodeResolvePlugin } from "@esbuild-plugins/node-resolve";
 
-import * as fs from "fs";
-import path from "path";
+import { markAsExternalPlugin } from "../shared/mark-as-external-plugin";
+import { removeTestIdsPlugin } from "../shared/remove-test-ids-plugin";
+import { tablerCjsReplacePlugin } from "../shared/tabler-cjs-replace-plugin";
+import { dayJsEsmReplacePlugin } from "../shared/dayjs-esm-replace-plugin";
 
-const JS_EXTENSIONS = new Set(["js", "cjs", "mjs"]);
-
-export default defineConfig({
-    entry: ["src/index.tsx"],
-    splitting: false,
-    sourcemap: true,
-    clean: false,
-    platform: "browser",
-    esbuildPlugins: [
-        {
-            name: "react-remove-testids",
-            setup(build) {
-                build.onEnd(async (args) => {
-                    // data-testid regexp
-                    const regexp = /("data-testid":)(.*?)(?:(,)|(}))/gi;
-
-                    // output files with `*.js`
-                    const jsOutputFiles =
-                        args.outputFiles?.filter((el) =>
-                            el.path.endsWith(".js"),
-                        ) ?? [];
-
-                    // replace data-testid in output files
-                    for (const jsOutputFile of jsOutputFiles) {
-                        const str = new TextDecoder("utf-8").decode(
-                            jsOutputFile.contents,
-                        );
-                        const newStr = str.replace(regexp, "$4");
-                        jsOutputFile.contents = new TextEncoder().encode(
-                            newStr,
-                        );
-                    }
-                });
-            },
-        },
-        {
-            name: "textReplace",
-            setup: (build) => {
-                // original code: https://github.com/josteph/esbuild-plugin-lodash
-                if (build.initialOptions.format === "cjs") {
-                    return;
-                }
-                build.onLoad({ filter: /.(ts|tsx)$/ }, async (args) => {
-                    const contents = await fs.promises.readFile(
-                        args.path,
-                        "utf8",
-                    );
-
-                    const lodashImportRegex =
-                        /import\s+?(?:(?:(?:[\w*\s{},]*)\s+from\s+?)|)[\'\"](?:(?:lodash\/?.*?))[\'\"][\s]*?(?:;|$|)/g;
-                    const extension = path.extname(args.path).replace(".", "");
-
-                    const loader = JS_EXTENSIONS.has(extension)
-                        ? "jsx"
-                        : (extension as any);
-
-                    const lodashImports = contents.match(lodashImportRegex);
-                    if (!lodashImports) {
-                        return {
-                            loader,
-                            contents,
-                        };
-                    }
-
-                    const finalContents = contents.replaceAll(
-                        "lodash",
-                        "lodash-es",
-                    );
-
-                    return {
-                        loader,
-                        contents: finalContents,
-                    };
-                });
-            },
-        },
-        NodeResolvePlugin({
-            extensions: [".js", "ts", "tsx", "jsx"],
-            onResolved: (resolved) => {
-                if (resolved.includes("node_modules")) {
-                    return {
-                        external: true,
-                    };
-                }
-                return resolved;
-            },
-        }),
-    ],
-    loader: {
-        ".svg": "dataurl",
-    },
-    onSuccess: "tsc --project tsconfig.declarations.json",
-});
+export default defineConfig((options) => ({
+  entry: ["src/index.tsx"],
+  splitting: false,
+  sourcemap: true,
+  clean: false,
+  minify: true,
+  format: ["cjs", "esm"],
+  outExtension: ({ format }) => ({ js: format === "cjs" ? ".cjs" : ".mjs" }),
+  platform: "browser",
+  esbuildPlugins: [
+    markAsExternalPlugin,
+    tablerCjsReplacePlugin,
+    dayJsEsmReplacePlugin,
+    removeTestIdsPlugin,
+  ],
+  loader: {
+    ".svg": "dataurl",
+  },
+  esbuildOptions(options) {
+    options.keepNames = true;
+    options.banner = {
+      js: '"use client"',
+    };
+  },
+  onSuccess: options.watch ? "pnpm types" : undefined,
+}));

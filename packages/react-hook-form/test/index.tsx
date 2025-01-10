@@ -1,48 +1,60 @@
-import React, { ReactNode } from "react";
-import { MemoryRouter } from "react-router-dom";
-import { Refine, DataProvider, IResourceItem } from "@refinedev/core";
+import React, { type ReactNode } from "react";
+import { MemoryRouter } from "react-router";
+import {
+  Refine,
+  type DataProvider,
+  type IResourceItem,
+  type I18nProvider,
+  type IRefineOptions,
+} from "@refinedev/core";
 
-import { MockRouterProvider, MockJSONServer } from "./dataMocks";
+import { MockJSONServer, mockRouterBindings } from "./dataMocks";
+import "@testing-library/jest-dom/extend-expect";
 
 interface ITestWrapperProps {
-    dataProvider?: DataProvider;
-    resources?: IResourceItem[];
-    routerInitialEntries?: string[];
+  dataProvider?: DataProvider;
+  resources?: IResourceItem[];
+  routerInitialEntries?: string[];
+  i18nProvider?: I18nProvider;
+  options?: IRefineOptions;
 }
 
 export const TestWrapper: (
-    props: ITestWrapperProps,
+  props: ITestWrapperProps,
 ) => React.FC<{ children: ReactNode }> = ({
-    dataProvider,
-    resources,
-    routerInitialEntries,
+  dataProvider,
+  resources,
+  routerInitialEntries,
+  i18nProvider,
+  options,
 }) => {
-    // eslint-disable-next-line react/display-name
-    return ({ children }): React.ReactElement => {
-        return (
-            <MemoryRouter initialEntries={routerInitialEntries}>
-                <Refine
-                    dataProvider={dataProvider ?? MockJSONServer}
-                    routerProvider={MockRouterProvider}
-                    resources={resources ?? [{ name: "posts" }]}
-                    options={{
-                        reactQuery: {
-                            clientConfig: {
-                                defaultOptions: {
-                                    queries: {
-                                        retry: false,
-                                    },
-                                },
-                            },
-                        },
-                        disableTelemetry: true,
-                    }}
-                >
-                    {children}
-                </Refine>
-            </MemoryRouter>
-        );
-    };
+  return ({ children }): React.ReactElement => {
+    return (
+      <MemoryRouter initialEntries={routerInitialEntries}>
+        <Refine
+          i18nProvider={i18nProvider}
+          dataProvider={dataProvider ?? MockJSONServer}
+          routerProvider={mockRouterBindings()}
+          resources={resources ?? [{ name: "posts" }]}
+          options={{
+            ...options,
+            reactQuery: {
+              clientConfig: {
+                defaultOptions: {
+                  queries: {
+                    retry: false,
+                  },
+                },
+              },
+            },
+            disableTelemetry: true,
+          }}
+        >
+          {children}
+        </Refine>
+      </MemoryRouter>
+    );
+  };
 };
 export { MockJSONServer, MockRouterProvider } from "./dataMocks";
 

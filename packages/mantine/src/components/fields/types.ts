@@ -1,24 +1,29 @@
-import { ReactChild, ReactNode } from "react";
-import { AnchorProps, ChipProps, TextProps, TooltipProps } from "@mantine/core";
-import {
-    RefineFieldBooleanProps,
-    RefineFieldDateProps,
-    RefineFieldEmailProps,
-    RefineFieldFileProps,
-    RefineFieldMarkdownProps,
-    RefineFieldNumberProps,
-    RefineFieldTagProps,
-    RefineFieldTextProps,
-    RefineFieldUrlProps,
+import type { ReactChild, ReactNode } from "react";
+import type {
+  AnchorProps,
+  ChipProps,
+  TextProps,
+  TooltipProps,
+} from "@mantine/core";
+import type {
+  RefineFieldBooleanProps,
+  RefineFieldDateProps,
+  RefineFieldEmailProps,
+  RefineFieldFileProps,
+  RefineFieldMarkdownProps,
+  RefineFieldNumberProps,
+  RefineFieldTagProps,
+  RefineFieldTextProps,
+  RefineFieldUrlProps,
 } from "@refinedev/ui-types";
-import { TablerIconProps } from "@tabler/icons";
-import { ConfigType } from "dayjs";
-import { ReactMarkdownOptions } from "react-markdown";
+import type { IconProps } from "@tabler/icons-react";
+import type { ConfigType } from "dayjs";
+import type { ReactMarkdownOptions } from "react-markdown";
 
 export type BooleanFieldProps = RefineFieldBooleanProps<
-    unknown,
-    Omit<TooltipProps, "label" | "children">,
-    { svgIconProps?: TablerIconProps }
+  unknown,
+  Omit<TooltipProps, "label" | "children">,
+  { svgIconProps?: Omit<IconProps, "ref"> }
 >;
 
 export type DateFieldProps = RefineFieldDateProps<ConfigType, TextProps>;
@@ -28,23 +33,23 @@ export type EmailFieldProps = RefineFieldEmailProps<ReactNode, AnchorProps>;
 export type FileFieldProps = RefineFieldFileProps<TextProps>;
 
 export type MarkdownFieldProps = RefineFieldMarkdownProps<
-    string | undefined,
-    Partial<ReactMarkdownOptions>
+  string | undefined,
+  Partial<ReactMarkdownOptions>
 >;
 
 export type NumberFieldProps = RefineFieldNumberProps<ReactChild, TextProps>;
 
 export type TagFieldProps = RefineFieldTagProps<
-    ReactNode,
-    Omit<ChipProps, "children">
+  ReactNode,
+  Omit<ChipProps, "children">
 >;
 
 export type TextFieldProps = RefineFieldTextProps<ReactNode, TextProps>;
 
 export type UrlFieldProps = RefineFieldUrlProps<
-    string | undefined,
-    AnchorProps & TextProps,
-    {
-        title?: string;
-    }
+  string | undefined,
+  AnchorProps & TextProps,
+  {
+    title?: string;
+  }
 >;

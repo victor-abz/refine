@@ -1,17 +1,15 @@
-import React from "react";
+import React, { type PropsWithChildren } from "react";
 
-import { IAuditLogContext } from "./IAuditLogContext";
+import type { IAuditLogContext } from "./types";
 
 export const AuditLogContext = React.createContext<IAuditLogContext>({});
 
 export const AuditLogContextProvider: React.FC<
-    IAuditLogContext & {
-        children: React.ReactNode;
-    }
+  PropsWithChildren<IAuditLogContext>
 > = ({ create, get, update, children }) => {
-    return (
-        <AuditLogContext.Provider value={{ create, get, update }}>
-            {children}
-        </AuditLogContext.Provider>
-    );
+  return (
+    <AuditLogContext.Provider value={{ create, get, update }}>
+      {children}
+    </AuditLogContext.Provider>
+  );
 };

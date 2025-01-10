@@ -10,7 +10,9 @@
         "password": "Passwort"
       },
       "errors": {
-        "validEmail": "Ungültige E-Mail-Adresse"
+        "validEmail": "Ungültige E-Mail-Adresse",
+        "requiredEmail": "E-Mail ist erforderlich",
+        "requiredPassword": "Passwort wird benötigt"
       },
       "buttons": {
         "submit": "Anmeldung",
@@ -25,7 +27,8 @@
         "email": "Email"
       },
       "errors": {
-        "validEmail": "Ungültige E-Mail-Adresse"
+        "validEmail": "Ungültige E-Mail-Adresse",
+        "requiredEmail": "E-Mail ist erforderlich"
       },
       "buttons": {
         "submit": "Anweisungen zum Zurücksetzen senden"
@@ -38,7 +41,9 @@
         "password": "Passwort"
       },
       "errors": {
-        "validEmail": "Ungültige E-Mail-Adresse"
+        "validEmail": "Ungültige E-Mail-Adresse",
+        "requiredEmail": "E-Mail ist erforderlich",
+        "requiredPassword": "Passwort wird benötigt"
       },
       "buttons": {
         "submit": "Registrieren",
@@ -52,7 +57,9 @@
         "confirmPassword": "Bestätige neues Passwort"
       },
       "errors": {
-        "confirmPasswordNotMatch": "Passwörter stimmen nicht überein"
+        "confirmPasswordNotMatch": "Passwörter stimmen nicht überein",
+        "requiredPassword": "Passwort wird benötigt",
+        "requiredConfirmPassword": "Das Feld „Passwort bestätigen“ ist erforderlich"
       },
       "buttons": {
         "submit": "Aktualisieren"
@@ -116,7 +123,37 @@
       "content": "Inhalt",
       "status": "Status",
       "category": "Kategorien",
-      "createdAt": "Erstellt am"
+      "categoryId": "Kategorien",
+      "category_id": "Kategorien",
+      "createdAt": "Erstellt am",
+      "created_at": "Erstellt am",
+      "updatedAt": "Aktualisiert am",
+      "publishedAt": "Veröffentlicht am",
+      "locale": "Lokal"
+    },
+    "titles": {
+      "create": "Erstellen",
+      "edit": "Bearbeiten",
+      "list": "Einträge",
+      "show": "Eintrag zeigen"
+    }
+  },
+  "blog-posts": {
+    "blog_posts": "Blogeinträge",
+    "fields": {
+      "id": "Id",
+      "title": "Titel",
+      "content": "Inhalt",
+      "status": "Status",
+      "category": "Kategorien",
+      "categoryId": "Kategorien",
+      "category_id": "Kategorien",
+      "createdAt": "Erstellt am",
+      "created_at": "Erstellt am",
+      "updatedAt": "Aktualisiert am",
+      "publishedAt": "Veröffentlicht am",
+      "locale": "Lokal",
+      "Posts": "Einträge"
     },
     "titles": {
       "create": "Erstellen",
@@ -130,7 +167,11 @@
     "fields": {
       "id": "Id",
       "title": "Titel",
-      "createdAt": "Erstellt am"
+      "createdAt": "Erstellt am",
+      "created_at": "Erstellt am",
+      "updatedAt": "Aktualisiert am",
+      "publishedAt": "Veröffentlicht am",
+      "locale": "Lokal"
     },
     "titles": {
       "create": "Erstellen",
@@ -139,7 +180,31 @@
       "show": "Eintrag zeigen"
     }
   },
+  "products": {
+    "fields": {
+      "category": "Kategorien",
+      "description": "Beschreibung",
+      "id": "Id",
+      "material": "Material",
+      "name": "Name",
+      "price": "Preis"
+    },
+    "products": "Produkte",
+    "titles": {
+      "create": "Erstellen",
+      "edit": "Bearbeiten",
+      "list": "Produkte",
+      "show": "Produkt anzeigen"
+    }
+  },
   "table": {
     "actions": "Aktionen"
+  },
+  "pagination": {
+    "go": "Gehen Sie zur Seite",
+    "show": "Zeigen"
+  },
+  "form": {
+    "required": "Dieses Feld ist erforderlich"
   }
 }

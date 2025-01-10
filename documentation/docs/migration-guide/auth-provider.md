@@ -1,12 +1,11 @@
 ---
-id: auth-provider
 title: Migrating Auth Provider from 3.x.x to 4.x.x
 sidebar_label: Migrating Auth Provider
 ---
 
 ## Motivation behind the changes
 
-Our motivation for modifying the `authProvider` prop in **refine v4** was to improve its flexibility and customization options, allowing it to handle a wider range of use cases without becoming overly complicated.
+Our motivation for modifying the `authProvider` prop in **Refine v4** was to improve its flexibility and customization options, allowing it to handle a wider range of use cases without becoming overly complicated.
 
 We aimed to create a more standardized interface for the `authProvider` methods that would improve transparency and enable easier debugging for developers.
 
@@ -18,41 +17,41 @@ Furthermore, the auth hooks no longer have default redirection paths, which had 
 
 ## Naming changes
 
--   The `AuthPovider` interface was changed to `AuthBindings`.
+- The `AuthPovider` interface was changed to `AuthProvider`.
 
-    ```diff
-    - import { AuthProvider } from "@refinedev/core";
-    + import { AuthBindings } from "@refinedev/core";
+  ```diff
+  - import { AuthProvider } from "@refinedev/core";
+  + import { AuthProvider } from "@refinedev/core";
 
-    - const authProvider: AuthProvider = {/* ... */}
-    + const authProvider: AuthBindings = {/* ... */}
-    ```
+  - const authProvider: AuthProvider = {/* ... */}
+  + const authProvider: AuthProvider = {/* ... */}
+  ```
 
--   The `getUserIdentity` method of the `authProvider` was changed to `getIdentity`.
--   The `checkError` method of the `authProvider`was changed to `onError`.
--   The `checkAuth` method of the `authProvider` was changed to `check`.
+- The `getUserIdentity` method of the `authProvider` was changed to `getIdentity`.
+- The `checkError` method of the `authProvider`was changed to `onError`.
+- The `checkAuth` method of the `authProvider` was changed to `check`.
 
-    ```diff
-    const authProvider = {
-    -     getUserIdentity,
-    +     getIdentity,
-    -     useCheckError,
-    +     useOnError,
-    -     checkAuth,
-    +     check,
-    }
-    ```
+  ```diff
+  const authProvider = {
+  -     getUserIdentity,
+  +     getIdentity,
+  -     useCheckError,
+  +     useOnError,
+  -     checkAuth,
+  +     check,
+  }
+  ```
 
--   The `useAuthenticated` hook was changed to `useIsAuthenticated`.
+- The `useAuthenticated` hook was changed to `useIsAuthenticated`.
 
-    ```diff
-    - import { useAuthenticated } from "@refinedev/core";
-    + import { useIsAuthenticated } from "@refinedev/core";
-    ```
+  ```diff
+  - import { useAuthenticated } from "@refinedev/core";
+  + import { useIsAuthenticated } from "@refinedev/core";
+  ```
 
 ## Methods
 
-### `login`
+### login
 
 Promises must now be resolved in all cases when using the `login` method, with a return type of `AuthActionResponse`. When resolving the promise, you must always include a `success` key, and in the case of a failure, an additional `error` key.
 
@@ -86,14 +85,14 @@ const authProvider = {
 
 ```ts
 type AuthActionResponse = {
-    success: boolean;
-    redirectTo?: string;
-    error?: Error;
-    [key: string]: unknown;
+  success: boolean;
+  redirectTo?: string;
+  error?: Error;
+  [key: string]: unknown;
 };
 ```
 
-### `logout`
+### logout
 
 Promises must now be resolved in all cases when using the `logout` method, with a return type of `AuthActionResponse`. When resolving the promise, you must always include a `success` key, and in the case of a failure, an additional `error` key.
 
@@ -114,14 +113,14 @@ const authProvider = {
 
 ```ts
 type AuthActionResponse = {
-    success: boolean;
-    redirectTo?: string;
-    error?: Error;
-    [key: string]: unknown;
+  success: boolean;
+  redirectTo?: string;
+  error?: Error;
+  [key: string]: unknown;
 };
 ```
 
-### `register`
+### register
 
 Promises must now be resolved in all cases when using the `register` method, with a return type of `AuthActionResponse`. When resolving the promise, you must always include a `success` key, and in the case of a failure, an additional `error` key.
 
@@ -154,7 +153,7 @@ const authProvider = {
 }
 ```
 
-### `forgotPassword`
+### forgotPassword
 
 Promises must now be resolved in all cases when using the `forgotPassword` method, with a return type of `AuthActionResponse`. When resolving the promise, you must always include a `success` key, and in the case of a failure, an additional `error` key.
 
@@ -187,14 +186,14 @@ const authProvider = {
 
 ```ts
 type AuthActionResponse = {
-    success: boolean;
-    redirectTo?: string;
-    error?: Error;
-    [key: string]: unknown;
+  success: boolean;
+  redirectTo?: string;
+  error?: Error;
+  [key: string]: unknown;
 };
 ```
 
-### `updatePassword`
+### updatePassword
 
 Promises must now be resolved in all cases when using the `updatePassword` method, with a return type of `AuthActionResponse`. When resolving the promise, you must always include a `success` key, and in the case of a failure, an additional `error` key.
 
@@ -227,14 +226,14 @@ const authProvider = {
 
 ```ts
 type AuthActionResponse = {
-    success: boolean;
-    redirectTo?: string;
-    error?: Error;
-    [key: string]: unknown;
+  success: boolean;
+  redirectTo?: string;
+  error?: Error;
+  [key: string]: unknown;
 };
 ```
 
-### `check`
+### check
 
 The `checkAuth` method of the `authProvider` was changed to `check`. It now requires promises to be resolved in all cases, with a return type of `CheckResponse`. When resolving the promise, you must always include a `success` key, and in the case of a failure, an additional `error` key.
 
@@ -269,14 +268,14 @@ const authProvider = {
 
 ```ts
 type CheckResponse = {
-    authenticated: boolean;
-    redirectTo?: string;
-    logout?: boolean;
-    error?: Error;
+  authenticated: boolean;
+  redirectTo?: string;
+  logout?: boolean;
+  error?: Error;
 };
 ```
 
-### `onError`
+### onError
 
 The `checkError` method of the `authProvider` was changed to `onError`. It now requires promises to be resolved in all cases, with a return type of `OnErrorResponse`. When resolving the promise, you must always include a `success` key, and in the case of a failure, an additional `error` key.
 
@@ -303,13 +302,13 @@ const authProvider = {
 
 ```ts
 type OnErrorResponse = {
-    redirectTo?: string;
-    logout?: boolean;
-    error?: Error;
+  redirectTo?: string;
+  logout?: boolean;
+  error?: Error;
 };
 ```
 
-### `getPermissions`
+### getPermissions
 
 The `getPermissions` method now requires promises to be resolved in all cases, with a return type of `PermissionResponse`
 
@@ -334,7 +333,7 @@ const authProvider = {
 type PermissionResponse = unknown;
 ```
 
-### `getIdentity`
+### getIdentity
 
 `authProvider`'s `getUserIdentity` method was renamed to `getIdentity`, which requires promises to be resolved in all cases, with a return type of `IdentityResponse`
 
@@ -384,21 +383,21 @@ Auth Provider v3:
 import { useAuthenticated } from "@pankod/refine-core";
 
 export const Authenticated: React.FC = ({ children }) => {
-    const { isSuccess, isLoading, isError } = useAuthenticated();
+  const { isSuccess, isLoading, isError } = useAuthenticated();
 
-    if (isLoading) {
-        return <div>loading...</div>;
-    }
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
 
-    if (isError) {
-        return null;
-    }
-
-    if (isSuccess) {
-        return <>{children}</>;
-    }
-
+  if (isError) {
     return null;
+  }
+
+  if (isSuccess) {
+    return <>{children}</>;
+  }
+
+  return null;
 };
 ```
 
@@ -408,31 +407,31 @@ Auth Provider v4:
 import { useIsAuthenticated } from "@refinedev/core";
 
 export const Authenticated: React.FC = ({ children }) => {
-    const { isLoading, data } = useIsAuthenticated();
+  const { isLoading, data } = useIsAuthenticated();
 
-    if (isLoading) {
-        return <div>loading...</div>;
-    }
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
 
-    if (data.error) {
-        return null;
-    }
-
-    if (data.authenticated) {
-        return <>{children}</>;
-    }
-
+  if (data.error) {
     return null;
+  }
+
+  if (data.authenticated) {
+    return <>{children}</>;
+  }
+
+  return null;
 };
 ```
 
 Though auth hooks should be familiar, they need to updated according to the new system.
 
-[Please refer to the hooks documentation for more information.](/docs/api-reference/core/providers/auth-provider.md/#hooks-and-components)
+[Please refer to the hooks documentation for more information.](/docs/authentication/auth-provider#hooks-and-components)
 
 ## Backward compatibility
 
-**refine** still supports the `authProvider@v3` for backward compatibility. We changed its name to `legacyAuthProvider` and it will be removed in the next major version. If you want to continue using the `authProvider@v3` you can use it as `legacyAuthProvider` in your project.
+**Refine** still supports the `authProvider@v3` for backward compatibility. We changed its name to `legacyAuthProvider` and it will be removed in the next major version. If you want to continue using the `authProvider@v3` you can use it as `legacyAuthProvider` in your project.
 
 ```diff
 - import { AuthProvider } from "@refinedev/core";
@@ -460,7 +459,7 @@ Additionally, you need to add `v3LegacyAuthProviderCompatible: true` to your aut
 import { useLogin } from "@refinedev/core";
 
 const login = useLogin({
-    // highlight-next-line
-    v3LegacyAuthProviderCompatible: true,
+  // highlight-next-line
+  v3LegacyAuthProviderCompatible: true,
 });
 ```

@@ -1,66 +1,86 @@
 import React from "react";
 import {
-    PreferredUIPackage,
-    availableUIPackages,
+  type PreferredUIPackage,
+  availableUIPackages,
+  UIPackageIcons,
 } from "../../context/TutorialUIPackageContext/index";
 import { useTutorialUIPackage } from "../../hooks/use-tutorial-ui-package";
 import styles from "./styles.module.css";
 import clsx from "clsx";
 
 type CardProps = {
-    name: string;
-    title?: string;
-    selected?: boolean;
-    onClick?: () => void;
+  name: string;
+  title?: string;
+  selected?: boolean;
+  onClick?: () => void;
 };
 
-const coloredIconUrl =
-    "https://refine.ams3.digitaloceanspaces.com/website/static/icons/colored/ui-framework-";
-
-const grayscaleIconUrl =
-    "https://refine.ams3.digitaloceanspaces.com/website/static/icons/grayscale/ui-framework-";
-
-const Card = ({ name, title, selected, onClick }: CardProps) => (
+const Card = ({ name, title, selected, onClick }: CardProps) => {
+  const Icon = UIPackageIcons[name];
+  return (
     <button
-        type="button"
-        onClick={onClick}
-        className={clsx(styles.card, selected && styles.cardSelected)}
+      type="button"
+      onClick={onClick}
+      className={clsx(
+        "not-prose",
+        "w-[112px] h-[112px]",
+        "2xl:w-[138px] 2xl:h-[140px]",
+        "flex flex-col",
+        "py-4",
+        "rounded-lg",
+        "justify-center",
+        "items-center",
+        "gap-2",
+        "shadow-lg",
+        "border-2 dark:border-gray-700 border-gray-200",
+        selected && "dark:border-refine-blue border-refine-blue",
+        selected && "ring-4 ring-refine-blue ring-opacity-50",
+      )}
     >
-        <img
-            className="max-w-[90px]"
-            src={`${selected ? coloredIconUrl : grayscaleIconUrl}${name}.svg`}
-            alt={title}
-            width="100%"
-            height="100%"
+      <div className={clsx("max-w-[48px] max-h-[48px]")}>
+        <Icon
+          className={clsx("w-full h-full", "text-gray-400 dark:text-gray-600")}
+          withBrandColor={selected}
         />
-        {title && <span>{title}</span>}
+      </div>
+      {title && (
+        <span
+          className={clsx(
+            selected && "text-gray-900 dark:text-gray-0",
+            !selected && "text-gray-500 dark:text-gray-600",
+          )}
+        >
+          {title}
+        </span>
+      )}
     </button>
-);
+  );
+};
 
 const names: Record<PreferredUIPackage, string> = {
-    headless: "Headless",
-    antd: "Ant Design",
-    mui: "Material UI",
-    mantine: "Mantine",
-    "chakra-ui": "Chakra UI",
+  headless: "Headless",
+  antd: "Ant Design",
+  mui: "Material UI",
+  mantine: "Mantine",
+  "chakra-ui": "Chakra UI",
 };
 
-export const SelectTutorialFramework = ({ small }) => {
-    const { preferred, setPreferred } = useTutorialUIPackage();
+export const SelectTutorialFramework = ({ small, ...props }) => {
+  const { preferred, setPreferred } = useTutorialUIPackage();
 
-    return (
-        <div>
-            <div className={clsx(styles.cards, small && styles.cardsSmall)}>
-                {availableUIPackages.map((uiPackage) => (
-                    <Card
-                        key={uiPackage}
-                        title={small ? undefined : names[uiPackage]}
-                        name={uiPackage}
-                        selected={preferred === uiPackage}
-                        onClick={() => setPreferred(uiPackage)}
-                    />
-                ))}
-            </div>
-        </div>
-    );
+  return (
+    <div {...props}>
+      <div className={clsx(styles.cards, small && styles.cardsSmall)}>
+        {availableUIPackages.map((uiPackage) => (
+          <Card
+            key={uiPackage}
+            title={small ? undefined : names[uiPackage]}
+            name={uiPackage}
+            selected={preferred === uiPackage}
+            onClick={() => setPreferred(uiPackage)}
+          />
+        ))}
+      </div>
+    </div>
+  );
 };

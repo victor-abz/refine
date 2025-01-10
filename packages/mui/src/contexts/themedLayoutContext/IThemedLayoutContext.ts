@@ -1,6 +1,7 @@
 export interface IThemedLayoutContext {
-    siderVisible?: boolean;
-    drawerSiderVisible?: boolean;
-    setSiderVisible?: (visible: boolean) => void;
-    setDrawerSiderVisible?: (visible: boolean) => void;
+  siderCollapsed: boolean;
+  setSiderCollapsed: (visible: boolean) => void;
+  mobileSiderOpen: boolean;
+  setMobileSiderOpen: (visible: boolean) => void;
+  onSiderCollapsed?: (collapsed: boolean) => void;
 }
