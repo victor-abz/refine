@@ -1,193 +1,248 @@
 import {
-    Show,
-    TagField,
-    TextFieldComponent,
-    EmailField,
-    UrlField,
-    BooleanField,
-    DateField,
-    MarkdownField,
-    NumberField,
+  Show,
+  TagField,
+  TextFieldComponent,
+  EmailField,
+  UrlField,
+  BooleanField,
+  DateField,
+  MarkdownField,
+  NumberField,
 } from "@refinedev/mui";
-import { Typography, Stack } from "@mui/material";
 
-import { createInferencer } from "@/create-inferencer";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+
+import { createInferencer } from "../../create-inferencer";
 import {
-    jsx,
-    componentName,
-    prettyString,
-    accessor,
-    printImports,
-    noOp,
-    getVariableName,
-} from "@/utilities";
+  jsx,
+  componentName,
+  accessor,
+  printImports,
+  noOp,
+  getVariableName,
+  translatePrettyString,
+  getMetaProps,
+  idQuoteWrapper,
+  deepHasKey,
+} from "../../utilities";
 
 import { ErrorComponent } from "./error";
 import { LoadingComponent } from "./loading";
-import { SharedCodeViewer } from "@/components/shared-code-viewer";
+import { SharedCodeViewer } from "../../components/shared-code-viewer";
 
-import {
-    InferencerResultComponent,
-    InferField,
-    ImportElement,
-    RendererContext,
-} from "@/types";
-import { getMetaProps } from "@/utilities/get-meta-props";
+import type {
+  InferencerResultComponent,
+  InferField,
+  ImportElement,
+  RendererContext,
+} from "../../types";
 
 /**
  * a renderer function for show page in Material UI
  * @internal used internally from inferencer components
  */
 export const renderer = ({
-    resource,
-    fields,
-    meta,
-    isCustomPage,
-    id,
+  resource,
+  fields,
+  meta,
+  isCustomPage,
+  id,
+  i18n,
 }: RendererContext) => {
-    const COMPONENT_NAME = componentName(
-        resource.label ?? resource.name,
-        "show",
-    );
-    const recordName = "record";
-    const imports: Array<ImportElement> = [
-        ["useShow", "@refinedev/core"],
-        ["Show", "@refinedev/mui"],
-        ["Typography", "@mui/material"],
-        ["Stack", "@mui/material"],
-    ];
+  const COMPONENT_NAME = componentName(resource.label ?? resource.name, "show");
+  const recordName = "record";
+  const imports: Array<ImportElement> = [
+    ["useShow", "@refinedev/core"],
+    ["Show", "@refinedev/mui"],
+    ["Typography", "@mui/material"],
+    ["Stack", "@mui/material"],
+  ];
 
-    const relationFields: (InferField | null)[] = fields.filter(
-        (field) => field?.relation && !field?.fieldable && field?.resource,
-    );
+  if (i18n) {
+    imports.push(["useTranslate", "@refinedev/core"]);
+  }
 
-    const relationHooksCode = relationFields
-        .filter(Boolean)
-        .map((field) => {
-            if (field?.relation && !field.fieldable && field.resource) {
-                if (field.multiple) {
-                    imports.push(["useMany", "@refinedev/core"]);
+  // has gqlQuery or gqlMutation in "meta"
+  const hasGql = deepHasKey(meta || {}, ["gqlQuery", "gqlMutation"]);
+  if (hasGql) {
+    imports.push(["gql", "graphql-tag", true]);
+  }
 
-                    let ids = accessor(recordName, field.key);
+  const relationFields: (InferField | null)[] = fields.filter(
+    (field) => field?.relation && !field?.fieldable && field?.resource,
+  );
 
-                    if (field.accessor) {
-                        ids = `${accessor(
-                            recordName,
-                            field.key,
-                        )}?.map((item: any) => ${accessor(
-                            "item",
-                            undefined,
-                            field.accessor,
-                        )})`;
-                    }
+  const relationHooksCode = relationFields
+    .filter(Boolean)
+    .map((field) => {
+      if (field?.relation && !field.fieldable && field.resource) {
+        if (field.multiple) {
+          imports.push(["useMany", "@refinedev/core"]);
 
-                    return `
+          let ids = accessor(recordName, field.key);
+
+          if (field.accessor) {
+            ids = `${accessor(
+              recordName,
+              field.key,
+            )}?.map((item: any) => ${accessor(
+              "item",
+              undefined,
+              field.accessor,
+            )})`;
+          }
+
+          return `
                 const { data: ${getVariableName(
-                    field.key,
-                    "Data",
+                  field.key,
+                  "Data",
                 )}, isLoading: ${getVariableName(field.key, "IsLoading")} } =
                 useMany({
                     resource: "${field.resource.name}",
                     ids: ${ids} || [],
                     queryOptions: {
-                        enabled: !!${recordName},
+                        enabled: !!${recordName} && !!${ids}?.length,
                     },
                     ${getMetaProps(
-                        field?.resource?.identifier ?? field?.resource?.name,
-                        meta,
-                        "getMany",
+                      field?.resource?.identifier ?? field?.resource?.name,
+                      meta,
+                      ["getMany"],
                     )}
                 });
                 `;
-                }
+        }
 
-                imports.push(["useOne", "@refinedev/core"]);
+        imports.push(["useOne", "@refinedev/core"]);
 
-                return `
+        return `
                 const { data: ${getVariableName(
-                    field.key,
-                    "Data",
+                  field.key,
+                  "Data",
                 )}, isLoading: ${getVariableName(field.key, "IsLoading")} } =
                 useOne({
                     resource: "${field.resource.name}",
                     id: ${accessor(
-                        recordName,
-                        field.key,
-                        field.accessor,
-                        false,
+                      recordName,
+                      field.key,
+                      field.accessor,
+                      false,
                     )} || "",
                     queryOptions: {
                         enabled: !!${recordName},
                     },
                     ${getMetaProps(
-                        field?.resource?.identifier ?? field?.resource?.name,
-                        meta,
-                        "getOne",
+                      field?.resource?.identifier ?? field?.resource?.name,
+                      meta,
+                      ["getOne"],
                     )}
                 });
             `;
-            }
-            return undefined;
-        })
-        .filter(Boolean);
+      }
+      return undefined;
+    })
+    .filter(Boolean);
 
-    const renderRelationFields = (field: InferField) => {
-        if (field.relation && field.resource) {
-            const variableName = getVariableName(field.key, "Data");
-            const variableIsLoading = getVariableName(field.key, "IsLoading");
+  const renderRelationFields = (field: InferField) => {
+    if (field.relation && field.resource) {
+      const variableName = getVariableName(field.key, "Data");
+      const variableIsLoading = getVariableName(field.key, "IsLoading");
 
-            if (field.multiple) {
-                imports.push(["TagField", "@refinedev/mui"]);
+      if (field.multiple) {
+        const variableDataLength = `${accessor(recordName, field.key)}?.length`;
+        imports.push(["TagField", "@refinedev/mui"]);
 
-                return jsx`
+        return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
-                {${variableIsLoading} ? (
+                {${variableIsLoading} && ${variableDataLength} ? (
                     <>
                         Loading...
                     </>
                     ) : (
                     <>
                     ${(() => {
-                        if (field.relationInfer) {
-                            if (field.relationInfer?.accessor) {
-                                if (
-                                    Array.isArray(field.relationInfer.accessor)
-                                ) {
-                                    return `Not Handled.`;
-                                } else {
-                                    const mapItemName = getVariableName(
-                                        field.key,
-                                    );
-                                    const val = accessor(
-                                        mapItemName,
-                                        undefined,
-                                        field.relationInfer.accessor,
-                                    );
-                                    return `
-                                        <Stack direction="row" spacing={1}>
+                      if (field.relationInfer) {
+                        if (field.relationInfer?.accessor) {
+                          if (Array.isArray(field.relationInfer.accessor)) {
+                            console.log(
+                              "@refinedev/inferencer: Inferencer failed to render this field",
+                              {
+                                key: field.key,
+                                relation: field.relationInfer,
+                              },
+                            );
+
+                            return `<span title="Inferencer failed to render this field. (Unsupported nesting)">Cannot Render</span>`;
+                          }
+                          const mapItemName = getVariableName(field.key);
+                          const val = accessor(
+                            mapItemName,
+                            undefined,
+                            field.relationInfer.accessor,
+                          );
+                          return `
+                                        {record?.${field.key}?.length ? <Stack direction="row" spacing={1}>
                                             {${variableName}?.data?.map((${mapItemName}: any) => (
                                                 <TagField key={${val}} value={${val}} />
                                             ))}
-                                        </Stack>
+                                        </Stack> : <></>}
                                     `;
-                                }
-                            } else {
-                                return `Not Handled.`;
-                            }
-                        } else {
-                            return `not-handled - relation with multiple but no resource`;
                         }
+                        console.log(
+                          "@refinedev/inferencer: Inferencer failed to render this field",
+                          {
+                            key: field.key,
+                            relation: field.relationInfer,
+                          },
+                        );
+
+                        return `<span title="Inferencer failed to render this field. (Cannot find key)">Cannot Render</span>`;
+                      }
+                      console.log(
+                        "@refinedev/inferencer: Inferencer failed to render this field",
+                        { key: field.key },
+                      );
+
+                      return `<span title="Inferencer failed to render this field (Cannot find relation)">Cannot Render</span>`;
                     })()}
                     </>
                 )}
                 `;
-            }
+      }
 
-            return jsx`
+      if (field.fieldable) {
+        return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
+                </Typography>
+                <TextField value={${accessor(
+                  recordName,
+                  field.key,
+                  field.accessor,
+                )}} />
+                `;
+      }
+
+      return jsx`
+                <Typography variant="body1" fontWeight="bold">
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
 
                 {${variableIsLoading} ? (
@@ -195,46 +250,62 @@ export const renderer = ({
                 ) : (
                     <>
                     ${(() => {
-                        if (field.relationInfer) {
-                            if (field.relationInfer?.accessor) {
-                                if (
-                                    Array.isArray(field.relationInfer.accessor)
-                                ) {
-                                    return `{${accessor(
-                                        `${variableName}?.data`,
-                                        undefined,
-                                        field.relationInfer.accessor,
-                                        ' + " " + ',
-                                    )}}`;
-                                } else {
-                                    return `{${variableName}?.data?.${field.relationInfer.accessor}}`;
-                                }
-                            } else {
-                                return `{${variableName}?.data}`;
-                            }
-                        } else {
-                            return `{${variableName}?.data?.id}`;
+                      if (field.relationInfer) {
+                        if (field.relationInfer?.accessor) {
+                          if (Array.isArray(field.relationInfer.accessor)) {
+                            return `{${accessor(
+                              `${variableName}?.data`,
+                              undefined,
+                              field.relationInfer.accessor,
+                              ' + " " + ',
+                            )}}`;
+                          }
+                          return `{${variableName}?.data?.${field.relationInfer.accessor}}`;
                         }
+                        const cannotRender =
+                          field?.relationInfer?.type === "object" &&
+                          !field?.relationInfer?.accessor;
+
+                        if (cannotRender) {
+                          console.log(
+                            "@refinedev/inferencer: Inferencer failed to render this field",
+                            {
+                              key: field.key,
+                              relation: field.relationInfer,
+                            },
+                          );
+                        }
+
+                        return cannotRender
+                          ? `<span title="Inferencer failed to render this field. (Cannot find key)">Cannot Render</span>`
+                          : `{${variableName}?.data}`;
+                      }
+                      return `{${variableName}?.data?.id}`;
                     })()}
                     </>
                 )}
                 `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const textFields = (field: InferField) => {
-        if (field.type === "text") {
-            imports.push(["TextFieldComponent as TextField", "@refinedev/mui"]);
+  const textFields = (field: InferField) => {
+    if (field.type === "text") {
+      imports.push(["TextFieldComponent as TextField", "@refinedev/mui"]);
 
-            if (field.multiple) {
-                imports.push(["TagField", "@refinedev/mui"]);
+      if (field.multiple) {
+        imports.push(["TagField", "@refinedev/mui"]);
 
-                const val = accessor("item", undefined, field.accessor);
+        const val = accessor("item", undefined, field.accessor);
 
-                return jsx`
+        return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <Stack direction="row" spacing={1}>
                 {${accessor(recordName, field.key)}?.map((item: any) => (
@@ -242,30 +313,40 @@ export const renderer = ({
                 ))}
                 </Stack>
             `;
-            }
+      }
 
-            return jsx`
+      return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <TextField value={${accessor(
-                    recordName,
-                    field.key,
-                    field.accessor,
+                  recordName,
+                  field.key,
+                  field.accessor,
                 )}} />
             `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const imageFields = (field: InferField) => {
-        if (field.type === "image") {
-            if (field.multiple) {
-                const val = accessor("item", undefined, field.accessor);
+  const imageFields = (field: InferField) => {
+    if (field.type === "image") {
+      if (field.multiple) {
+        const val = accessor("item", undefined, field.accessor);
 
-                return jsx`
+        return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <Stack direction="row" spacing={1}>
                 {${accessor(recordName, field.key)}?.map((item: any) => (
@@ -273,35 +354,45 @@ export const renderer = ({
                 ))}
                 </Stack>
             `;
-            }
+      }
 
-            return jsx`
+      return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <img style={{ maxWidth: 200, width: "100%", height: 200 }} src={${accessor(
-                    recordName,
-                    field.key,
-                    field.accessor,
-                    " + ",
+                  recordName,
+                  field.key,
+                  field.accessor,
+                  " + ",
                 )}} />
                 `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const emailFields = (field: InferField) => {
-        if (field.type === "email") {
-            imports.push(["EmailField", "@refinedev/mui"]);
+  const emailFields = (field: InferField) => {
+    if (field.type === "email") {
+      imports.push(["EmailField", "@refinedev/mui"]);
 
-            if (field.multiple) {
-                imports.push(["TagField", "@refinedev/mui"]);
+      if (field.multiple) {
+        imports.push(["TagField", "@refinedev/mui"]);
 
-                const val = accessor("item", undefined, field.accessor);
+        const val = accessor("item", undefined, field.accessor);
 
-                return jsx`
+        return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <Stack direction="row" spacing={1}>
                 {${accessor(recordName, field.key)}?.map((item: any) => (
@@ -309,34 +400,44 @@ export const renderer = ({
                 ))}
                 </Stack>
             `;
-            }
-            return jsx`
+      }
+      return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <EmailField value={${accessor(
-                    recordName,
-                    field.key,
-                    field.accessor,
-                    " + ",
+                  recordName,
+                  field.key,
+                  field.accessor,
+                  " + ",
                 )}} />
             `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const urlFields = (field: InferField) => {
-        if (field.type === "url") {
-            imports.push(["UrlField", "@refinedev/mui"]);
+  const urlFields = (field: InferField) => {
+    if (field.type === "url") {
+      imports.push(["UrlField", "@refinedev/mui"]);
 
-            if (field.multiple) {
-                imports.push(["TagField", "@refinedev/mui"]);
+      if (field.multiple) {
+        imports.push(["TagField", "@refinedev/mui"]);
 
-                const val = accessor("item", undefined, field.accessor);
+        const val = accessor("item", undefined, field.accessor);
 
-                return jsx`
+        return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <Stack direction="row" spacing={1}>
                 {${accessor(recordName, field.key)}?.map((item: any) => (
@@ -344,71 +445,88 @@ export const renderer = ({
                 ))}
                 </Stack>
             `;
-            }
-            return jsx`
+      }
+      return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <UrlField value={${accessor(
-                    recordName,
-                    field.key,
-                    field.accessor,
-                    " + ",
+                  recordName,
+                  field.key,
+                  field.accessor,
+                  " + ",
                 )}} />
             `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const booleanFields = (field: InferField) => {
-        if (field.type === "boolean") {
-            imports.push(["BooleanField", "@refinedev/mui"]);
+  const booleanFields = (field: InferField) => {
+    if (field.type === "boolean") {
+      imports.push(["BooleanField", "@refinedev/mui"]);
 
-            if (field.multiple) {
-                imports.push(["TagField", "@refinedev/mui"]);
+      if (field.multiple) {
+        imports.push(["TagField", "@refinedev/mui"]);
 
-                const val = accessor("item", undefined, field.accessor);
+        const val = accessor("item", undefined, field.accessor);
 
-                return jsx`
+        return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <Stack direction="row" spacing={1}>
-                {${accessor(
-                    recordName,
-                    field.key,
-                )}?.map((item: any, index: number) => (
+                {${accessor(recordName, field.key)}?.map((item: any, index: number) => (
                     <TagField value={${val}} key={index} />
                 ))}
                 </Stack>
             `;
-            }
+      }
 
-            return jsx`
+      return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <BooleanField value={${accessor(
-                    recordName,
-                    field.key,
-                    field.accessor,
-                    " && ",
+                  recordName,
+                  field.key,
+                  field.accessor,
+                  " && ",
                 )}} />
             `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const dateFields = (field: InferField) => {
-        if (field.type === "date") {
-            imports.push(["DateField", "@refinedev/mui"]);
+  const dateFields = (field: InferField) => {
+    if (field.type === "date") {
+      imports.push(["DateField", "@refinedev/mui"]);
 
-            if (field.multiple) {
-                const val = accessor("item", undefined, field.accessor);
+      if (field.multiple) {
+        const val = accessor("item", undefined, field.accessor);
 
-                return jsx`
+        return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <Stack direction="row" spacing={1}>
                 {${accessor(recordName, field.key)}?.map((item: any) => (
@@ -416,55 +534,70 @@ export const renderer = ({
                 ))}
                 </Stack>
             `;
-            }
+      }
 
-            return jsx`
+      return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <DateField value={${accessor(
-                    recordName,
-                    field.key,
-                    field.accessor,
-                    " + ' ' + ",
+                  recordName,
+                  field.key,
+                  field.accessor,
+                  " + ' ' + ",
                 )}} />
             `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const richtextFields = (field: InferField) => {
-        if (field.type === "richtext") {
-            imports.push(["MarkdownField", "@refinedev/mui"]);
+  const richtextFields = (field: InferField) => {
+    if (field.type === "richtext") {
+      imports.push(["MarkdownField", "@refinedev/mui"]);
 
-            return jsx`
+      return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <MarkdownField value={${accessor(
-                    recordName,
-                    field.key,
-                    field.accessor,
-                    ' + " " + ',
+                  recordName,
+                  field.key,
+                  field.accessor,
+                  ' + " " + ',
                 )}} />
             `;
-        }
+    }
 
-        return undefined;
-    };
+    return undefined;
+  };
 
-    const numberFields = (field: InferField) => {
-        if (field.type === "number") {
-            imports.push(["NumberField", "@refinedev/mui"]);
+  const numberFields = (field: InferField) => {
+    if (field.type === "number") {
+      imports.push(["NumberField", "@refinedev/mui"]);
 
-            if (field.multiple) {
-                imports.push(["TagField", "@refinedev/mui"]);
+      if (field.multiple) {
+        imports.push(["TagField", "@refinedev/mui"]);
 
-                const val = accessor("item", undefined, field.accessor);
+        const val = accessor("item", undefined, field.accessor);
 
-                return jsx`
+        return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <Stack direction="row" spacing={1}>
                 {${accessor(recordName, field.key)}?.map((item: any) => (
@@ -472,78 +605,83 @@ export const renderer = ({
                 ))}
                 </Stack>
             `;
-            }
+      }
 
-            return jsx`
+      return jsx`
                 <Typography variant="body1" fontWeight="bold">
-                    ${prettyString(field.key)}
+                    ${translatePrettyString({
+                      resource,
+                      field,
+                      i18n,
+                      noQuotes: true,
+                    })}
                 </Typography>
                 <NumberField value={${accessor(
-                    recordName,
-                    field.key,
-                    field.accessor,
-                    ' + " " + ',
+                  recordName,
+                  field.key,
+                  field.accessor,
+                  ' + " " + ',
                 )} ?? ""} />
             `;
-        }
+    }
+    return undefined;
+  };
+
+  const renderedFields: Array<string | undefined> = fields.map((field) => {
+    switch (field?.type) {
+      case "text":
+        return textFields(field);
+      case "number":
+        return numberFields(field);
+      case "richtext":
+        return richtextFields(field);
+      case "email":
+        return emailFields(field);
+      case "image":
+        return imageFields(field);
+      case "date":
+        return dateFields(field);
+      case "boolean":
+        return booleanFields(field);
+      case "url":
+        return urlFields(field);
+      case "relation":
+        return renderRelationFields(field);
+      default:
         return undefined;
-    };
+    }
+  });
 
-    const renderedFields: Array<string | undefined> = fields.map((field) => {
-        switch (field?.type) {
-            case "text":
-                return textFields(field);
-            case "number":
-                return numberFields(field);
-            case "richtext":
-                return richtextFields(field);
-            case "email":
-                return emailFields(field);
-            case "image":
-                return imageFields(field);
-            case "date":
-                return dateFields(field);
-            case "boolean":
-                return booleanFields(field);
-            case "url":
-                return urlFields(field);
-            case "relation":
-                return renderRelationFields(field);
-            default:
-                return undefined;
-        }
-    });
+  noOp(imports);
+  const useTranslateHook = i18n && "const translate = useTranslate();";
 
-    noOp(imports);
-
-    return jsx`
+  return jsx`
     ${printImports(imports)}
 
     export const ${COMPONENT_NAME} = () => {
-        const { queryResult } = useShow(${
-            isCustomPage
-                ? `{ 
+        ${useTranslateHook}
+        const { query } = useShow(${
+          isCustomPage
+            ? `{ 
                     resource: "${resource.name}", 
-                    id: ${id},
+                    id: ${idQuoteWrapper(id)},
                     ${getMetaProps(
-                        resource?.identifier ?? resource?.name,
-                        meta,
-                        "getOne",
+                      resource?.identifier ?? resource?.name,
+                      meta,
+                      ["getOne"],
                     )}
                 }`
-                : getMetaProps(
-                      resource?.identifier ?? resource?.name,
-                      meta,
-                      "getOne",
-                  )
-                ? `{ ${getMetaProps(
-                      resource?.identifier ?? resource?.name,
-                      meta,
-                      "getOne",
-                  )} }`
-                : ""
+            : getMetaProps(resource?.identifier ?? resource?.name, meta, [
+                  "getOne",
+                ])
+              ? `{ ${getMetaProps(
+                  resource?.identifier ?? resource?.name,
+                  meta,
+                  ["getOne"],
+                )} }`
+              : ""
         });
-        const { data, isLoading } = queryResult;
+        const { data, isLoading } = query;
     
         const ${recordName} = data?.data;
     
@@ -564,27 +702,27 @@ export const renderer = ({
  * @experimental This is an experimental component
  */
 export const ShowInferencer: InferencerResultComponent = createInferencer({
-    type: "show",
-    additionalScope: [
-        [
-            "@refinedev/mui",
-            "RefineMui",
-            {
-                Show,
-                TagField,
-                TextFieldComponent,
-                EmailField,
-                UrlField,
-                BooleanField,
-                DateField,
-                MarkdownField,
-                NumberField,
-            },
-        ],
-        ["@mui/material", "MuiMaterial", { Typography, Stack }],
+  type: "show",
+  additionalScope: [
+    [
+      "@refinedev/mui",
+      "RefineMui",
+      {
+        Show,
+        TagField,
+        TextFieldComponent,
+        EmailField,
+        UrlField,
+        BooleanField,
+        DateField,
+        MarkdownField,
+        NumberField,
+      },
     ],
-    codeViewerComponent: SharedCodeViewer,
-    loadingComponent: LoadingComponent,
-    errorComponent: ErrorComponent,
-    renderer,
+    ["@mui/material", "MuiMaterial", { Typography, Stack }],
+  ],
+  codeViewerComponent: SharedCodeViewer,
+  loadingComponent: LoadingComponent,
+  errorComponent: ErrorComponent,
+  renderer,
 });

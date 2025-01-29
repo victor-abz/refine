@@ -1,73 +1,76 @@
 import { useContext } from "react";
 
-import { useAuthBindingsContext, useLegacyAuthContext } from "@contexts/auth";
-import { AuditLogContext } from "@contexts/auditLog";
-import { LiveContext } from "@contexts/live";
-import { RouterContext } from "@contexts/legacy-router";
-import { DataContext } from "@contexts/data";
-import { TranslationContext } from "@contexts/translation";
-import { NotificationContext } from "@contexts/notification";
 import { AccessControlContext } from "@contexts/accessControl";
+import { AuditLogContext } from "@contexts/auditLog";
+import { DataContext } from "@contexts/data";
+import { I18nContext } from "@contexts/i18n";
+import { LiveContext } from "@contexts/live";
+import { NotificationContext } from "@contexts/notification";
+import { LegacyRouterContext } from "@contexts/router/legacy";
 import { useResource } from "@hooks/resource";
 
-import { ITelemetryData } from "../../interfaces/telementry";
-import { useIsExistAuthentication } from "..";
+import { useIsExistAuthentication, useRefineContext } from "..";
+import type { ITelemetryData } from "../../components/telemetry/types";
 
 // It reads and updates from package.json during build. ref: tsup.config.ts
 const REFINE_VERSION = "1.0.0";
 
 export const useTelemetryData = (): ITelemetryData => {
-    const auth = useIsExistAuthentication();
-    const auditLogContext = useContext(AuditLogContext);
-    const liveContext = useContext(LiveContext);
-    const routerContext = useContext(RouterContext);
-    const dataContext = useContext(DataContext);
-    const { i18nProvider } = useContext(TranslationContext);
-    const notificationContext = useContext(NotificationContext);
-    const accessControlContext = useContext(AccessControlContext);
-    const { resources } = useResource();
+  const auth = useIsExistAuthentication();
+  const auditLogContext = useContext(AuditLogContext);
+  const { liveProvider } = useContext(LiveContext);
+  const routerContext = useContext(LegacyRouterContext);
+  const dataContext = useContext(DataContext);
+  const { i18nProvider } = useContext(I18nContext);
+  const notificationContext = useContext(NotificationContext);
+  const accessControlContext = useContext(AccessControlContext);
+  const { resources } = useResource();
+  const refineOptions = useRefineContext();
 
-    const auditLog =
-        !!auditLogContext.create ||
-        !!auditLogContext.get ||
-        !!auditLogContext.update;
+  const auditLog =
+    !!auditLogContext.create ||
+    !!auditLogContext.get ||
+    !!auditLogContext.update;
 
-    const live =
-        !!liveContext?.publish ||
-        !!liveContext?.subscribe ||
-        !!liveContext?.unsubscribe;
+  const live =
+    !!liveProvider?.publish ||
+    !!liveProvider?.subscribe ||
+    !!liveProvider?.unsubscribe;
 
-    const router =
-        !!routerContext.useHistory ||
-        !!routerContext.Link ||
-        !!routerContext.Prompt ||
-        !!routerContext.useLocation ||
-        !!routerContext.useParams;
+  const router =
+    !!routerContext.useHistory ||
+    !!routerContext.Link ||
+    !!routerContext.Prompt ||
+    !!routerContext.useLocation ||
+    !!routerContext.useParams;
 
-    const data = !!dataContext;
+  const data = !!dataContext;
 
-    const i18n =
-        !!i18nProvider?.changeLocale ||
-        !!i18nProvider?.getLocale ||
-        !!i18nProvider?.translate;
+  const i18n =
+    !!i18nProvider?.changeLocale ||
+    !!i18nProvider?.getLocale ||
+    !!i18nProvider?.translate;
 
-    const notification =
-        !!notificationContext.close || !!notificationContext.open;
+  const notification =
+    !!notificationContext.close || !!notificationContext.open;
 
-    const accessControl = !!accessControlContext.can;
+  const accessControl = !!accessControlContext.can;
 
-    return {
-        providers: {
-            auth,
-            auditLog,
-            live,
-            router,
-            data,
-            i18n,
-            notification,
-            accessControl,
-        },
-        version: REFINE_VERSION,
-        resourceCount: resources.length,
-    };
+  const projectId = refineOptions?.options?.projectId;
+
+  return {
+    providers: {
+      auth,
+      auditLog,
+      live,
+      router,
+      data,
+      i18n,
+      notification,
+      accessControl,
+    },
+    version: REFINE_VERSION,
+    resourceCount: resources.length,
+    projectId,
+  };
 };

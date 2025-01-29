@@ -1,46 +1,54 @@
-import { ErrorComponent, GitHubBanner, Refine } from "@refinedev/core";
-import routerProvider, {
-    NavigateToResource,
-    UnsavedChangesNotifier,
-} from "@refinedev/react-router-v6";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { Refine, GitHubBanner, ErrorComponent } from "@refinedev/core";
+import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import dataProvider from "@refinedev/simple-rest";
+import routerBindings, {
+  UnsavedChangesNotifier,
+  DocumentTitleHandler,
+} from "@refinedev/react-router";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 
-import { Posts } from "components/Posts";
+import { Posts } from "./pages/posts";
+
+import "./App.css";
 
 function App() {
-    return (
-        <BrowserRouter>
-            <GitHubBanner />
-            <Refine
-                routerProvider={routerProvider}
-                dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-                resources={[{ name: "posts", list: "/posts" }]}
+  return (
+    <BrowserRouter>
+      <GitHubBanner />
+      <RefineKbarProvider>
+        <Refine
+          dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+          resources={[{ name: "posts", list: "/" }]}
+          routerProvider={routerBindings}
+          options={{
+            syncWithLocation: true,
+            warnWhenUnsavedChanges: true,
+          }}
+        >
+          <Routes>
+            <Route
+              element={
+                <div
+                  style={{
+                    maxWidth: "1000px",
+                    margin: "0 auto",
+                  }}
+                >
+                  <Outlet />
+                </div>
+              }
             >
-                <Routes>
-                    <Route
-                        element={
-                            <div
-                                style={{ maxWidth: "1000px", margin: "0 auto" }}
-                            >
-                                <div>
-                                    <Outlet />
-                                </div>
-                            </div>
-                        }
-                    >
-                        <Route
-                            index
-                            element={<NavigateToResource resource="posts" />}
-                        />
-                        <Route path="posts" element={<Posts />} />
-                        <Route path="*" element={<ErrorComponent />} />
-                    </Route>
-                </Routes>
-                <UnsavedChangesNotifier />
-            </Refine>
-        </BrowserRouter>
-    );
+              <Route index element={<Posts />} />
+              <Route path="*" element={<ErrorComponent />} />
+            </Route>
+          </Routes>
+          <RefineKbar />
+          <UnsavedChangesNotifier />
+          <DocumentTitleHandler />
+        </Refine>
+      </RefineKbarProvider>
+    </BrowserRouter>
+  );
 }
 
 export default App;

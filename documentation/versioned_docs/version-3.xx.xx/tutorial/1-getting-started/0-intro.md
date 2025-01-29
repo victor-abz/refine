@@ -2,8 +2,8 @@
 id: index
 title: 1. Intro
 tutorial:
-    prev: tutorial/introduction/select-framework
-    next: tutorial/getting-started/prepare-env
+  prev: 3.xx.xx/tutorial/introduction/select-framework
+  next: 3.xx.xx/tutorial/getting-started/prepare-env
 ---
 
 <UIConditional is="antd">
@@ -47,31 +47,31 @@ Prefer to finish this tutorial in an online code editor? That's possible!
 
 <UIConditional is="antd">
 
-1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/next/examples/template-antd?file=src%2FApp.tsx) to open the Ant Design template.
+1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/v3/examples/template-antd?file=src%2FApp.tsx) to open the Ant Design template.
 
 </UIConditional>
 
 <UIConditional is="chakra-ui">
 
-1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/next/examples/template-chakra-ui?file=src%2FApp.tsx) to open the Chakra UI template.
+1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/v3/examples/template-chakra-ui?file=src%2FApp.tsx) to open the Chakra UI template.
 
 </UIConditional>
 
 <UIConditional is="headless">
 
-1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/next/examples/template-headless?file=src%2FApp.tsx) to open the headless template.
+1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/v3/examples/template-headless?file=src%2FApp.tsx) to open the headless template.
 
 </UIConditional>
 
 <UIConditional is="mantine">
 
-1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/next/examples/template-mantine?file=src%2FApp.tsx) to open the Mantine template.
+1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/v3/examples/template-mantine?file=src%2FApp.tsx) to open the Mantine template.
 
 </UIConditional>
 
 <UIConditional is="mui">
 
-1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/next/examples/template-material-ui?file=src%2FApp.tsx) to open the Material UI template.
+1. Click [here](https://codesandbox.io/embed/github/refinedev/refine/tree/v3/examples/template-material-ui?file=src%2FApp.tsx) to open the Material UI template.
 
 </UIConditional>
 
@@ -112,31 +112,31 @@ Prefer to finish this tutorial in an online code editor? That's possible!
 **Make Changes**
 <UIConditional is="antd">
 
-In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/tutorial/getting-started/antd/generate-crud-pages/) to make a change to this file.
+In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/3.xx.xx/tutorial/getting-started/antd/generate-crud-pages/) to make a change to this file.
 
 </UIConditional>
 
 <UIConditional is="chakra-ui">
 
-In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/tutorial/getting-started/chakra-ui/generate-crud-pages/) to make a change to this file.
+In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/3.xx.xx/tutorial/getting-started/chakra-ui/generate-crud-pages/) to make a change to this file.
 
 </UIConditional>
 
 <UIConditional is="headless">
 
-In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/tutorial/getting-started/headless/generate-crud-pages/) to make a change to this file.
+In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/3.xx.xx/tutorial/getting-started/headless/generate-crud-pages/) to make a change to this file.
 
 </UIConditional>
 
 <UIConditional is="mantine">
 
-In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/tutorial/getting-started/mantine/generate-crud-pages/) to make a change to this file.
+In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/3.xx.xx/tutorial/getting-started/mantine/generate-crud-pages/) to make a change to this file.
 
 </UIConditional>
 
 <UIConditional is="mui">
 
-In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/tutorial/getting-started/mui/generate-crud-pages/) to make a change to this file.
+In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Generate CRUD pages automatically with Inferencer](/docs/3.xx.xx/tutorial/getting-started/mui/generate-crud-pages/) to make a change to this file.
 
 </UIConditional>
 
@@ -148,7 +148,7 @@ In the file pane, you should see `src/app.tsx`. Click to open it, and follow [Ge
 
 **Deploy your App**
 
-If you’d like to deploy to Netlify, skip to [Deploy your app to the web](/docs/tutorial/getting-started/deploy-project/). Otherwise, skip to [Generate CRUD pages automatically with Inferencer](/docs/tutorial/understanding-dataprovider/index/) to start building with **refine**!
+If you’d like to deploy to Netlify, skip to [Deploy your app to the web](/docs/3.xx.xx/tutorial/getting-started/deploy-project/). Otherwise, skip to [Generate CRUD pages automatically with Inferencer](/docs/3.xx.xx/tutorial/understanding-dataprovider/index/) to start building with **refine**!
 
 </details>
 :::
@@ -157,11 +157,11 @@ If you’d like to deploy to Netlify, skip to [Deploy your app to the web](/docs
 
 In this unit, we will be covering the following steps:
 
--   Setting up your development environment.
--   Creating a new project.
--   Generating CRUD pages for your data model.
--   Store your project in a git repository.
--   Deploy your project to the cloud.
+- Setting up your development environment.
+- Creating a new project.
+- Generating CRUD pages for your data model.
+- Store your project in a git repository.
+- Deploy your project to the cloud.
 
 As you make changes to your project, you can commit them to your GitHub repository. Netlify listens for changes to your GitHub repository to automatically rebuild and deploy your application on every commit. This allows anyone to access and view your website updates as you make them.
 

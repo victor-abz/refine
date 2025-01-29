@@ -10,7 +10,9 @@
         "password": "Password"
       },
       "errors": {
-        "validEmail": "Invalid email address"
+        "validEmail": "Invalid email address",
+        "requiredEmail": "Email is required",
+        "requiredPassword": "Password is required"
       },
       "buttons": {
         "submit": "Login",
@@ -21,24 +23,31 @@
     },
     "forgotPassword": {
       "title": "Forgot your password?",
+      "signin": "Sign in",
       "fields": {
         "email": "Email"
       },
       "errors": {
-        "validEmail": "Invalid email address"
+        "validEmail": "Invalid email address",
+        "requiredEmail": "Email is required"
       },
       "buttons": {
-        "submit": "Send reset instructions"
+        "submit": "Send reset instructions",
+        "haveAccount": "Have an account?"
       }
     },
     "register": {
       "title": "Sign up for your account",
+      "signin": "Sign in",
+      "divider": "or",
       "fields": {
         "email": "Email",
         "password": "Password"
       },
       "errors": {
-        "validEmail": "Invalid email address"
+        "validEmail": "Invalid email address",
+        "requiredEmail": "Email is required",
+        "requiredPassword": "Password is required"
       },
       "buttons": {
         "submit": "Register",
@@ -52,7 +61,9 @@
         "confirmPassword": "Confirm new password"
       },
       "errors": {
-        "confirmPasswordNotMatch": "Passwords do not match"
+        "confirmPasswordNotMatch": "Passwords do not match",
+        "requiredPassword": "Password required",
+        "requiredConfirmPassword": "Confirm password is required"
       },
       "buttons": {
         "submit": "Update"
@@ -116,7 +127,36 @@
       "content": "Content",
       "status": "Status",
       "category": "Category",
-      "createdAt": "Created At"
+      "categoryId": "Category",
+      "category_id": "Category",
+      "createdAt": "Created At",
+      "created_at": "Created At",
+      "publishedAt": "Published At",
+      "updatedAt": "Updated At",
+      "locale": "Locale"
+    },
+    "titles": {
+      "create": "Create Blog Post",
+      "edit": "Edit Blog Post",
+      "list": "Blog Posts",
+      "show": "Show Blog Post"
+    }
+  },
+  "blog-posts": {
+    "blog_posts": "Blog Posts",
+    "fields": {
+      "id": "Id",
+      "title": "Title",
+      "content": "Content",
+      "status": "Status",
+      "category": "Category",
+      "categoryId": "Category",
+      "category_id": "Category",
+      "createdAt": "Created At",
+      "created_at": "Created At",
+      "publishedAt": "Published At",
+      "updatedAt": "Updated At",
+      "locale": "Locale"
     },
     "titles": {
       "create": "Create Blog Post",
@@ -130,7 +170,12 @@
     "fields": {
       "id": "Id",
       "title": "Title",
-      "createdAt": "Created At"
+      "createdAt": "Created At",
+      "created_at": "Created At",
+      "publishedAt": "Published At",
+      "updatedAt": "Updated At",
+      "locale": "Locale",
+      "Posts": "Posts"
     },
     "titles": {
       "create": "Create Category",
@@ -139,7 +184,31 @@
       "show": "Show Category"
     }
   },
+  "products": {
+    "fields": {
+      "category": "Category",
+      "description": "Description",
+      "id": "Id",
+      "material": "Material",
+      "name": "Name",
+      "price": "Price"
+    },
+    "products": "Products",
+    "titles": {
+      "create": "Create Product",
+      "edit": "Edit Product",
+      "list": "Products",
+      "show": "Show Product"
+    }
+  },
   "table": {
     "actions": "Actions"
+  },
+  "pagination": {
+    "go": "Go to Page",
+    "show": "Show"
+  },
+  "form": {
+    "required": "This field is required"
   }
 }

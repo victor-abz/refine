@@ -1,135 +1,145 @@
-import React, { ComponentProps } from "react";
+import React, { type ComponentProps } from "react";
 import {
-    GoConfig,
-    ParseResponse,
-    RouterBindings,
-    matchResourceFromRoute,
-    ResourceContext,
+  type GoConfig,
+  type ParseResponse,
+  type RouterBindings,
+  matchResourceFromRoute,
+  ResourceContext,
 } from "@refinedev/core";
 import { useCallback, useContext } from "react";
-import { parse, stringify } from "qs";
-import { useNavigate, useLocation, useParams, Link } from "react-router-dom";
+import qs from "qs";
+import {
+  useNavigate,
+  useLocation,
+  Link,
+  matchPath,
+  useParams,
+} from "react-router-dom";
 import { convertToNumberIfPossible } from "./convert-to-number-if-possible";
 
 export const stringifyConfig = {
-    addQueryPrefix: true,
-    skipNulls: true,
-    arrayFormat: "indices" as const,
-    encode: false,
-    encodeValuesOnly: true,
+  addQueryPrefix: true,
+  skipNulls: true,
+  arrayFormat: "indices" as const,
+  encode: false,
+  encodeValuesOnly: true,
 };
 
 export const routerBindings: RouterBindings = {
-    go: () => {
-        const { search: existingSearch, hash: existingHash } = useLocation();
-        const navigate = useNavigate();
+  go: () => {
+    const { search: existingSearch, hash: existingHash } = useLocation();
+    const navigate = useNavigate();
 
-        const fn = useCallback(
-            ({
-                to,
-                type,
-                query,
-                hash,
-                options: { keepQuery, keepHash } = {},
-            }: GoConfig) => {
-                /** Construct query params */
-                const urlQuery = {
-                    ...(keepQuery &&
-                        existingSearch &&
-                        parse(existingSearch, { ignoreQueryPrefix: true })),
-                    ...query,
-                };
+    const fn = useCallback(
+      ({
+        to,
+        type,
+        query,
+        hash,
+        options: { keepQuery, keepHash } = {},
+      }: GoConfig) => {
+        /** Construct query params */
+        const urlQuery = {
+          ...(keepQuery &&
+            existingSearch &&
+            qs.parse(existingSearch, { ignoreQueryPrefix: true })),
+          ...query,
+        };
 
-                if (urlQuery.to) {
-                    urlQuery.to = encodeURIComponent(`${urlQuery.to}`);
-                }
+        if (urlQuery.to) {
+          urlQuery.to = encodeURIComponent(`${urlQuery.to}`);
+        }
 
-                const hasUrlQuery = Object.keys(urlQuery).length > 0;
+        const hasUrlQuery = Object.keys(urlQuery).length > 0;
 
-                /** Get hash */
-                const urlHash = `#${(
-                    hash ||
-                    (keepHash && existingHash) ||
-                    ""
-                ).replace(/^#/, "")}`;
+        /** Get hash */
+        const urlHash = `#${(hash || (keepHash && existingHash) || "").replace(
+          /^#/,
+          "",
+        )}`;
 
-                const hasUrlHash = urlHash.length > 1;
+        const hasUrlHash = urlHash.length > 1;
 
-                const urlTo = to || "";
+        const urlTo = to || "";
 
-                const fullPath = `${urlTo}${
-                    hasUrlQuery ? stringify(urlQuery, stringifyConfig) : ""
-                }${hasUrlHash ? urlHash : ""}`;
+        const fullPath = `${urlTo}${
+          hasUrlQuery ? qs.stringify(urlQuery, stringifyConfig) : ""
+        }${hasUrlHash ? urlHash : ""}`;
 
-                if (type === "path") {
-                    return fullPath;
-                }
+        if (type === "path") {
+          return fullPath;
+        }
 
-                /** Navigate to the url */
-                return navigate(fullPath, {
-                    replace: type === "replace",
-                });
-            },
-            [existingHash, existingSearch, navigate],
-        );
+        /** Navigate to the url */
+        return navigate(fullPath, {
+          replace: type === "replace",
+        });
+      },
+      [existingHash, existingSearch, navigate],
+    );
 
-        return fn;
-    },
-    back: () => {
-        const navigate = useNavigate();
+    return fn;
+  },
+  back: () => {
+    const navigate = useNavigate();
 
-        const fn = useCallback(() => {
-            navigate(-1);
-        }, [navigate]);
+    const fn = useCallback(() => {
+      navigate(-1);
+    }, [navigate]);
 
-        return fn;
-    },
-    parse: () => {
-        const params = useParams();
-        const { pathname, search } = useLocation();
-        const { resources } = useContext(ResourceContext);
+    return fn;
+  },
+  parse: () => {
+    let params = useParams();
+    const { pathname, search } = useLocation();
+    const { resources } = useContext(ResourceContext);
 
-        const { resource, action } = React.useMemo(() => {
-            return matchResourceFromRoute(pathname, resources);
-        }, [resources, pathname]);
+    const { resource, action, matchedRoute } = React.useMemo(() => {
+      return matchResourceFromRoute(pathname, resources);
+    }, [resources, pathname]);
 
-        const fn = useCallback(() => {
-            const parsedSearch = parse(search, { ignoreQueryPrefix: true });
+    // params is empty when useParams is used in a component that is not a child of a Route
+    if (Object.entries(params).length === 0 && matchedRoute) {
+      params = matchPath(matchedRoute, pathname)?.params || {};
+    }
 
-            const combinedParams = {
-                ...params,
-                ...parsedSearch,
-            };
+    const fn = useCallback(() => {
+      const parsedSearch = qs.parse(search, { ignoreQueryPrefix: true });
 
-            const response: ParseResponse = {
-                ...(resource && { resource }),
-                ...(action && { action }),
-                ...(params?.id && { id: decodeURIComponent(params.id) }),
-                // ...(params?.action && { action: params.action }), // lets see if there is a need for this
-                pathname,
-                params: {
-                    ...combinedParams,
-                    current: convertToNumberIfPossible(
-                        combinedParams.current as string,
-                    ) as number | undefined,
-                    pageSize: convertToNumberIfPossible(
-                        combinedParams.pageSize as string,
-                    ) as number | undefined,
-                    to: combinedParams.to
-                        ? decodeURIComponent(combinedParams.to as string)
-                        : undefined,
-                },
-            };
+      const combinedParams = {
+        ...params,
+        ...parsedSearch,
+      };
 
-            return response;
-        }, [pathname, search, params, resource, action]);
+      const response: ParseResponse = {
+        ...(resource && { resource }),
+        ...(action && { action }),
+        ...(params?.id && { id: decodeURIComponent(params.id) }),
+        // ...(params?.action && { action: params.action }), // lets see if there is a need for this
+        pathname,
+        params: {
+          ...combinedParams,
+          current: convertToNumberIfPossible(
+            combinedParams.current as string,
+          ) as number | undefined,
+          pageSize: convertToNumberIfPossible(
+            combinedParams.pageSize as string,
+          ) as number | undefined,
+          to: combinedParams.to
+            ? decodeURIComponent(combinedParams.to as string)
+            : undefined,
+        },
+      };
 
-        return fn;
-    },
-    Link: React.forwardRef<
-        HTMLAnchorElement,
-        ComponentProps<NonNullable<RouterBindings["Link"]>>
-    >(function RefineLink(props, ref) {
-        return <Link {...props} ref={ref} />;
-    }),
+      return response;
+    }, [pathname, search, params, resource, action]);
+
+    return fn;
+  },
+  Link: React.forwardRef<
+    HTMLAnchorElement,
+    ComponentProps<NonNullable<RouterBindings["Link"]>>
+  >(function RefineLink(props, ref) {
+    return <Link {...props} ref={ref} />;
+  }),
 };

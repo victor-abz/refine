@@ -1,5 +1,4 @@
 ---
-id: router-provider
 title: Migrating Router Provider from 3.x.x to 4.x.x
 sidebar_label: Migrating Router Provider
 ---
@@ -8,11 +7,11 @@ sidebar_label: Migrating Router Provider
 
 Our motivation behind the changes to `routerProvider` and route handling was to increase flexibility and ease of use.
 
-By simplifying the `routerProvider` to just an interaction and connection point between **refine** and the router, we eliminated the need for a specific way of defining routes and a `routerProvider` altogether. This means that **refine** will meet enterprise-grade requirements. While router bindings are optional, we recommend passing them to **refine** for optimal usage.
+By simplifying the `routerProvider` to just an interaction and connection point between **Refine** and the router, we eliminated the need for a specific way of defining routes and a `routerProvider` altogether. This means that **Refine** will meet enterprise-grade requirements. While router bindings are optional, we recommend passing them to **Refine** for optimal usage.
 
-By making these changes, we made it so that people can integrate refine into their existing projects without needing to modify their current routes or applications
+By making these changes, we made it so that people can integrate Refine into their existing projects without needing to modify their current routes or applications
 
-Ultimately, our goal is to make it simple for users to handle their unique situations without enforcing a particular methodology. With the updated router provider, you can continue using routers like before while benefiting from the features that **refine** offers.
+Ultimately, our goal is to make it simple for users to handle their unique situations without enforcing a particular methodology. With the updated router provider, you can continue using routers like before while benefiting from the features that **Refine** offers.
 
 ## Important Notes
 
@@ -59,17 +58,19 @@ const CustomSider = () => {
 ```
 
 :::note
+
 If you have customized the use of `useMenu` hook, you might need to check the usage of it to make sure it's working as expected. Even though the `useMenu` hook has not been changed in its return values, the way it generates the menu item keys has changed.
+
 :::
 
 ### Behavioral Changes in Routing
 
-Since **refine** doesn't create routes internally anymore, you are free to create your routes according to your framework without any limitations.
+Since **Refine** doesn't create routes internally anymore, you are free to create your routes according to your framework without any limitations.
 
-This means that tasks such as `authentication` and `access control` are decoupled from **refine** and should be handled in accordance with your framework. However, we do provide a set of helpers for you to use in your components to make these tasks easier to handle:
+This means that tasks such as `authentication` and `access control` are decoupled from **Refine** and should be handled in accordance with your framework. However, we do provide a set of helpers for you to use in your components to make these tasks easier to handle:
 
--   The [`Authenticated`](/docs/api-reference/core/components/auth/authenticated) component as a wrapper or the `useIsAuthenticated` hook for authentication
--   The [`CanAccess`](/docs/api-reference/core/components/accessControl/can-access) component as a wrapper or the `useCan` hook for access control
+- The [`Authenticated`](/docs/authentication/components/authenticated) component as a wrapper or the `useIsAuthenticated` hook for authentication
+- The [`CanAccess`](/docs/authorization/components/can-access) component as a wrapper or the `useCan` hook for access control
 
 ## Using the New Router Providers
 
@@ -109,7 +110,7 @@ Refine previously utilized `react-router-dom@6.3.0`, but it has now been updated
 
 :::
 
-Check out the documentation for [`@refinedev/react-router-v6`](/docs/packages/documentation/routers/react-router-v6)
+Check out the documentation for [`@refinedev/react-router-v6`](/docs/packages/list-of-packages)
 and [`react-router-dom`](https://reactrouter.com)
 
 ### Remix and Next.js
@@ -118,5 +119,5 @@ If you are using Remix or Next.js, you will first need to create your routes usi
 
 Check out their respective documentations:
 
--   > [`@refinedev/remix-router`](/docs/packages/documentation/routers/remix) and [`Remix`](https://remix.run/docs/en/main) documentations for Remix
--   > [`@refinedev/nextjs-router`](/docs/packages/documentation/routers/nextjs) and [`Next.js`](https://nextjs.org/docs/getting-started) documentations for Next.js.
+- > [`@refinedev/remix-router`](/docs/packages/list-of-packages) and [`Remix`](https://remix.run/docs/en/main) documentations for Remix
+- > [`@refinedev/nextjs-router`](/docs/packages/list-of-packages) and [`Next.js`](https://nextjs.org/docs/getting-started) documentations for Next.js.

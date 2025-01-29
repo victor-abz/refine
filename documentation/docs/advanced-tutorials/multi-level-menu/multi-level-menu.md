@@ -4,7 +4,7 @@ title: Multi Level Menu
 sidebar_label: Multi Level Menu
 ---
 
-This document is related to how to create a multi-level menu for **refine** applications.
+This document is related to how to create a multi-level menu for **Refine** applications.
 
 ### What is Multi-level Menu?
 
@@ -12,7 +12,7 @@ The multi-level menu is a great way to organize your sider menu items. You can c
 
 ## Usage
 
-To do this, it is necessary to create an object array with the following [resources properties](/api-reference/core/interfaces.md#resourceitemprops):
+To do this, it is necessary to create an object array with the following [resources properties](/docs/core/interface-references#resourceprops):
 
 ```tsx title="src/App.tsx"
         <Refine
@@ -49,17 +49,17 @@ The `meta.parent` you give in the resource objects must be strictly equal to the
 
 ### Headless
 
-If you want to create your multi-level menu without any UI framework integration, [`useMenu`](/api-reference/core/hooks/ui/useMenu.md) hook gives your resources.
+If you want to create your multi-level menu without any UI framework integration, [`useMenu`](/docs/core/hooks/utilities/use-menu) hook gives your resources.
 
 ```tsx title="src/components/layout/sider/index.tsx"
 //highlight-next-line
 import { useMenu } from "@refinedev/core";
 
 export const Sider: React.FC = () => {
-    //highlight-next-line
-    const { menuItems, selectedKey, defaultOpenKeys } = useMenu();
+  //highlight-next-line
+  const { menuItems, selectedKey, defaultOpenKeys } = useMenu();
 
-    // Here create your Sider to your UI choice
+  // Here create your Sider to your UI choice
 };
 ```
 
@@ -99,14 +99,7 @@ The Sider component allows you to create the groups you want in the sider menu. 
 
 This gives you more control over the side menu and allows you to customize it to better suit your needs.
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/multi-level-menu/multi-level-menu.png" alt="multiLevelMenu" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/multi-level-menu/multi-level-menu.png" alt="multiLevelMenu" />
 <br />
 
 <br/>

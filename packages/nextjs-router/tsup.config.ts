@@ -1,32 +1,57 @@
-import { defineConfig } from "tsup";
+import { defineConfig, type Options } from "tsup";
 import { NodeResolvePlugin } from "@esbuild-plugins/node-resolve";
+import { nextJsEsmReplacePlugin } from "../shared/next-js-esm-replace-plugin";
 
-export default defineConfig({
+const sharedConfig: Partial<Options> = {
+  outDir: "dist",
+  splitting: false,
+  sourcemap: true,
+  clean: false,
+  minify: true,
+  format: ["cjs", "esm"],
+  outExtension: ({ format }) => ({ js: format === "cjs" ? ".cjs" : ".mjs" }),
+  platform: "browser",
+  esbuildPlugins: [
+    NodeResolvePlugin({
+      extensions: [".js", "ts", "tsx", "jsx"],
+      onResolved: (resolved) => {
+        if (resolved.includes("node_modules")) {
+          return {
+            external: true,
+          };
+        }
+        return resolved;
+      },
+    }),
+    nextJsEsmReplacePlugin,
+  ],
+};
+
+export default defineConfig((options) => [
+  {
     entry: {
-        index: "src/index.ts",
-        pages: "src/pages/index.ts",
-        app: "src/app/index.ts",
-        legacy: "src/legacy/index.ts",
-        "legacy-pages": "src/legacy-pages/index.ts",
-        "legacy-app": "src/legacy-app/index.ts",
+      index: "src/index.ts",
+      app: "src/app/index.ts",
     },
-    outDir: "dist",
-    splitting: false,
-    sourcemap: true,
-    clean: false,
-    platform: "browser",
-    esbuildPlugins: [
-        NodeResolvePlugin({
-            extensions: [".js", "ts", "tsx", "jsx"],
-            onResolved: (resolved) => {
-                if (resolved.includes("node_modules")) {
-                    return {
-                        external: true,
-                    };
-                }
-                return resolved;
-            },
-        }),
-    ],
-    onSuccess: "tsc --project tsconfig.declarations.json",
-});
+    esbuildOptions(options) {
+      options.banner = {
+        js: '"use client"',
+      };
+    },
+    ...sharedConfig,
+    onSuccess: options.watch ? "pnpm types" : undefined,
+  },
+  {
+    entry: {
+      pages: "src/pages/index.ts",
+    },
+    ...sharedConfig,
+  },
+  {
+    entry: {
+      "parse-table-params": "src/common/parse-table-params.ts",
+    },
+    ...sharedConfig,
+    onSuccess: options.watch ? "pnpm types" : undefined,
+  },
+]);

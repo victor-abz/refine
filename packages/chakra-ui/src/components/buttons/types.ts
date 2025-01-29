@@ -1,104 +1,104 @@
-import { ButtonProps } from "@chakra-ui/react";
-import { UseImportInputPropsType } from "@refinedev/core";
-import {
-    RefineCloneButtonProps,
-    RefineCreateButtonProps,
-    RefineDeleteButtonProps,
-    RefineEditButtonProps,
-    RefineExportButtonProps,
-    RefineImportButtonProps,
-    RefineListButtonProps,
-    RefineRefreshButtonProps,
-    RefineSaveButtonProps,
-    RefineShowButtonProps,
+import type { ButtonProps } from "@chakra-ui/react";
+import type { UseImportInputPropsType } from "@refinedev/core";
+import type {
+  RefineCloneButtonProps,
+  RefineCreateButtonProps,
+  RefineDeleteButtonProps,
+  RefineEditButtonProps,
+  RefineExportButtonProps,
+  RefineImportButtonProps,
+  RefineListButtonProps,
+  RefineRefreshButtonProps,
+  RefineSaveButtonProps,
+  RefineShowButtonProps,
 } from "@refinedev/ui-types";
-import { TablerIconProps } from "@tabler/icons";
+import type { IconProps } from "@tabler/icons-react";
 
 export type ShowButtonProps = Omit<
-    RefineShowButtonProps<
-        ButtonProps,
-        {
-            svgIconProps?: TablerIconProps;
-        }
-    >,
-    "ignoreAccessControlProvider"
+  RefineShowButtonProps<
+    ButtonProps,
+    {
+      svgIconProps?: Omit<IconProps, "ref">;
+    }
+  >,
+  "ignoreAccessControlProvider"
 >;
 
 export type SaveButtonProps = RefineSaveButtonProps<
-    ButtonProps,
-    {
-        svgIconProps?: TablerIconProps;
-    }
+  ButtonProps,
+  {
+    svgIconProps?: Omit<IconProps, "ref">;
+  }
 >;
 
 export type RefreshButtonProps = RefineRefreshButtonProps<
-    ButtonProps,
-    {
-        svgIconProps?: TablerIconProps;
-    }
+  ButtonProps,
+  {
+    svgIconProps?: Omit<IconProps, "ref">;
+  }
 >;
 
 export type ListButtonProps = Omit<
-    RefineListButtonProps<
-        ButtonProps,
-        {
-            svgIconProps?: TablerIconProps;
-        }
-    >,
-    "ignoreAccessControlProvider"
+  RefineListButtonProps<
+    ButtonProps,
+    {
+      svgIconProps?: Omit<IconProps, "ref">;
+    }
+  >,
+  "ignoreAccessControlProvider"
 >;
 
 export type ImportButtonProps = RefineImportButtonProps<
-    ButtonProps,
-    {
-        inputProps: UseImportInputPropsType;
-        svgIconProps?: TablerIconProps;
-    }
+  ButtonProps,
+  {
+    inputProps: UseImportInputPropsType;
+    svgIconProps?: Omit<IconProps, "ref">;
+  }
 >;
 
 export type ExportButtonProps = RefineExportButtonProps<
-    ButtonProps,
-    {
-        svgIconProps?: TablerIconProps;
-    }
+  ButtonProps,
+  {
+    svgIconProps?: Omit<IconProps, "ref">;
+  }
 >;
 
 export type EditButtonProps = Omit<
-    RefineEditButtonProps<
-        ButtonProps,
-        {
-            svgIconProps?: TablerIconProps;
-        }
-    >,
-    "ignoreAccessControlProvider"
+  RefineEditButtonProps<
+    ButtonProps,
+    {
+      svgIconProps?: Omit<IconProps, "ref">;
+    }
+  >,
+  "ignoreAccessControlProvider"
 >;
 
 export type DeleteButtonProps = Omit<
-    RefineDeleteButtonProps<
-        ButtonProps,
-        {
-            svgIconProps?: TablerIconProps;
-        }
-    >,
-    "ignoreAccessControlProvider"
+  RefineDeleteButtonProps<
+    ButtonProps,
+    {
+      svgIconProps?: Omit<IconProps, "ref">;
+    }
+  >,
+  "ignoreAccessControlProvider"
 >;
 
 export type CloneButtonProps = Omit<
-    RefineCloneButtonProps<
-        ButtonProps,
-        {
-            svgIconProps?: TablerIconProps;
-        }
-    >,
-    "ignoreAccessControlProvider"
+  RefineCloneButtonProps<
+    ButtonProps,
+    {
+      svgIconProps?: Omit<IconProps, "ref">;
+    }
+  >,
+  "ignoreAccessControlProvider"
 >;
 
 export type CreateButtonProps = Omit<
-    RefineCreateButtonProps<
-        ButtonProps,
-        {
-            svgIconProps?: TablerIconProps;
-        }
-    >,
-    "ignoreAccessControlProvider"
+  RefineCreateButtonProps<
+    ButtonProps,
+    {
+      svgIconProps?: Omit<IconProps, "ref">;
+    }
+  >,
+  "ignoreAccessControlProvider"
 >;

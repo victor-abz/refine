@@ -12,7 +12,7 @@ title: List of Packages
 
 - `@pankod/refine-antd` -  [Ant Design](https://ant.design/) System UI Framework support.  **20+** *framework-specific*  `hooks` and  `components`  incl. *Table, Form, Select, Menu, Layout, Notification and CRUD components.*
 
-- `@pankod/refine-mui` - [Material UI](https://mui.com/) Framework support. **20+** *framework-specific*  `hooks` and  `components`  incl. *DataGrid (+ Pro), AutoComplete, Menu, Layout, Notification and CRUD components.*
+- `@pankod/refine-mui` - [Material UI](https://mui.com/material-ui/getting-started/overview/) Framework support. **20+** *framework-specific*  `hooks` and  `components`  incl. *DataGrid (+ Pro), AutoComplete, Menu, Layout, Notification and CRUD components.*
 
 - `@pankod/refine-mantine` - [Mantine](https://mantine.dev/) UI Framework support. **20+** framework-specific **hooks** and **components** incl. *Table, Form, AutoComplete, Menu, Layout, Notification and CRUD components.*
 
@@ -85,4 +85,5 @@ title: List of Packages
 - [`@tspvivek/refine-directus`](https://github.com/tspvivek/refine-directus) - Connector for backends created with [Directus](https://directus.io/)
 - [`refine-elide-rest`](https://github.com/chirdeeptomar/refine-elide-rest) - Connector for backends created with [Elide](https://elide.io/)
 - [`ent-refine`](https://github.com/diazoxide/entrefine) - A library that generates fully customizable UI based on [Entgo ORM](https://entgo.io/) and [GraphQL API](https://graphql.org/) with [refine](https://github.com/refinedev/refine)
+- [`refine-use-generated`](https://github.com/usegen/refine-use-generated) - Support for [useGenerated](https://usegenerated.com/)  GraphQL API generator based on NestJs + Prisma ORM.
   

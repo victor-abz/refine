@@ -1,25 +1,23 @@
 ---
 title: Creating Mission and Invoice Pages
-description: We add more CRUD views to the Pdf Invoice Generator app we have been building using refine and Strapi last few days.
+description: We add more CRUD views to the Pdf Invoice Generator app we have been building using Refine and Strapi last few days.
 slug: refine-react-invoice-generator-4
 authors: abdullah_numan
-tags: [refine-week, refine, strapi, ant-design]
+tags: [refine-week, Refine, strapi, ant-design]
 image: https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/social.png
 hide_table_of_contents: false
 ---
 
+In this post, we add more CRUD views to the **Pdf Invoice Generator** app we have been building using **Refine** last few days. The resources we cover in this episode are: `missions` and `invoices`. We mainly continue leveraging `dataProvider` methods and adding to the `resources` prop as well as associated route definitions.
 
+We are on Day Four of [**#RefineWeek**](https://refine.dev/week-of-refine-strapi/) series which is a five-part tutorial that aims to help developers learn the ins-and-outs of **Refine**'s powerful capabilities and get going with **Refine** within a week.
 
-In this post, we add more CRUD views to the **Pdf Invoice Generator** app we have been building using **refine** last few days. The resources we cover in this episode are: `missions` and `invoices`. We mainly continue leveraging `dataProvider` methods and adding to the `resources` prop as well as associated route definitions.
+### RefineWeek ft. Strapi series
 
-We are on Day Four of [**#refineWeek**](https://refine.dev/week-of-refine-strapi/) series which is a five-part tutorial that aims to help developers learn the ins-and-outs of **refine**'s powerful capabilities and get going with **refine** within a week.
+- Day 1 - [Pilot & Refine architecture](https://refine.dev/blog/refine-react-invoice-generator-1/)
+- Day 2 - [Setting Up the Invoicer App](https://refine.dev/blog/refine-react-invoice-generator-2/)
+- Day 3 - [Adding CRUD Actions & Views](https://refine.dev/blog/refine-react-invoice-generator-3/)
 
-### refineWeek ft. Strapi series
-
- - Day 1 - [Pilot & refine architecture](https://refine.dev/blog/refine-react-invoice-generator-1/)
- - Day 2 - [Setting Up the Invoicer App](https://refine.dev/blog/refine-react-invoice-generator-2/)
- - Day 3 - [Adding CRUD Actions & Views](https://refine.dev/blog/refine-react-invoice-generator-3/)
-  
 ## Overview
 
 On [Day 3](https://refine.dev/blog/refine-react-invoice-generator-3/), we implemented CRUD actions for `companies`, `clients` and `contacts`. We saw that core data hooks such as `useCreate()` are invoked to access corresponding `dataProvider` methods (for example, `dataProvider.create`). And more sophisticated hooks like `useSimpleList()` are built on top of low level hooks like `useList()`.
@@ -34,16 +32,9 @@ But before we move into writing code, we have to define the collections for `mis
 
 Let's revisit the ERD for our **Pdf Invoice Generator** app:
 
-
-
-<div class="img-container">
- <img style={{alignSelf:"center"}}  src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/database.png"  alt="react invoice generator" />
-
-
-</div>
+<img style={{alignSelf:"center"}} src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/database.png" alt="react invoice generator" />
 
 <br />
-
 
 We can see from the diagram that `invoices` have an open `one-to-many` relation with `missions` with at least one mission mandatory for an invoice. On the other hand, `contacts` should have a `one-to-many` optional relation with `invoices`.
 
@@ -53,82 +44,34 @@ With this in mind, let's go ahead and create collections in our **Strapi** app.
 
 We should use the `Content-Type Builder` again to define these collections. The `missions` collection should look like this:
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/mission_collection.png"  alt="react crud app airtable" />
-
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/mission_collection.png"  alt="react crud app airtable" />
 
 <br />
-
 
 ### Strapi `invoices` Collection
 
 The `invoices` collection should look as below:
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/invoice_collection.png"  alt="react crud app airtable" />
-
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/invoice_collection.png"  alt="react crud app airtable" />
 
 <br />
 
-
 `invoices` has a `has one` association with `companies`:
 
-
-
-
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/invoice_company.png"  alt="react crud app airtable" />
-
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/invoice_company.png"  alt="react crud app airtable" />
 
 <br />
 
 It also has the same `has one` association with `contacts`
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/invoice_hasone.png"  alt="react crud app airtable" />
-
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/invoice_hasone.png"  alt="react crud app airtable" />
 
 <br />
-
-
 
 It also maintains a `has many` association with `missions`:
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/invoice_hasmany.png"  alt="react crud app airtable" />
-
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/invoice_hasmany.png"  alt="react crud app airtable" />
 
 <br />
-
 
 With the collections completed, we should now authorize `Authenticated` users to perform CRUD operations on them.
 
@@ -138,22 +81,13 @@ Like we did before with the `companies`, `clients` and `contacts` collections, w
 
 We can do this from the following path in our **Strapi** app: `/admin/settings/users-permissions/roles/1`
 
-
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-   <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/authenticated.png"  alt="react crud app airtable" />
-
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/authenticated.png"  alt="react crud app airtable" />
 
 <br />
 
 We need to set permissions for both `missions` and `invoices`.
 
-With these done, now we can head back to our **refine** app and add resources and routes for these entities.
+With these done, now we can head back to our **Refine** app and add resources and routes for these entities.
 
 ## Adding `resources` and Routes for `missions` and `invoices`
 
@@ -168,28 +102,28 @@ import { Authenticated, GitHubBanner, Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import {
-    AuthPage,
-    ErrorComponent,
-    ThemedLayout,
-    notificationProvider,
-    ThemedTitle,
+  AuthPage,
+  ErrorComponent,
+  ThemedLayout,
+  useNotificationProvider,
+  ThemedTitle,
 } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 import * as Icons from "@ant-design/icons";
 
 const {
-    UserAddOutlined,
-    TeamOutlined,
-    InfoCircleOutlined,
-    SlidersOutlined,
-    FileAddOutlined,
+  UserAddOutlined,
+  TeamOutlined,
+  InfoCircleOutlined,
+  SlidersOutlined,
+  FileAddOutlined,
 } = Icons;
 
 import routerBindings, {
-    CatchAllNavigate,
-    NavigateToResource,
-    UnsavedChangesNotifier,
-} from "@refinedev/react-router-v6";
+  CatchAllNavigate,
+  NavigateToResource,
+  UnsavedChangesNotifier,
+} from "@refinedev/react-router";
 import { DataProvider } from "@refinedev/strapi-v4";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider, axiosInstance } from "./authProvider";
@@ -203,166 +137,137 @@ import { MissionList } from "pages/missions";
 import { CreateInvoice, EditInvoice, InvoiceList } from "pages/invoices";
 
 function App() {
-    return (
-        <BrowserRouter>
-            <GitHubBanner />
-            <RefineKbarProvider>
-                <ColorModeContextProvider>
-                    <Refine
-                        resources={[
-                            {
-                                name: "companies",
-                                list: "/companies",
-                                icon: <InfoCircleOutlined />,
-                            },
-                            {
-                                name: "clients",
-                                list: "/clients",
-                                icon: <TeamOutlined />,
-                            },
-                            {
-                                name: "contacts",
-                                list: "/contacts",
-                                edit: "/contacts/:id/edit",
-                                icon: <UserAddOutlined />,
-                            },
-                            {
-                                name: "missions",
-                                list: "/missions",
-                                icon: <SlidersOutlined />,
-                            },
-                            {
-                                name: "invoices",
-                                list: "/invoices",
-                                create: "/invoices/create",
-                                edit: "invoices/:id/edit",
-                                icon: <FileAddOutlined />,
-                            },
-                        ]}
-                        authProvider={authProvider}
-                        dataProvider={DataProvider(
-                            API_URL + `/api`,
-                            axiosInstance,
-                        )}
-                        notificationProvider={notificationProvider}
-                        routerProvider={routerBindings}
-                        options={{
-                            syncWithLocation: true,
-                            warnWhenUnsavedChanges: true,
-                        }}
+  return (
+    <BrowserRouter>
+      <GitHubBanner />
+      <RefineKbarProvider>
+        <ColorModeContextProvider>
+          <Refine
+            resources={[
+              {
+                name: "companies",
+                list: "/companies",
+                icon: <InfoCircleOutlined />,
+              },
+              {
+                name: "clients",
+                list: "/clients",
+                icon: <TeamOutlined />,
+              },
+              {
+                name: "contacts",
+                list: "/contacts",
+                edit: "/contacts/:id/edit",
+                icon: <UserAddOutlined />,
+              },
+              {
+                name: "missions",
+                list: "/missions",
+                icon: <SlidersOutlined />,
+              },
+              {
+                name: "invoices",
+                list: "/invoices",
+                create: "/invoices/create",
+                edit: "invoices/:id/edit",
+                icon: <FileAddOutlined />,
+              },
+            ]}
+            authProvider={authProvider}
+            dataProvider={DataProvider(API_URL + `/api`, axiosInstance)}
+            notificationProvider={useNotificationProvider}
+            routerProvider={routerBindings}
+            options={{
+              syncWithLocation: true,
+              warnWhenUnsavedChanges: true,
+            }}
+          >
+            <Routes>
+              <Route
+                element={
+                  <Authenticated fallback={<CatchAllNavigate to="/login" />}>
+                    <ThemedLayout
+                      Header={Header}
+                      Title={({ collapsed }) => (
+                        <ThemedTitleV2 collapsed={collapsed} text="Invoicer" />
+                      )}
                     >
-                        <Routes>
-                            <Route
-                                element={
-                                    <Authenticated
-                                        fallback={
-                                            <CatchAllNavigate to="/login" />
-                                        }
-                                    >
-                                        <ThemedLayout
-                                            Header={Header}
-                                            Title={({ collapsed }) => (
-                                                <ThemedTitleV2
-                                                    collapsed={collapsed}
-                                                    text="Invoicer"
-                                                />
-                                            )}
-                                        >
-                                            <Outlet />
-                                        </ThemedLayout>
-                                    </Authenticated>
-                                }
-                            >
-                                <Route
-                                    index
-                                    element={
-                                        <NavigateToResource resource="companies" />
-                                    }
-                                />
-                                <Route path="/companies">
-                                    <Route index element={<CompanyList />} />
-                                </Route>
-                                <Route path="/clients">
-                                    <Route index element={<ClientList />} />
-                                </Route>
-                                <Route path="/contacts">
-                                    <Route index element={<ContactList />} />
-                                    <Route
-                                        path="/contacts/:id/edit"
-                                        element={<EditContact />}
-                                    />
-                                </Route>
-                                <Route path="/missions">
-                                    <Route index element={<MissionList />} />
-                                </Route>
-                                <Route path="/invoices">
-                                    <Route index element={<InvoiceList />} />
-                                    <Route
-                                        path="/invoices/create"
-                                        element={<CreateInvoice />}
-                                    />
-                                    <Route
-                                        path="/invoices/:id/edit"
-                                        element={<EditInvoice />}
-                                    />
-                                </Route>
-                            </Route>
-                            <Route
-                                element={
-                                    <Authenticated fallback={<Outlet />}>
-                                        <NavigateToResource />
-                                    </Authenticated>
-                                }
-                            >
-                                <Route
-                                    path="/login"
-                                    element={
-                                        <AuthPage
-                                            type="login"
-                                            title={
-                                                <ThemedTitleV2
-                                                    collapsed
-                                                    text="Invoicer"
-                                                />
-                                            }
-                                            formProps={{
-                                                initialValues: {
-                                                    email: "demo@refine.dev",
-                                                    password: "demodemo",
-                                                },
-                                            }}
-                                        />
-                                    }
-                                />
-                            </Route>
-                            <Route
-                                element={
-                                    <Authenticated>
-                                        <ThemedLayout
-                                            Header={Header}
-                                            Title={({ collapsed }) => (
-                                                <ThemedTitleV2
-                                                    collapsed={collapsed}
-                                                    text="Invoicer"
-                                                />
-                                            )}
-                                        >
-                                            <Outlet />
-                                        </ThemedLayout>
-                                    </Authenticated>
-                                }
-                            >
-                                <Route path="*" element={<ErrorComponent />} />
-                            </Route>
-                        </Routes>
+                      <Outlet />
+                    </ThemedLayout>
+                  </Authenticated>
+                }
+              >
+                <Route
+                  index
+                  element={<NavigateToResource resource="companies" />}
+                />
+                <Route path="/companies">
+                  <Route index element={<CompanyList />} />
+                </Route>
+                <Route path="/clients">
+                  <Route index element={<ClientList />} />
+                </Route>
+                <Route path="/contacts">
+                  <Route index element={<ContactList />} />
+                  <Route path="/contacts/:id/edit" element={<EditContact />} />
+                </Route>
+                <Route path="/missions">
+                  <Route index element={<MissionList />} />
+                </Route>
+                <Route path="/invoices">
+                  <Route index element={<InvoiceList />} />
+                  <Route path="/invoices/create" element={<CreateInvoice />} />
+                  <Route path="/invoices/:id/edit" element={<EditInvoice />} />
+                </Route>
+              </Route>
+              <Route
+                element={
+                  <Authenticated fallback={<Outlet />}>
+                    <NavigateToResource />
+                  </Authenticated>
+                }
+              >
+                <Route
+                  path="/login"
+                  element={
+                    <AuthPage
+                      type="login"
+                      title={<ThemedTitleV2 collapsed text="Invoicer" />}
+                      formProps={{
+                        initialValues: {
+                          email: "demo@refine.dev",
+                          password: "demodemo",
+                        },
+                      }}
+                    />
+                  }
+                />
+              </Route>
+              <Route
+                element={
+                  <Authenticated>
+                    <ThemedLayout
+                      Header={Header}
+                      Title={({ collapsed }) => (
+                        <ThemedTitleV2 collapsed={collapsed} text="Invoicer" />
+                      )}
+                    >
+                      <Outlet />
+                    </ThemedLayout>
+                  </Authenticated>
+                }
+              >
+                <Route path="*" element={<ErrorComponent />} />
+              </Route>
+            </Routes>
 
-                        <RefineKbar />
-                        <UnsavedChangesNotifier />
-                    </Refine>
-                </ColorModeContextProvider>
-            </RefineKbarProvider>
-        </BrowserRouter>
-    );
+            <RefineKbar />
+            <UnsavedChangesNotifier />
+          </Refine>
+        </ColorModeContextProvider>
+      </RefineKbarProvider>
+    </BrowserRouter>
+  );
 }
 
 export default App;
@@ -371,107 +276,104 @@ export default App;
 </p>
 </details>
 
-
 ## Adding Views for `missions`
 
 We only have a `list` route for `missions` so let's have a look at what the `<MissionList />` component entails.
 
-
-### refine `list` View for `missions`
+### Refine `list` View for `missions`
 
 The `<MissionList />` component looks like this:
 
 ```tsx title="src/pages/missions/list.tsx"
-import { List, useTable, TagField, useModalForm, EditButton } from "@refinedev/antd";
+import {
+  List,
+  useTable,
+  TagField,
+  useModalForm,
+  EditButton,
+} from "@refinedev/antd";
 import { Table } from "antd";
 
 import { IMission } from "interfaces";
 import { CreateMission, EditMission } from "components/missions";
 
 export const MissionList: React.FC = () => {
-    const { tableProps } = useTable<IMission>();
+  const { tableProps } = useTable<IMission>();
 
-    const { formProps, modalProps, show } = useModalForm({
-        resource: "missions",
-        action: "create",
-    });
+  const { formProps, modalProps, show } = useModalForm({
+    resource: "missions",
+    action: "create",
+  });
 
-    const {
-        formProps: editFormProps,
-        modalProps: editModalProps,
-        show: editShow,
-    } = useModalForm({
-        resource: "missions",
-        action: "edit",
-    });
+  const {
+    formProps: editFormProps,
+    modalProps: editModalProps,
+    show: editShow,
+  } = useModalForm({
+    resource: "missions",
+    action: "edit",
+  });
 
-    return (
-        <>
-            <List
-                createButtonProps={{
-                    onClick: () => {
-                        show();
-                    },
-                }}
-            >
-                <Table {...tableProps}>
-                    <Table.Column dataIndex="id" title="ID" />
-                    <Table.Column dataIndex="mission" title="Name" />
-                    <Table.Column
-                        dataIndex="mission_description"
-                        title="Mission Description"
-                    />
-                    <Table.Column dataIndex="day" title="Day(s)" />
-                    <Table.Column
-                        dataIndex="daily_rate"
-                        title="Daily Rate"
-                        render={(value) => (
-                            <TagField value={value} color="red" />
-                        )}
-                    />
-                    <Table.Column<IMission>
-                        title="Total"
-                        render={(_, record) => {
-                            return (
-                                <TagField
-                                    value={`${
-                                        record?.daily_rate * record?.day
-                                    } $`}
-                                    color="green"
-                                />
-                            );
-                        }}
-                    />
-                    <Table.Column<IMission>
-                        title="Actions"
-                        dataIndex="actions"
-                        key="actions"
-                        render={(_value, record) => (
-                            <EditButton
-                                hideText
-                                size="small"
-                                recordItemId={record?.id}
-                                onClick={() => editShow(record?.id)}
-                            />
-                        )}
-                    />
-                </Table>
-            </List>
-            <CreateMission modalProps={modalProps} formProps={formProps} />
-            <EditMission
-                modalProps={editModalProps}
-                formProps={editFormProps}
-            />
-        </>
-    );
+  return (
+    <>
+      <List
+        createButtonProps={{
+          onClick: () => {
+            show();
+          },
+        }}
+      >
+        <Table {...tableProps}>
+          <Table.Column dataIndex="id" title="ID" />
+          <Table.Column dataIndex="mission" title="Name" />
+          <Table.Column
+            dataIndex="mission_description"
+            title="Mission Description"
+          />
+          <Table.Column dataIndex="day" title="Day(s)" />
+          <Table.Column
+            dataIndex="daily_rate"
+            title="Daily Rate"
+            render={(value) => <TagField value={value} color="red" />}
+          />
+          <Table.Column<IMission>
+            title="Total"
+            render={(_, record) => {
+              return (
+                <TagField
+                  value={`${record?.daily_rate * record?.day} $`}
+                  color="green"
+                />
+              );
+            }}
+          />
+          <Table.Column<IMission>
+            title="Actions"
+            dataIndex="actions"
+            key="actions"
+            render={(_value, record) => (
+              <EditButton
+                hideText
+                size="small"
+                recordItemId={record?.id}
+                onClick={() => editShow(record?.id)}
+              />
+            )}
+          />
+        </Table>
+      </List>
+      <CreateMission modalProps={modalProps} formProps={formProps} />
+      <EditMission modalProps={editModalProps} formProps={editFormProps} />
+    </>
+  );
 };
 ```
 
 The `useTable()`and `useModalForm()` hooks are already familiar to us, as we have used them on [Day 3](https://refine.dev/blog/refine-react-invoice-generator-3/). In short, **refine-Ant Design**'s `useTable()` hook produces for us a set of props inside `tableProps` which is tailored to match the props accepted by **Ant Design**'s `<Table />` component. Similarly, we are picking the `formProps` object exposed by `useModalForm()` hook to be passed to the `<Form />` component, and also the `modalProps` to match the props accepted by `<Modal />` component.
 
-Towards the end of this post, we dig into some of these hooks' source code and try to make sense of how **refine** handles all these for us under the hood.
+Towards the end of this post, we dig into some of these hooks' source code and try to make sense of how **Refine** handles all these for us under the hood.
 
-### refine `create` View for `missions`
+### Refine `create` View for `missions`
 
 This is also similar to what we did on [Day 3](https://refine.dev/blog/refine-react-invoice-generator-3/). The `create` action for `missions` resource is performed from a `<Form />` inside the `<CreateMission />` view which is basically built on top of a `<Modal />` component.
 
@@ -483,44 +385,44 @@ The `<CreateMission />` component which accepts and relays `formProps` to `<Form
 import { Form, Input, ModalProps, FormProps, Modal, InputNumber } from "antd";
 
 type CreateMissionProps = {
-    modalProps: ModalProps;
-    formProps: FormProps;
+  modalProps: ModalProps;
+  formProps: FormProps;
 };
 
 export const CreateMission: React.FC<CreateMissionProps> = ({
-    modalProps,
-    formProps,
+  modalProps,
+  formProps,
 }) => {
-    return (
-        <Modal {...modalProps} title="Create Contact">
-            <Form {...formProps} layout="vertical">
-                <Form.Item
-                    label="Title"
-                    name="mission"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Description" name="mission_description">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Day(s)" name="day">
-                    <InputNumber defaultValue={1} />
-                </Form.Item>
-                <Form.Item label="Daily Rate" name="daily_rate">
-                    <InputNumber defaultValue={1} />
-                </Form.Item>
-            </Form>
-        </Modal>
-    );
+  return (
+    <Modal {...modalProps} title="Create Contact">
+      <Form {...formProps} layout="vertical">
+        <Form.Item
+          label="Title"
+          name="mission"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item label="Description" name="mission_description">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Day(s)" name="day">
+          <InputNumber defaultValue={1} />
+        </Form.Item>
+        <Form.Item label="Daily Rate" name="daily_rate">
+          <InputNumber defaultValue={1} />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
 };
 ```
 
-### refine `edit` View for `missions`
+### Refine `edit` View for `missions`
 
 The `edit` view is also similar to the `create` view. The `<EditMission />` component looks like this:
 
@@ -528,58 +430,48 @@ The `edit` view is also similar to the `create` view. The `<EditMission />` comp
 import { Form, Input, ModalProps, FormProps, Modal, InputNumber } from "antd";
 
 type EditMissionProps = {
-    modalProps: ModalProps;
-    formProps: FormProps;
+  modalProps: ModalProps;
+  formProps: FormProps;
 };
 
 export const EditMission: React.FC<EditMissionProps> = ({
-    modalProps,
-    formProps,
+  modalProps,
+  formProps,
 }) => {
-    return (
-        <Modal {...modalProps} title="Create Contact">
-            <Form {...formProps} layout="vertical">
-                <Form.Item
-                    label="Title"
-                    name="mission"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Description" name="mission_description">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Day(s)" name="day">
-                    <InputNumber defaultValue={1} />
-                </Form.Item>
-                <Form.Item label="Daily Rate" name="daily_rate">
-                    <InputNumber defaultValue={1} />
-                </Form.Item>
-            </Form>
-        </Modal>
-    );
+  return (
+    <Modal {...modalProps} title="Create Contact">
+      <Form {...formProps} layout="vertical">
+        <Form.Item
+          label="Title"
+          name="mission"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item label="Description" name="mission_description">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Day(s)" name="day">
+          <InputNumber defaultValue={1} />
+        </Form.Item>
+        <Form.Item label="Daily Rate" name="daily_rate">
+          <InputNumber defaultValue={1} />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
 };
 ```
 
-It's render is trigerred by a click on the `<EditButton />` placed inside a `<Table.Column />` element in the `<MissionList />` component.
+It's render is triggered by a click on the `<EditButton />` placed inside a `<Table.Column />` element in the `<MissionList />` component.
 
 Ok. With these views completed, we should be able to create, list and show `missions` records from our app.
 
-
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-     <img style={{alignSelf:"center"}}  src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/edit_view.png"  alt="react invoice generator" />
-
-
-</div>
+<img style={{alignSelf:"center"}} src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/edit_view.png" alt="react invoice generator" />
 
 <br />
 
@@ -587,7 +479,7 @@ Ok. With these views completed, we should be able to create, list and show `miss
 
 For the `invoices` resource, we have three routes and each path has its own view. Let's start with again with the `list`.
 
-### refine `list` View for `invoices`
+### Refine `list` View for `invoices`
 
 The `<InvoiceList />` rendered at `/invoices` looks like this:
 
@@ -598,7 +490,15 @@ The `<InvoiceList />` rendered at `/invoices` looks like this:
 ```tsx title="src/pages/invoices/list.tsx"
 import { useState } from "react";
 import { useModal } from "@refinedev/core";
-import { List, useTable, DateField, TagField, EmailField, DeleteButton, EditButton } from "@refinedev/antd";
+import {
+  List,
+  useTable,
+  DateField,
+  TagField,
+  EmailField,
+  DeleteButton,
+  EditButton,
+} from "@refinedev/antd";
 
 // It is recommended to use explicit import as seen below to reduce bundle size.
 // import { IconName } from "@ant-design/icons";
@@ -612,106 +512,86 @@ import { IInvoice, IMission } from "interfaces";
 const { FilePdfOutlined } = Icons;
 
 export const InvoiceList: React.FC = () => {
-    const [record, setRecord] = useState<IInvoice>();
+  const [record, setRecord] = useState<IInvoice>();
 
-    const { tableProps } = useTable<IInvoice>({
-        meta: {
-            populate: {
-                contact: { populate: ["client"] },
-                company: { populate: ["logo"] },
-                missions: "*",
-            },
-        }
-    });
+  const { tableProps } = useTable<IInvoice>({
+    meta: {
+      populate: {
+        contact: { populate: ["client"] },
+        company: { populate: ["logo"] },
+        missions: "*",
+      },
+    },
+  });
 
-    const { show, visible, close } = useModal();
+  const { show, visible, close } = useModal();
 
-    return (
-        <>
-            <List>
-                <Table {...tableProps}>
-                    <Table.Column dataIndex="id" title="ID" />
-                    <Table.Column<IInvoice>
-                        dataIndex="name"
-                        title="Invoice Name"
-                        render={(_, record) => {
-                            return `Invoice_#${record.id}${record?.name}`;
-                        }}
-                    />
-                    <Table.Column<IInvoice>
-                        dataIndex="date"
-                        title="Invoice Date"
-                        render={(value) => (
-                            <DateField format="LL" value={value} />
-                        )}
-                    />
-                    <Table.Column
-                        dataIndex={["company", "name"]}
-                        title="Company"
-                    />
-                    <Table.Column
-                        dataIndex={"missions"}
-                        title="Missions"
-                        render={(value) => {
-                            return value.map((item: IMission) => {
-                                return (
-                                    <TagField
-                                        key={item?.id}
-                                        color="blue"
-                                        value={item?.mission}
-                                    />
-                                );
-                            });
-                        }}
-                    />
-                    <Table.Column
-                        dataIndex="discount"
-                        title="Discount(%)"
-                        render={(value) => (
-                            <TagField color="blue" value={value} />
-                        )}
-                    />
-                    <Table.Column
-                        dataIndex="tax"
-                        title="Tax(%)"
-                        render={(value) => (
-                            <TagField color="cyan" value={value} />
-                        )}
-                    />
-                    <Table.Column
-                        dataIndex="custom_id"
-                        title="Custom Invoice ID"
-                    />
+  return (
+    <>
+      <List>
+        <Table {...tableProps}>
+          <Table.Column dataIndex="id" title="ID" />
+          <Table.Column<IInvoice>
+            dataIndex="name"
+            title="Invoice Name"
+            render={(_, record) => {
+              return `Invoice_#${record.id}${record?.name}`;
+            }}
+          />
+          <Table.Column<IInvoice>
+            dataIndex="date"
+            title="Invoice Date"
+            render={(value) => <DateField format="LL" value={value} />}
+          />
+          <Table.Column dataIndex={["company", "name"]} title="Company" />
+          <Table.Column
+            dataIndex={"missions"}
+            title="Missions"
+            render={(value) => {
+              return value.map((item: IMission) => {
+                return (
+                  <TagField key={item?.id} color="blue" value={item?.mission} />
+                );
+              });
+            }}
+          />
+          <Table.Column
+            dataIndex="discount"
+            title="Discount(%)"
+            render={(value) => <TagField color="blue" value={value} />}
+          />
+          <Table.Column
+            dataIndex="tax"
+            title="Tax(%)"
+            render={(value) => <TagField color="cyan" value={value} />}
+          />
+          <Table.Column dataIndex="custom_id" title="Custom Invoice ID" />
 
-                    <Table.Column
-                        dataIndex={["contact", "email"]}
-                        title="Contact"
-                        render={(value) => <EmailField value={value} />}
-                    />
-                    <Table.Column<IInvoice>
-                        title="Actions"
-                        dataIndex="actions"
-                        render={(_, record) => {
-                            return (
-                                <Space>
-                                    <EditButton
-                                        hideText
-                                        size="small"
-                                        recordItemId={record?.id}
-                                    />
-                                    <DeleteButton
-                                        hideText
-                                        size="small"
-                                        recordItemId={record?.id}
-                                    />
-                                </Space>
-                            );
-                        }}
-                    />
-                </Table>
-            </List>
-        </>
-    );
+          <Table.Column
+            dataIndex={["contact", "email"]}
+            title="Contact"
+            render={(value) => <EmailField value={value} />}
+          />
+          <Table.Column<IInvoice>
+            title="Actions"
+            dataIndex="actions"
+            render={(_, record) => {
+              return (
+                <Space>
+                  <EditButton hideText size="small" recordItemId={record?.id} />
+                  <DeleteButton
+                    hideText
+                    size="small"
+                    recordItemId={record?.id}
+                  />
+                </Space>
+              );
+            }}
+          />
+        </Table>
+      </List>
+    </>
+  );
 };
 ```
 
@@ -722,17 +602,17 @@ We already covered `useTable()` in a couple of more components earlier, but in t
 
 ```tsx
 const { tableProps } = useTable<IInvoice>({
-    meta: {
-        populate: {
-            contact: { populate: ["client"] },
-            company: { populate: ["logo"] },
-            missions: "*",
-        },
-    }
+  meta: {
+    populate: {
+      contact: { populate: ["client"] },
+      company: { populate: ["logo"] },
+      missions: "*",
+    },
+  },
 });
 ```
 
-### refine `create` View for `invoices`
+### Refine `create` View for `invoices`
 
 The `<CreateInvoice />` page for `invoices` is accessible from the `<CreateButton />` component that is placed inside the **refine-Ant Design** `<List />` component by default.
 
@@ -742,103 +622,97 @@ The `<CreateInvoice />` view looks like this:
 <summary>Show CreateInvoice code</summary>
 <p>
 
-
 ```tsx title="src/pages/invoices/create.tsx"
-import { IResourceComponentsProps } from "@refinedev/core";
 import { Create, useForm, useSelect } from "@refinedev/antd";
 import { Form, Input, Select, DatePicker } from "antd";
 
 import { ICompany, IContact, IMission, IInvoice } from "interfaces";
 
-export const CreateInvoice: React.FC<IResourceComponentsProps> = () => {
-    const { formProps, saveButtonProps } = useForm<IInvoice>();
-    
-    const { selectProps: companySelectProps } = useSelect<ICompany>({
-        resource: "companies",
-        optionLabel: "name",
+export const CreateInvoice = () => {
+  const { formProps, saveButtonProps } = useForm<IInvoice>();
 
-        pagination: {
-            mode: "server"
-        }
-    });
+  const { selectProps: companySelectProps } = useSelect<ICompany>({
+    resource: "companies",
+    optionLabel: "name",
 
-    const { selectProps: contactSelectProps } = useSelect<IContact>({
-        resource: "contacts",
-        optionLabel: "first_name",
+    pagination: {
+      mode: "server",
+    },
+  });
 
-        pagination: {
-            mode: "server"
-        }
-    });
+  const { selectProps: contactSelectProps } = useSelect<IContact>({
+    resource: "contacts",
+    optionLabel: "first_name",
 
-    const { selectProps: missionSelectProps } = useSelect<IMission>({
-        resource: "missions",
-        optionLabel: "mission",
+    pagination: {
+      mode: "server",
+    },
+  });
 
-        pagination: {
-            mode: "server"
-        }
-    });
+  const { selectProps: missionSelectProps } = useSelect<IMission>({
+    resource: "missions",
+    optionLabel: "mission",
 
-    return (
-        <Create saveButtonProps={saveButtonProps}>
-            <Form
-                {...formProps}
-                layout="vertical"
-                wrapperCol={{md: 18, lg: 16}}
-            >
-                <Form.Item label="Invoice Name" name="name">
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Company"
-                    name="company"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Select {...companySelectProps} />
-                </Form.Item>
+    pagination: {
+      mode: "server",
+    },
+  });
 
-                <Form.Item
-                    label="Missions"
-                    name="missions"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Select {...missionSelectProps} mode="multiple" />
-                </Form.Item>
-                <Form.Item label="Discount(%)" name="discount">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Tax(%)" name="tax">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Custom ID" name="custom_id">
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Contact"
-                    name="contact"
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Select {...contactSelectProps} />
-                </Form.Item>
-                <Form.Item label="Invoice Date" name="date">
-                    <DatePicker style={{ width: "50%" }} />
-                </Form.Item>
-            </Form>
-        </Create>
-    );
+  return (
+    <Create saveButtonProps={saveButtonProps}>
+      <Form {...formProps} layout="vertical" wrapperCol={{ md: 18, lg: 16 }}>
+        <Form.Item label="Invoice Name" name="name">
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Company"
+          name="company"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select {...companySelectProps} />
+        </Form.Item>
+
+        <Form.Item
+          label="Missions"
+          name="missions"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select {...missionSelectProps} mode="multiple" />
+        </Form.Item>
+        <Form.Item label="Discount(%)" name="discount">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Tax(%)" name="tax">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Custom ID" name="custom_id">
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Contact"
+          name="contact"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select {...contactSelectProps} />
+        </Form.Item>
+        <Form.Item label="Invoice Date" name="date">
+          <DatePicker style={{ width: "50%" }} />
+        </Form.Item>
+      </Form>
+    </Create>
+  );
 };
 ```
 
@@ -847,13 +721,13 @@ export const CreateInvoice: React.FC<IResourceComponentsProps> = () => {
 
 There are a couple of things important in the code above. First, the use of `<Create />` component, which consumes the `saveButtonProps` object extracted from the `useForm()` hook. And secondly, the use of the `useSelect()` hook. We'll come to `useSelect()` in the next section about `edit` view but notice that multiple `useSelect()` hooks are used to fetch data from the **Strapi** backend, before they can be added to different fields of the form to create a new `invoices` entry.
 
-**refine `<Create />` Component**
+**Refine `<Create />` Component**
 
 The `<Create />` component by default places a **refine-Ant Design** `<SaveButton />` component as its child and `saveButtonProps` are passed to it. `saveButtonProps` include props for the form action, button loading and disabling states. Here, when the `<SaveButton />` is clicked `formProps.onFinish()` is triggered, which eventually invokes the `dataProvider.create` method via `useCreate()`.
 
 For the details about how the `<SaveButton />` works, feel free to read through the [docs here](https://refine.dev/docs/api-reference/antd/components/buttons/save-button/).
 
-### refine `edit` Views for `invoices`
+### Refine `edit` Views for `invoices`
 
 The `<EditInvoice />` page is more or less the same as the `create` view. Its content looks as below:
 
@@ -862,104 +736,99 @@ The `<EditInvoice />` page is more or less the same as the `create` view. Its co
 <p>
 
 ```tsx title="src/pages/invoices/edit.tsx"
-import { IResourceComponentsProps } from "@refinedev/core";
 import { useForm, useSelect, Edit } from "@refinedev/antd";
 import { Form, Input, Select } from "antd";
 
 import { IInvoice } from "interfaces";
 
-export const EditInvoice: React.FC<IResourceComponentsProps> = () => {
-    const { formProps, saveButtonProps, queryResult } = useForm<IInvoice>({
-        meta: { populate: ["company", "contact", "missions"] },
-    });
+export const EditInvoice = () => {
+  const { formProps, saveButtonProps, queryResult } = useForm<IInvoice>({
+    meta: { populate: ["company", "contact", "missions"] },
+  });
 
-    const defaultValue = queryResult?.data?.data;
+  const defaultValue = queryResult?.data?.data;
 
-    const { selectProps: companySelectProps } = useSelect({
-        resource: "companies",
-        defaultValue: defaultValue?.company.id,
-        optionLabel: "name",
+  const { selectProps: companySelectProps } = useSelect({
+    resource: "companies",
+    defaultValue: defaultValue?.company.id,
+    optionLabel: "name",
 
-        pagination: {
-            mode: "server"
-        }
-    });
+    pagination: {
+      mode: "server",
+    },
+  });
 
-    const { selectProps: contactSelectProps } = useSelect({
-        resource: "contacts",
-        defaultValue: defaultValue?.contact?.id,
-        optionLabel: "first_name",
+  const { selectProps: contactSelectProps } = useSelect({
+    resource: "contacts",
+    defaultValue: defaultValue?.contact?.id,
+    optionLabel: "first_name",
 
-        pagination: {
-            mode: "server"
-        }
-    });
+    pagination: {
+      mode: "server",
+    },
+  });
 
-    const { selectProps: missionSelectProps } = useSelect({
-        resource: "missions",
-        optionLabel: "mission",
+  const { selectProps: missionSelectProps } = useSelect({
+    resource: "missions",
+    optionLabel: "mission",
 
-        pagination: {
-            mode: "server"
-        }
-    });
+    pagination: {
+      mode: "server",
+    },
+  });
 
-    return (
-        <Edit saveButtonProps={saveButtonProps}>
-            <Form
-                {...formProps}
-                layout="vertical"
-                wrapperCol={{md: 18, lg: 16}}
-                >
-                <Form.Item label="Invoice Name" name="name">
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Company"
-                    name={["company", "id"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Select {...companySelectProps} />
-                </Form.Item>
+  return (
+    <Edit saveButtonProps={saveButtonProps}>
+      <Form {...formProps} layout="vertical" wrapperCol={{ md: 18, lg: 16 }}>
+        <Form.Item label="Invoice Name" name="name">
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Company"
+          name={["company", "id"]}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select {...companySelectProps} />
+        </Form.Item>
 
-                <Form.Item
-                    label="Mission"
-                    name={["missions"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Select {...missionSelectProps} mode="multiple" />
-                </Form.Item>
-                <Form.Item label="Discount(%)" name="discount">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Tax(%)" name="tax">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Custom ID" name="custom_id">
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Contact"
-                    name={["contact", "id"]}
-                    rules={[
-                        {
-                            required: true,
-                        },
-                    ]}
-                >
-                    <Select {...contactSelectProps} />
-                </Form.Item>
-            </Form>
-        </Edit>
-    );
+        <Form.Item
+          label="Mission"
+          name={["missions"]}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select {...missionSelectProps} mode="multiple" />
+        </Form.Item>
+        <Form.Item label="Discount(%)" name="discount">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Tax(%)" name="tax">
+          <Input />
+        </Form.Item>
+        <Form.Item label="Custom ID" name="custom_id">
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Contact"
+          name={["contact", "id"]}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select {...contactSelectProps} />
+        </Form.Item>
+      </Form>
+    </Edit>
+  );
 };
 ```
 
@@ -970,37 +839,25 @@ This time, the `meta.populate` property includes multiple associated resources i
 
 <br />
 
-**refine `useSelect()` Hook**
+**Refine `useSelect()` Hook**
 
 We are using multiple `useSelect()` hooks that allow us fetch `companies`, `missions` and `contacts` data and avail them to `<Form.Item />`s. Under the hood, a `useSelect()` hook counts on the `useList()` data hook to access and invoke the `dataProvider.getList` method for fetching data from our **Strapi** backend. The argument object passed is, therefore, the same as that of `useList()`. For more details, please see [the `useSelect()` API reference here](https://refine.dev/docs/api-reference/antd/hooks/field/useSelect/).
 
 With these components added, we should be able to create, list and edit invoices.
 
-
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-     <img style={{alignSelf:"center"}}  src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/useselect.png"  alt="react invoice generator" />
-
-
-</div>
+<img style={{alignSelf:"center"}} src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2023-04-13-refine-invoicer-4/useselect.png" alt="react invoice generator" />
 
 <br />
-
-
 
 ## Low Level Inspection
 
 We have used several high level **refine-Ant Design** hooks so far in this series. Namely, `useSimpleList()`, `useModalForm()`, `useDrawerForm()`, `useTable()` and `useSelect()`. Their internal implementations are pretty sophisticated according to the specific requirements they fulfill, both in terms of data fetching and UI presentation.
 
-In the following sections, we zoom in on the low level implementation of `useTable()`, `useSelect()` hooks and `<CreateButton />` component. This is to shed some light into the tremendous tasks accomplished by **refine** hooks and components behind the scenes. This should guide us enough to examine other hooks and components mentioned above. They are available inside the `node_modules/@refinedev/antd` directory.
+In the following sections, we zoom in on the low level implementation of `useTable()`, `useSelect()` hooks and `<CreateButton />` component. This is to shed some light into the tremendous tasks accomplished by **Refine** hooks and components behind the scenes. This should guide us enough to examine other hooks and components mentioned above. They are available inside the `node_modules/@refinedev/antd` directory.
 
 ### refine-Ant Design `useTable()` Hook
 
-We mentioned that `useTable()` is built on top of `useList()`, which is indirectly true. This is because **refine**'s core module also has a `useTable()` hook. We are using **refine-Ant Design**'s `useTable()` hook here, which is actually built on top of the core `useTable()` hook.
+We mentioned that `useTable()` is built on top of `useList()`, which is indirectly true. This is because **Refine**'s core module also has a `useTable()` hook. We are using **refine-Ant Design**'s `useTable()` hook here, which is actually built on top of the core `useTable()` hook.
 
 Endowed a due patience, we can see this in action among many others in the `@refinedev/antd` folder for `useTable()`:
 
@@ -1010,44 +867,45 @@ Endowed a due patience, we can see this in action among many others in the `@ref
 
 ```tsx title="node_modules/@refinedev/antd/src/hooks/table/useTable/useTable.ts"
 const {
-        tableQueryResult,
-        current,
-        setCurrent,
-        pageSize,
-        setPageSize,
-        filters,
-        setFilters,
-        sorters,
-        setSorters,
-        sorter,
-        setSorter,
-        createLinkForSyncWithLocation,
-        pageCount,
-    } = useTableCore<TData, TError>({
-        permanentSorter,
-        permanentFilter,
-        initialCurrent,
-        initialPageSize,
-        pagination,
-        hasPagination,
-        filters: filtersFromProp,
-        sorters: sortersFromProp,
-        initialSorter,
-        initialFilter,
-        syncWithLocation,
-        resource,
-        defaultSetFilterBehavior,
-        successNotification,
-        errorNotification,
-        queryOptions,
-        liveMode: liveModeFromProp,
-        onLiveEvent,
-        liveParams,
-        meta: pickNotDeprecated(meta, metaData),
-        metaData: pickNotDeprecated(meta, metaData),
-        dataProviderName,
-    });
+  tableQuery,
+  current,
+  setCurrent,
+  pageSize,
+  setPageSize,
+  filters,
+  setFilters,
+  sorters,
+  setSorters,
+  sorter,
+  setSorter,
+  createLinkForSyncWithLocation,
+  pageCount,
+} = useTableCore<TData, TError>({
+  permanentSorter,
+  permanentFilter,
+  initialCurrent,
+  initialPageSize,
+  pagination,
+  hasPagination,
+  filters: filtersFromProp,
+  sorters: sortersFromProp,
+  initialSorter,
+  initialFilter,
+  syncWithLocation,
+  resource,
+  defaultSetFilterBehavior,
+  successNotification,
+  errorNotification,
+  queryOptions,
+  liveMode: liveModeFromProp,
+  onLiveEvent,
+  liveParams,
+  meta: pickNotDeprecated(meta, metaData),
+  metaData: pickNotDeprecated(meta, metaData),
+  dataProviderName,
+});
 ```
+
 </p>
 </details>
 
@@ -1059,22 +917,23 @@ Then, it's the core `useTable()` hook that is leveraging `useList()` data hook i
 
 ```tsx title="node_modules/@refinedev/core/src/hooks/useTable/index.ts"
 const queryResult = useList<TData, TError>({
-    resource: resourceInUse,
-    hasPagination,
-    pagination: { current, pageSize, mode: pagination?.mode },
-    filters: unionFilters(preferredPermanentFilters, filters),
-    sorters: unionSorters(preferredPermanentSorters, sorters),
-    queryOptions,
-    successNotification,
-    errorNotification,
-    meta: preferredMeta,
-    metaData: preferredMeta,
-    liveMode,
-    liveParams,
-    onLiveEvent,
-    dataProviderName,
+  resource: resourceInUse,
+  hasPagination,
+  pagination: { current, pageSize, mode: pagination?.mode },
+  filters: unionFilters(preferredPermanentFilters, filters),
+  sorters: unionSorters(preferredPermanentSorters, sorters),
+  queryOptions,
+  successNotification,
+  errorNotification,
+  meta: preferredMeta,
+  metaData: preferredMeta,
+  liveMode,
+  liveParams,
+  onLiveEvent,
+  dataProviderName,
 });
 ```
+
 </p>
 </details>
 
@@ -1082,15 +941,15 @@ Then, among others inside the gigantic returned object, the `tableProps` propert
 
 ```tsx
 return {
-    // ...
-    tableProps: {
-        dataSource: data?.data,
-        loading: liveMode === "auto" ? isLoading : !isFetched,
-        onChange,
-        pagination: antdPagination(),
-        scroll: { x: true },
-    },
-    // ...
+  // ...
+  tableProps: {
+    dataSource: data?.data,
+    loading: liveMode === "auto" ? isLoading : !isFetched,
+    onChange,
+    pagination: antdPagination(),
+    scroll: { x: true },
+  },
+  // ...
 };
 ```
 
@@ -1102,18 +961,18 @@ The source code of `useSelect()` inside `@refinedev/antd` package uses `useSelec
 
 ```tsx title="node_modules/@refinedev/antd/src/hooks/field/useSelect/index.ts"
 const { queryResult, defaultValueQueryResult, onSearch, options } =
-    useSelectCore(props);
+  useSelectCore(props);
 
 return {
-    selectProps: {
-        options,
-        onSearch,
-        loading: defaultValueQueryResult.isFetching,
-        showSearch: true,
-        filterOption: false,
-    },
-    queryResult,
-    defaultValueQueryResult,
+  selectProps: {
+    options,
+    onSearch,
+    loading: defaultValueQueryResult.isFetching,
+    showSearch: true,
+    filterOption: false,
+  },
+  queryResult,
+  defaultValueQueryResult,
 };
 ```
 
@@ -1125,49 +984,49 @@ Inside the core version, `useList()` is key to fetching data from the backend AP
 
 ```tsx title="node_modules/@refinedev/core/src/hooks/useSelect/index.ts"
 const queryResult = useList<TData, TError>({
-    resource,
-    sorters: pickNotDeprecated(sorters, sort),
-    filters: filters.concat(search),
-    pagination: {
-        current: pagination?.current,
-        pageSize: pagination?.pageSize ?? fetchSize,
-        mode: pagination?.mode,
+  resource,
+  sorters: pickNotDeprecated(sorters, sort),
+  filters: filters.concat(search),
+  pagination: {
+    current: pagination?.current,
+    pageSize: pagination?.pageSize ?? fetchSize,
+    mode: pagination?.mode,
+  },
+  hasPagination,
+  queryOptions: {
+    ...queryOptions,
+    onSuccess: (data) => {
+      defaultQueryOnSuccess(data);
+      queryOptions?.onSuccess?.(data);
     },
-    hasPagination,
-    queryOptions: {
-        ...queryOptions,
-        onSuccess: (data) => {
-            defaultQueryOnSuccess(data);
-            queryOptions?.onSuccess?.(data);
-        },
-    },
-    successNotification,
-    errorNotification,
-    meta: pickNotDeprecated(meta, metaData),
-    metaData: pickNotDeprecated(meta, metaData),
-    liveMode,
-    liveParams,
-    onLiveEvent,
-    dataProviderName,
+  },
+  successNotification,
+  errorNotification,
+  meta: pickNotDeprecated(meta, metaData),
+  metaData: pickNotDeprecated(meta, metaData),
+  liveMode,
+  liveParams,
+  onLiveEvent,
+  dataProviderName,
 });
 ```
+
 </p>
 </details>
-
 
 The returned object is tailored to match [the props of the **Ant Design** `<Select />` component](https://ant.design/components/select#select-props):
 
 ```tsx
 return {
-    selectProps: {
-        options,
-        onSearch,
-        loading: defaultValueQueryResult.isFetching,
-        showSearch: true,
-        filterOption: false,
-    },
-    queryResult,
-    defaultValueQueryResult,
+  selectProps: {
+    options,
+    onSearch,
+    loading: defaultValueQueryResult.isFetching,
+    showSearch: true,
+    filterOption: false,
+  },
+  queryResult,
+  defaultValueQueryResult,
 };
 ```
 
@@ -1212,7 +1071,7 @@ return (
 );
 ```
 
-As we can see from the above analysis, in the background, **refine** handles a lot of data heavy tasks, fine-tunes compatibility with popular stable UI components; and in the foreground, it keeps its hooks and elements highly customizable, compact and elegant.
+As we can see from the above analysis, in the background, **Refine** handles a lot of data heavy tasks, fine-tunes compatibility with popular stable UI components; and in the foreground, it keeps its hooks and elements highly customizable, compact and elegant.
 
 ## Summary
 

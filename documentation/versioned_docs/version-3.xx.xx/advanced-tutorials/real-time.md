@@ -13,25 +13,23 @@ We will be using [Ably](https://ably.com) in this guide to provide Realtime feat
 
 We need to install the Ably live provider package from **refine**.
 
-```bash
-npm install @pankod/refine-ably
-```
+<InstallPackagesCommand args="@pankod/refine-ably"/>
 
 :::caution
-To make this example more visual, we used the [`@pankod/refine-antd`](https://github.com/refinedev/refine/tree/master/packages/refine-antd) package. If you are using Refine headless, you need to provide the components, hooks, or helpers imported from the [`@pankod/refine-antd`](https://github.com/refinedev/refine/tree/master/packages/refine-antd) package.
+To make this example more visual, we used the [`@pankod/refine-antd`](https://github.com/refinedev/refine/tree/v3/packages/refine-antd) package. If you are using Refine headless, you need to provide the components, hooks, or helpers imported from the [`@pankod/refine-antd`](https://github.com/refinedev/refine/tree/v3/packages/refine-antd) package.
 :::
 
 ## Setup
 
 Since we will need `apiKey` from Ably, you must first register and get the key from [Ably](https://ably.com).
 
-The app will have one resource: **posts** with [CRUD pages(list, create, edit, and show) similar to base example](https://github.com/refinedev/refine/tree/master/examples/base-antd/src/pages/posts).
+The app will have one resource: **posts** with [CRUD pages(list, create, edit, and show) similar to base example](https://github.com/refinedev/refine/tree/v3/examples/base-antd/src/pages/posts).
 
 [You can also refer to CodeSandbox to see the final state of the app &#8594](#example)
 
 ## Adding `liveProvider`
 
-Firstly we create a Ably client for [`@pankod/refine-ably`](https://github.com/refinedev/refine/tree/master/packages/ably) live provider.
+Firstly we create a Ably client for [`@pankod/refine-ably`](https://github.com/refinedev/refine/tree/v3/packages/ably) live provider.
 
 ```ts title="src/utility/ablyClient.ts"
 import { Ably } from "@pankod/refine-ably";
@@ -39,15 +37,15 @@ import { Ably } from "@pankod/refine-ably";
 export const ablyClient = new Ably.Realtime("your-api-key");
 ```
 
-Then pass `liveProvider` from [`@pankod/refine-ably`](https://github.com/refinedev/refine/tree/master/packages/ably) to `<Refine>`.
+Then pass `liveProvider` from [`@pankod/refine-ably`](https://github.com/refinedev/refine/tree/v3/packages/ably) to `<Refine>`.
 
 ```tsx title="src/App.tsx"
 import { Refine } from "@pankod/refine-core";
 import {
-    Layout,
-    ReadyPage,
-    notificationProvider,
-    ErrorComponent,
+  Layout,
+  ReadyPage,
+  useNotificationProvider,
+  ErrorComponent,
 } from "@pankod/refine-antd";
 import dataProvider from "@pankod/refine-simple-rest";
 import routerProvider from "@pankod/refine-react-router-v6";
@@ -62,30 +60,30 @@ import { ablyClient } from "utility/ablyClient";
 import { PostList, PostCreate, PostEdit, PostShow } from "pages/posts";
 
 const App: React.FC = () => {
-    return (
-        <Refine
-            routerProvider={routerProvider}
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-            Layout={Layout}
-            ReadyPage={ReadyPage}
-            notificationProvider={notificationProvider}
-            catchAll={<ErrorComponent />}
-            //highlight-start
-            liveProvider={liveProvider(ablyClient)}
-            options={{ liveMode: "auto" }}
-            //highlight-end
-            resources={[
-                {
-                    name: "posts",
-                    list: PostList,
-                    create: PostCreate,
-                    edit: PostEdit,
-                    show: PostShow,
-                    canDelete: true,
-                },
-            ]}
-        />
-    );
+  return (
+    <Refine
+      routerProvider={routerProvider}
+      dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+      Layout={Layout}
+      ReadyPage={ReadyPage}
+      notificationProvider={useNotificationProvider}
+      catchAll={<ErrorComponent />}
+      //highlight-start
+      liveProvider={liveProvider(ablyClient)}
+      options={{ liveMode: "auto" }}
+      //highlight-end
+      resources={[
+        {
+          name: "posts",
+          list: PostList,
+          create: PostCreate,
+          edit: PostEdit,
+          show: PostShow,
+          canDelete: true,
+        },
+      ]}
+    />
+  );
 };
 
 export default App;
@@ -99,14 +97,7 @@ For live features to work automatically we added `liveMode: "auto"` in the `opti
 :::
 
 <br/>
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/Realtime/real-time.gif" alt="Realtime Demo" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/real-time/real-time.gif" alt="Realtime Demo" />
 
 ## Configuring `liveMode`
 
@@ -120,59 +111,57 @@ We will be alerted about changes in an alert box on top of the form instead of c
 // ...
 
 export const PostEdit: React.FC = () => {
+  //highlight-start
+  const [deprecated, setDeprecated] = useState<
+    "deleted" | "updated" | undefined
+  >();
+  //highlight-end
+
+  const { formProps, saveButtonProps, queryResult } = useForm<IPost>({
     //highlight-start
-    const [deprecated, setDeprecated] = useState<
-        "deleted" | "updated" | undefined
-    >();
+    liveMode: "manual",
+    onLiveEvent: (event) => {
+      if (event.type === "deleted" || event.type === "updated") {
+        setDeprecated(event.type);
+      }
+    },
     //highlight-end
+  });
 
-    const { formProps, saveButtonProps, queryResult } = useForm<IPost>({
-        //highlight-start
-        liveMode: "manual",
-        onLiveEvent: (event) => {
-            if (event.type === "deleted" || event.type === "updated") {
-                setDeprecated(event.type);
-            }
-        },
-        //highlight-end
-    });
+  //highlight-start
+  const handleRefresh = () => {
+    queryResult?.refetch();
+    setDeprecated(undefined);
+  };
+  //highlight-end
 
-    //highlight-start
-    const handleRefresh = () => {
-        queryResult?.refetch();
-        setDeprecated(undefined);
-    };
-    //highlight-end
+  // ...
 
-    // ...
-
-    return (
-        <Edit /* ... */>
-            //highlight-start
-            {deprecated === "deleted" && (
-                <Alert
-                    message="This post is deleted."
-                    type="warning"
-                    style={{ marginBottom: 20 }}
-                    action={<ListButton size="small" />}
-                />
-            )}
-            {deprecated === "updated" && (
-                <Alert
-                    message="This post is updated. Refresh to see changes."
-                    type="warning"
-                    style={{ marginBottom: 20 }}
-                    action={
-                        <RefreshButton size="small" onClick={handleRefresh} />
-                    }
-                />
-            )}
-            //highlight-end
-            <Form {...formProps} layout="vertical">
-                // ....
-            </Form>
-        </Edit>
-    );
+  return (
+    <Edit /* ... */>
+      //highlight-start
+      {deprecated === "deleted" && (
+        <Alert
+          message="This post is deleted."
+          type="warning"
+          style={{ marginBottom: 20 }}
+          action={<ListButton size="small" />}
+        />
+      )}
+      {deprecated === "updated" && (
+        <Alert
+          message="This post is updated. Refresh to see changes."
+          type="warning"
+          style={{ marginBottom: 20 }}
+          action={<RefreshButton size="small" onClick={handleRefresh} />}
+        />
+      )}
+      //highlight-end
+      <Form {...formProps} layout="vertical">
+        // ....
+      </Form>
+    </Edit>
+  );
 };
 ```
 
@@ -184,14 +173,7 @@ We can also implement a similar thing on the show page.
 :::
 
 <br/>
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/real-time/manual-mode.gif" alt="Manual Mode Demo" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/real-time/manual-mode.gif" alt="Manual Mode Demo" />
 
 ## Custom Subscriptions
 
@@ -207,92 +189,82 @@ Firstly, let's implement a custom sider like in [this example](/examples/customi
 ```tsx title="src/components/sider.tsx"
 import React, { useState } from "react";
 import {
-    useTitle,
-    ITreeMenu,
-    CanAccess,
-    useRouterContext,
-    useMenu,
+  useTitle,
+  ITreeMenu,
+  CanAccess,
+  useRouterContext,
+  useMenu,
 } from "@pankod/refine-core";
 import { AntdLayout, Menu, Grid, Icons } from "@pankod/refine-antd";
 import { antLayoutSider, antLayoutSiderMobile } from "./styles";
 
 export const CustomSider: React.FC = () => {
-    const [collapsed, setCollapsed] = useState<boolean>(false);
-    const { Link } = useRouterContext();
-    const Title = useTitle();
-    const { menuItems, selectedKey } = useMenu();
-    const breakpoint = Grid.useBreakpoint();
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const { Link } = useRouterContext();
+  const Title = useTitle();
+  const { menuItems, selectedKey } = useMenu();
+  const breakpoint = Grid.useBreakpoint();
 
-    const isMobile =
-        typeof breakpoint.lg === "undefined" ? false : !breakpoint.lg;
+  const isMobile =
+    typeof breakpoint.lg === "undefined" ? false : !breakpoint.lg;
 
-    const renderTreeView = (tree: ITreeMenu[], selectedKey: string) => {
-        return tree.map((item: ITreeMenu) => {
-            const { icon, label, route, name, children, parentName } = item;
+  const renderTreeView = (tree: ITreeMenu[], selectedKey: string) => {
+    return tree.map((item: ITreeMenu) => {
+      const { icon, label, route, name, children, parentName } = item;
 
-            if (children.length > 0) {
-                return (
-                    <SubMenu
-                        key={route}
-                        icon={icon ?? <Icons.UnorderedListOutlined />}
-                        title={label}
-                    >
-                        {renderTreeView(children, selectedKey)}
-                    </SubMenu>
-                );
-            }
-            const isSelected = route === selectedKey;
-            const isRoute = !(
-                parentName !== undefined && children.length === 0
-            );
-            return (
-                <CanAccess
-                    key={route}
-                    resource={name.toLowerCase()}
-                    action="list"
-                >
-                    <Menu.Item
-                        key={route}
-                        style={{
-                            fontWeight: isSelected ? "bold" : "normal",
-                        }}
-                        icon={
-                            icon ?? (isRoute && <Icons.UnorderedListOutlined />)
-                        }
-                    >
-                        <Link to={route}>{label}</Link>
-                        {!collapsed && isSelected && (
-                            <Icons.UnorderedListOutlined />
-                        )}
-                    </Menu.Item>
-                </CanAccess>
-            );
-        });
-    };
+      if (children.length > 0) {
+        return (
+          <SubMenu
+            key={route}
+            icon={icon ?? <Icons.UnorderedListOutlined />}
+            title={label}
+          >
+            {renderTreeView(children, selectedKey)}
+          </SubMenu>
+        );
+      }
+      const isSelected = route === selectedKey;
+      const isRoute = !(parentName !== undefined && children.length === 0);
+      return (
+        <CanAccess key={route} resource={name.toLowerCase()} action="list">
+          <Menu.Item
+            key={route}
+            style={{
+              fontWeight: isSelected ? "bold" : "normal",
+            }}
+            icon={icon ?? (isRoute && <Icons.UnorderedListOutlined />)}
+          >
+            <Link to={route}>{label}</Link>
+            {!collapsed && isSelected && <Icons.UnorderedListOutlined />}
+          </Menu.Item>
+        </CanAccess>
+      );
+    });
+  };
 
-    return (
-        <AntdLayout.Sider
-            collapsible
-            collapsedWidth={isMobile ? 0 : 80}
-            collapsed={collapsed}
-            breakpoint="lg"
-            onCollapse={(collapsed: boolean): void => setCollapsed(collapsed)}
-            style={isMobile ? antLayoutSiderMobile : antLayoutSider}
-        >
-            <Title collapsed={collapsed} />
-            <Menu
-                selectedKeys={[selectedKey]}
-                mode="inline"
-                onClick={({ key }) => {
-                    if (!breakpoint.lg) {
-                        setCollapsed(true);
-                    }
-                }}
-            >
-                {renderTreeView(menuItems, selectedKey)}
-            </Menu>
-        </AntdLayout.Sider>
-    );
+  return (
+    <AntdLayout.Sider
+      collapsible
+      collapsedWidth={isMobile ? 0 : 80}
+      collapsed={collapsed}
+      breakpoint="lg"
+      onCollapse={(collapsed: boolean): void => setCollapsed(collapsed)}
+      style={isMobile ? antLayoutSiderMobile : antLayoutSider}
+    >
+      <Title collapsed={collapsed} />
+      <Menu
+        selectedKeys={[selectedKey]}
+        mode="inline"
+        onClick={({ key }) => {
+          if (!breakpoint.lg) {
+            setCollapsed(true);
+          }
+        }}
+      >
+        {renderTreeView(menuItems, selectedKey)}
+      </Menu>
+    </AntdLayout.Sider>
+  );
 };
 ```
 
@@ -303,125 +275,117 @@ Now, let's add a badge for the number of create and update events for **_posts_*
 ```tsx
 import React, { useState } from "react";
 import {
-    useTitle,
-    ITreeMenu,
-    CanAccess,
-    useMenu,
-    //highlight-start
-    useSubscription,
-    //highlight-end
+  useTitle,
+  ITreeMenu,
+  CanAccess,
+  useMenu,
+  //highlight-start
+  useSubscription,
+  //highlight-end
 } from "@pankod/refine-core";
 import {
-    AntdLayout,
-    Menu,
-    Grid,
-    Icons,
-    //highlight-start
-    Badge,
-    //highlight-end
+  AntdLayout,
+  Menu,
+  Grid,
+  Icons,
+  //highlight-start
+  Badge,
+  //highlight-end
 } from "@pankod/refine-antd";
 import { antLayoutSider, antLayoutSiderMobile } from "./styles";
 
 export const CustomSider: React.FC = () => {
-    const [subscriptionCount, setSubscriptionCount] = useState(0);
-    const [collapsed, setCollapsed] = useState<boolean>(false);
-    const { Link } = useRouterContext();
-    const Title = useTitle();
-    const { menuItems, selectedKey } = useMenu();
-    const breakpoint = Grid.useBreakpoint();
+  const [subscriptionCount, setSubscriptionCount] = useState(0);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const { Link } = useRouterContext();
+  const Title = useTitle();
+  const { menuItems, selectedKey } = useMenu();
+  const breakpoint = Grid.useBreakpoint();
 
-    const isMobile =
-        typeof breakpoint.lg === "undefined" ? false : !breakpoint.lg;
+  const isMobile =
+    typeof breakpoint.lg === "undefined" ? false : !breakpoint.lg;
 
-    //highlight-start
-    useSubscription({
-        channel: "resources/posts",
-        type: ["created", "updated"],
-        onLiveEvent: () => setSubscriptionCount((prev) => prev + 1),
+  //highlight-start
+  useSubscription({
+    channel: "resources/posts",
+    type: ["created", "updated"],
+    onLiveEvent: () => setSubscriptionCount((prev) => prev + 1),
+  });
+  //highlight-end
+
+  const renderTreeView = (tree: ITreeMenu[], selectedKey: string) => {
+    return tree.map((item: ITreeMenu) => {
+      const { icon, label, route, name, children, parentName } = item;
+
+      if (children.length > 0) {
+        return (
+          <SubMenu
+            key={name}
+            icon={icon ?? <Icons.UnorderedListOutlined />}
+            title={label}
+          >
+            {renderTreeView(children, selectedKey)}
+          </SubMenu>
+        );
+      }
+      const isSelected = route === selectedKey;
+      const isRoute = !(parentName !== undefined && children.length === 0);
+      return (
+        <CanAccess key={route} resource={name.toLowerCase()} action="list">
+          <Menu.Item
+            key={route}
+            style={{
+              fontWeight: isSelected ? "bold" : "normal",
+            }}
+            icon={icon ?? (isRoute && <Icons.UnorderedListOutlined />)}
+          >
+            //highlight-start
+            <div>
+              <Link to={route}>{label}</Link>
+              {label === "Posts" && (
+                <Badge
+                  size="small"
+                  count={subscriptionCount}
+                  offset={[2, -15]}
+                />
+              )}
+            </div>
+            //highlight-end
+          </Menu.Item>
+        </CanAccess>
+      );
     });
-    //highlight-end
+  };
 
-    const renderTreeView = (tree: ITreeMenu[], selectedKey: string) => {
-        return tree.map((item: ITreeMenu) => {
-            const { icon, label, route, name, children, parentName } = item;
+  return (
+    <AntdLayout.Sider
+      collapsible
+      collapsedWidth={isMobile ? 0 : 80}
+      collapsed={collapsed}
+      breakpoint="lg"
+      onCollapse={(collapsed: boolean): void => setCollapsed(collapsed)}
+      style={isMobile ? antLayoutSiderMobile : antLayoutSider}
+    >
+      <Title collapsed={collapsed} />
+      <Menu
+        selectedKeys={[selectedKey]}
+        mode="inline"
+        onClick={() => {
+          if (!breakpoint.lg) {
+            setCollapsed(true);
+          }
 
-            if (children.length > 0) {
-                return (
-                    <SubMenu
-                        key={name}
-                        icon={icon ?? <Icons.UnorderedListOutlined />}
-                        title={label}
-                    >
-                        {renderTreeView(children, selectedKey)}
-                    </SubMenu>
-                );
-            }
-            const isSelected = route === selectedKey;
-            const isRoute = !(
-                parentName !== undefined && children.length === 0
-            );
-            return (
-                <CanAccess
-                    key={route}
-                    resource={name.toLowerCase()}
-                    action="list"
-                >
-                    <Menu.Item
-                        key={route}
-                        style={{
-                            fontWeight: isSelected ? "bold" : "normal",
-                        }}
-                        icon={
-                            icon ?? (isRoute && <Icons.UnorderedListOutlined />)
-                        }
-                    >
-                        //highlight-start
-                        <div>
-                            <Link to={route}>{label}</Link>
-                            {label === "Posts" && (
-                                <Badge
-                                    size="small"
-                                    count={subscriptionCount}
-                                    offset={[2, -15]}
-                                />
-                            )}
-                        </div>
-                        //highlight-end
-                    </Menu.Item>
-                </CanAccess>
-            );
-        });
-    };
-
-    return (
-        <AntdLayout.Sider
-            collapsible
-            collapsedWidth={isMobile ? 0 : 80}
-            collapsed={collapsed}
-            breakpoint="lg"
-            onCollapse={(collapsed: boolean): void => setCollapsed(collapsed)}
-            style={isMobile ? antLayoutSiderMobile : antLayoutSider}
-        >
-            <Title collapsed={collapsed} />
-            <Menu
-                selectedKeys={[selectedKey]}
-                mode="inline"
-                onClick={() => {
-                    if (!breakpoint.lg) {
-                        setCollapsed(true);
-                    }
-
-                    //highlight-start
-                    if (key === "/posts") {
-                        setSubscriptionCount(0);
-                    }
-                    //highlight-end
-                }}
-            >
-                {renderTreeView(menuItems, selectedKey)}
-            </Menu>
-        </AntdLayout.Sider>
-    );
+          //highlight-start
+          if (key === "/posts") {
+            setSubscriptionCount(0);
+          }
+          //highlight-end
+        }}
+      >
+        {renderTreeView(menuItems, selectedKey)}
+      </Menu>
+    </AntdLayout.Sider>
+  );
 };
 ```
 
@@ -431,28 +395,21 @@ You can subscribe to specific `ids` with `params`. For example, you can subscrib
 
 ```tsx
 useSubscription({
-    channel: "resources/posts",
-    type: ["deleted", "updated"],
-    //highlight-start
-    params: {
-        ids: ["1", "2"],
-    },
-    //highlight-end
-    onLiveEvent: () => setSubscriptionCount((prev) => prev + 1),
+  channel: "resources/posts",
+  type: ["deleted", "updated"],
+  //highlight-start
+  params: {
+    ids: ["1", "2"],
+  },
+  //highlight-end
+  onLiveEvent: () => setSubscriptionCount((prev) => prev + 1),
 });
 ```
 
 :::
 
 <br/>
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/real-time/custom-sider.gif" alt="Custom Sider Demo" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/real-time/custom-sider.gif" alt="Custom Sider Demo" />
 
 ## Example
 

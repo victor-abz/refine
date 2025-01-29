@@ -1,30 +1,29 @@
 ---
 title: Build Fast and Customizable Admin Panel with NestJS
-description: We will prepare a simple `job-posting` application. We will also use the refine framework for the admin panel. The project will consist of two parts, api and admin.
+description: We will prepare a simple `job-posting` application. We will also use the Refine framework for the admin panel. The project will consist of two parts, api and admin.
 slug: customizable-admin-panel-with-nestjs
 authors: yildiray
-tags: [refine, nestjs, react, tutorial]
+tags: [Refine, nestjs, react, tutorial]
 image: https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/placeholder.png
 hide_table_of_contents: false
 ---
 
 :::caution
 
-This post was created using version 3.x.x of **refine**. Although we plan to update it with the latest version of **refine** as soon as possible, you can still benefit from the post in the meantime.
+This post was created using version 3.x.x of **Refine**. Although we plan to update it with the latest version of **Refine** as soon as possible, you can still benefit from the post in the meantime.
 
-You should know that **refine** version 4.x.x is backward compatible with version 3.x.x, so there is no need to worry. If you want to see the differences between the two versions, check out the [migration guide](https://refine.dev/docs/migration-guide/).
+You should know that **Refine** version 4.x.x is backward compatible with version 3.x.x, so there is no need to worry. If you want to see the differences between the two versions, check out the [migration guide](https://refine.dev/docs/migration-guide/).
 
 :::
 
-
-
-In this article, we will prepare a simple `job-posting` application. We will also use the [refine](https://github.com/refinedev/refine) framework for the **admin panel**. The project will consist of two parts, api and admin.
+In this article, we will prepare a simple `job-posting` application. We will also use the [Refine](https://github.com/refinedev/refine) framework for the **admin panel**. The project will consist of two parts, api and admin.
 
 <!--truncate-->
 
-All the steps described are in this [repo](https://github.com/refinedev/refine/tree/master/examples/blog-job-posting).
+All the steps described are in this [repo](https://github.com/refinedev/refine/tree/main/examples/blog-job-posting).
 
 ## Intro
+
 [NestJS](https://github.com/nestjs/nest) is a framework for building efficient, scalable Node.js server-side applications. With [nestjsx/crud](https://github.com/nestjsx/crud) we can add CRUD functions quickly and effortlessly on this framework.
 
 ## NestJS Rest Api
@@ -57,6 +56,7 @@ npm install --save @nestjs/typeorm @nestjs/config typeorm mysql2
 - Create and configured a [docker-compose](https://github.com/refinedev/refine-hackathon/tree/main/job-posting-app/blob/master/api/docker-compose.yml) file for MySQL.
 - Create a [ormconfig.ts](https://github.com/refinedev/refine-hackathon/tree/main/job-posting-app/blob/master/api/ormconfig.ts) file for migrations.
 - Add the following scripts to the `package.json` file for migrations.
+
 ```bash
 "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
 "db:migration:generate": "npm run typeorm -- migration:generate",
@@ -64,6 +64,7 @@ npm install --save @nestjs/typeorm @nestjs/config typeorm mysql2
 "db:migration:revert": "npm run typeorm -- migration:revert",
 "db:refresh": "npm run typeorm schema:drop && npm run db:migration:run"
 ```
+
 - Import the `TypeOrmModule` into the `app.module.ts`
 
 **Install nestjsx-crud**
@@ -73,23 +74,16 @@ I used [nestjsx-crud](https://github.com/nestjsx/crud) library because it makes 
 npm i @nestjsx/crud @nestjsx/crud-typeorm class-transformer class-validator
 ```
 
-*Since the steps to create Entities Controllers, and services are very long, I do not explain step by step. You can check the [repo](https://github.com/refinedev/refine-hackathon/tree/main/job-posting-app) for details.*
+_Since the steps to create Entities Controllers, and services are very long, I do not explain step by step. You can check the [repo](https://github.com/refinedev/refine-hackathon/tree/main/job-posting-app) for details._
 
 It created these end-points automatically with nestjsx/crud.
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2021-10-4-admin-panel-with-nestjs/api.png" alt="api" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2021-10-4-admin-panel-with-nestjs/api.png" alt="api" />
 <br />
 
 ## Refine Admin Panel
 
-**Now let's refine the admin panel.** With [Superplate](https://pankod.github.io/superplate/docs), we can quickly create a `refine` project.
+**Now let's Refine the admin panel.** With [Superplate](https://pankod.github.io/superplate/docs), we can quickly create a `refine` project.
 
 ```bash
 npm create refine-app@latest admin -- -b v3
@@ -118,14 +112,7 @@ npm run dev
 
 Refine's sample application will welcome you.
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2021-10-4-admin-panel-with-nestjs/refine_sample.png" alt="refine_sample" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2021-10-4-admin-panel-with-nestjs/refine_sample.png" alt="refine_sample" />
 <br />
 
 Change api url in [admin/src/App.tsx](https://github.com/refinedev/refine-hackathon/tree/main/job-posting-app/blob/master/admin/src/App.tsx)
@@ -134,7 +121,7 @@ Change api url in [admin/src/App.tsx](https://github.com/refinedev/refine-hackat
 const API_URL = "http://localhost:3000";
 ```
 
-Let's add the listing page in refine for the `companies` crud end-point.
+Let's add the listing page in Refine for the `companies` crud end-point.
 
 ```tsx title="/admin/src/pages/companies/list.tsx"
 import {
@@ -161,7 +148,7 @@ export const CompanyList: React.FC<IResourceComponentsProps> = () => {
           order: "desc",
         },
       ],
-    }
+    },
   });
 
   return (
@@ -276,12 +263,5 @@ function App() {
         />
 ```
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2021-10-4-admin-panel-with-nestjs/refine_job.png" alt="refine_job" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2021-10-4-admin-panel-with-nestjs/refine_job.png" alt="refine_job" />
 <br />

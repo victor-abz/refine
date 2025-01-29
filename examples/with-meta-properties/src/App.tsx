@@ -1,16 +1,17 @@
 import { GitHubBanner, Refine } from "@refinedev/core";
 import {
-    notificationProvider,
-    ThemedLayoutV2,
-    ErrorComponent,
-    RefineThemes,
+  useNotificationProvider,
+  ThemedLayoutV2,
+  ErrorComponent,
+  RefineThemes,
 } from "@refinedev/antd";
 import routerProvider, {
-    NavigateToResource,
-    UnsavedChangesNotifier,
-} from "@refinedev/react-router-v6";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import { ConfigProvider } from "antd";
+  NavigateToResource,
+  UnsavedChangesNotifier,
+  DocumentTitleHandler,
+} from "@refinedev/react-router";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router";
+import { ConfigProvider, App as AntdApp } from "antd";
 
 import "@refinedev/antd/dist/reset.css";
 
@@ -19,63 +20,64 @@ import { PostList } from "./pages/posts";
 import { UserList } from "./pages/users";
 
 const App: React.FC = () => {
-    return (
-        <BrowserRouter>
-            <GitHubBanner />
-            <ConfigProvider theme={RefineThemes.Blue}>
-                <Refine
-                    routerProvider={routerProvider}
-                    dataProvider={dataProvider}
-                    notificationProvider={notificationProvider}
-                    resources={[
-                        {
-                            name: "posts",
-                            list: "/posts",
-                            meta: {
-                                role: "admin",
-                                order: 1,
-                            },
-                        },
-                        {
-                            name: "users",
-                            list: "/users",
-                            meta: {
-                                role: "editor",
-                                order: 2,
-                            },
-                        },
-                    ]}
-                    options={{
-                        warnWhenUnsavedChanges: true,
-                        syncWithLocation: true,
-                    }}
-                >
-                    <Routes>
-                        <Route
-                            element={
-                                <ThemedLayoutV2>
-                                    <Outlet />
-                                </ThemedLayoutV2>
-                            }
-                        >
-                            <Route
-                                index
-                                element={
-                                    <NavigateToResource resource="posts" />
-                                }
-                            />
+  return (
+    <BrowserRouter>
+      <GitHubBanner />
+      <ConfigProvider theme={RefineThemes.Blue}>
+        <AntdApp>
+          <Refine
+            routerProvider={routerProvider}
+            dataProvider={dataProvider}
+            notificationProvider={useNotificationProvider}
+            resources={[
+              {
+                name: "posts",
+                list: "/posts",
+                meta: {
+                  role: "admin",
+                  order: 1,
+                },
+              },
+              {
+                name: "users",
+                list: "/users",
+                meta: {
+                  role: "editor",
+                  order: 2,
+                },
+              },
+            ]}
+            options={{
+              warnWhenUnsavedChanges: true,
+              syncWithLocation: true,
+            }}
+          >
+            <Routes>
+              <Route
+                element={
+                  <ThemedLayoutV2>
+                    <Outlet />
+                  </ThemedLayoutV2>
+                }
+              >
+                <Route
+                  index
+                  element={<NavigateToResource resource="posts" />}
+                />
 
-                            <Route path="/posts" element={<PostList />} />
-                            <Route path="/users" element={<UserList />} />
+                <Route path="/posts" element={<PostList />} />
+                <Route path="/users" element={<UserList />} />
 
-                            <Route path="*" element={<ErrorComponent />} />
-                        </Route>
-                    </Routes>
-                    <UnsavedChangesNotifier />
-                </Refine>
-            </ConfigProvider>
-        </BrowserRouter>
-    );
+                <Route path="*" element={<ErrorComponent />} />
+              </Route>
+            </Routes>
+            <UnsavedChangesNotifier />
+            <DocumentTitleHandler />
+          </Refine>
+        </AntdApp>
+      </ConfigProvider>
+    </BrowserRouter>
+  );
 };
 
 export default App;

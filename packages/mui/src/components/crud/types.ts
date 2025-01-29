@@ -1,66 +1,66 @@
-import {
-    CreateButtonProps,
-    DeleteButtonProps,
-    EditButtonProps,
-    RefreshButtonProps,
-    ListButtonProps,
-    SaveButtonProps,
+import type {
+  CreateButtonProps,
+  DeleteButtonProps,
+  EditButtonProps,
+  RefreshButtonProps,
+  ListButtonProps,
+  SaveButtonProps,
 } from "../buttons/types";
-import {
-    BoxProps,
-    CardActionsProps,
-    CardContentProps,
-    CardHeaderProps,
-    CardProps,
-} from "@mui/material";
-import {
-    RefineCrudCreateProps,
-    RefineCrudEditProps,
-    RefineCrudListProps,
-    RefineCrudShowProps,
+
+import type { BoxProps } from "@mui/material/Box";
+import type { CardActionsProps } from "@mui/material/CardActions";
+import type { CardContentProps } from "@mui/material/CardContent";
+import type { CardHeaderProps } from "@mui/material/CardHeader";
+import type { CardProps } from "@mui/material/Card";
+
+import type {
+  RefineCrudCreateProps,
+  RefineCrudEditProps,
+  RefineCrudListProps,
+  RefineCrudShowProps,
 } from "@refinedev/ui-types";
 
 export type CreateProps = RefineCrudCreateProps<
-    SaveButtonProps,
-    BoxProps,
-    CardActionsProps,
-    CardProps,
-    CardHeaderProps,
-    CardContentProps,
-    {}
+  SaveButtonProps,
+  BoxProps,
+  CardActionsProps,
+  CardProps,
+  CardHeaderProps,
+  CardContentProps,
+  {}
 >;
 
 export type EditProps = RefineCrudEditProps<
-    SaveButtonProps,
-    DeleteButtonProps,
-    BoxProps,
-    CardActionsProps,
-    CardProps,
-    CardHeaderProps,
-    CardContentProps,
-    {},
-    RefreshButtonProps,
-    ListButtonProps
+  SaveButtonProps,
+  DeleteButtonProps,
+  BoxProps,
+  CardActionsProps,
+  CardProps,
+  CardHeaderProps,
+  CardContentProps,
+  {},
+  RefreshButtonProps,
+  ListButtonProps
 >;
 
 export type ListProps = RefineCrudListProps<
-    CreateButtonProps,
-    BoxProps,
-    CardProps,
-    CardHeaderProps,
-    CardContentProps,
-    {}
+  CreateButtonProps,
+  BoxProps,
+  CardProps,
+  CardHeaderProps,
+  CardContentProps,
+  {}
 >;
 
 export type ShowProps = RefineCrudShowProps<
-    BoxProps,
-    CardActionsProps,
-    CardProps,
-    CardHeaderProps,
-    CardContentProps,
-    {},
-    EditButtonProps,
-    DeleteButtonProps,
-    RefreshButtonProps,
-    ListButtonProps
+  BoxProps,
+  CardActionsProps,
+  CardProps,
+  CardHeaderProps,
+  CardContentProps,
+  {},
+  EditButtonProps,
+  DeleteButtonProps,
+  RefreshButtonProps,
+  ListButtonProps
 >;

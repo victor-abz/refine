@@ -1,53 +1,45 @@
 import React from "react";
-import { Icon, ComponentWithAs, IconButtonProps } from "@chakra-ui/react";
+import { type IconButtonProps, IconButton } from "@chakra-ui/react";
 import {
-    IconLayoutSidebarLeftCollapse,
-    IconLayoutSidebarLeftExpand,
-    IconMenu2,
-} from "@tabler/icons";
+  IconLayoutSidebarLeftCollapse,
+  IconLayoutSidebarLeftExpand,
+  IconMenu2,
+} from "@tabler/icons-react";
 
-import { useSiderVisible } from "@hooks";
+import { useThemedLayoutContext } from "@hooks";
 
-const HamburgerIcon: ComponentWithAs<"button", IconButtonProps> = (
-    props: React.PropsWithChildren,
-) => (
-    <Icon
-        backgroundColor="transparent"
-        aria-label="sidebar-toggle"
-        boxSize={"24px"}
-        display="inline-block"
-        {...props}
-    >
-        {props.children}
-    </Icon>
+const HamburgerIcon = (props: IconButtonProps) => (
+  <IconButton variant="ghost" size="sm" {...props} />
 );
 
 export const HamburgerMenu: React.FC = () => {
-    const {
-        siderVisible,
-        setSiderVisible,
-        drawerSiderVisible,
-        setDrawerSiderVisible,
-    } = useSiderVisible();
+  const {
+    siderCollapsed,
+    setSiderCollapsed,
+    mobileSiderOpen,
+    setMobileSiderOpen,
+  } = useThemedLayoutContext();
 
-    return (
-        <>
-            <HamburgerIcon
-                display={{ base: "none", md: "inline-block" }}
-                aria-label="drawer-sidebar-toggle"
-                as={
-                    drawerSiderVisible
-                        ? IconLayoutSidebarLeftCollapse
-                        : IconLayoutSidebarLeftExpand
-                }
-                onClick={() => setDrawerSiderVisible?.(!drawerSiderVisible)}
-            />
-            <HamburgerIcon
-                display={{ base: "inline-block", md: "none" }}
-                aria-label="sidebar-toggle"
-                as={IconMenu2}
-                onClick={() => setSiderVisible?.(!siderVisible)}
-            />
-        </>
-    );
+  return (
+    <>
+      <HamburgerIcon
+        display={{ base: "none", md: "flex" }}
+        aria-label="drawer-sidebar-toggle"
+        icon={
+          siderCollapsed ? (
+            <IconLayoutSidebarLeftExpand />
+          ) : (
+            <IconLayoutSidebarLeftCollapse />
+          )
+        }
+        onClick={() => setSiderCollapsed(!siderCollapsed)}
+      />
+      <HamburgerIcon
+        display={{ base: "flex", md: "none" }}
+        aria-label="sidebar-toggle"
+        icon={<IconMenu2 />}
+        onClick={() => setMobileSiderOpen(!mobileSiderOpen)}
+      />
+    </>
+  );
 };

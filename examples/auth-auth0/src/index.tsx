@@ -7,14 +7,15 @@ import App from "./App";
 const container = document.getElementById("root");
 // eslint-disable-next-line
 const root = createRoot(container!);
+
 root.render(
-    <React.StrictMode>
-        <Auth0Provider
-            domain="refine.eu.auth0.com"
-            clientId="zHwgQ2SoYUDQo3Ng1Bdtyk5eGoa2ad7X"
-            redirectUri={window.location.origin}
-        >
-            <App />
-        </Auth0Provider>
-    </React.StrictMode>,
+  <React.StrictMode>
+    <Auth0Provider
+      domain="dev-y38p834gjptooc4g.us.auth0.com"
+      clientId="AcinJvjWp1Dr41gPcJeQ20r5vcsteks4"
+      redirectUri={window.location.origin}
+    >
+      <App />
+    </Auth0Provider>
+  </React.StrictMode>,
 );

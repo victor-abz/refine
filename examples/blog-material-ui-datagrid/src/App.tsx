@@ -1,61 +1,73 @@
-import { GitHubBanner, Refine } from "@refinedev/core";
-import { ErrorComponent, RefineThemes } from "@refinedev/mui";
-import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline, GlobalStyles } from "@mui/material";
-import routerProvider, {
-    NavigateToResource,
-    UnsavedChangesNotifier,
-} from "@refinedev/react-router-v6";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { Refine } from "@refinedev/core";
+import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import {
+  useNotificationProvider,
+  RefineSnackbarProvider,
+} from "@refinedev/mui";
+import routerBindings, {
+  DocumentTitleHandler,
+  NavigateToResource,
+  UnsavedChangesNotifier,
+} from "@refinedev/react-router";
 import dataProvider from "@refinedev/simple-rest";
+import CssBaseline from "@mui/material/CssBaseline";
+import GlobalStyles from "@mui/material/GlobalStyles";
+import { BrowserRouter, Route, Routes, Outlet } from "react-router";
 
-import Layout from "./components/Layout";
+import { ColorModeContextProvider } from "./contexts/color-mode";
+import Layout from "./components/layout";
 import EmployeeList from "./pages/employees";
 
 function App() {
-    return (
-        <BrowserRouter>
-            <GitHubBanner />
-            <ThemeProvider theme={RefineThemes.Blue}>
-                <CssBaseline />
-                <GlobalStyles
-                    styles={{ html: { WebkitFontSmoothing: "auto" } }}
-                />
-                <Refine
-                    routerProvider={routerProvider}
-                    dataProvider={dataProvider(
-                        "https://my-json-server.typicode.com/Mich45/employee-data",
-                    )}
-                    resources={[{ name: "employees", list: "/employees" }]}
+  return (
+    <BrowserRouter>
+      <RefineKbarProvider>
+        <ColorModeContextProvider>
+          <CssBaseline />
+          <GlobalStyles styles={{ html: { WebkitFontSmoothing: "auto" } }} />
+          <RefineSnackbarProvider>
+            <Refine
+              dataProvider={dataProvider(
+                "https://my-json-server.typicode.com/Mich45/employee-data",
+              )}
+              notificationProvider={useNotificationProvider}
+              routerProvider={routerBindings}
+              resources={[
+                {
+                  name: "employees",
+                  list: "/employees",
+                },
+              ]}
+              options={{
+                syncWithLocation: true,
+                warnWhenUnsavedChanges: true,
+              }}
+            >
+              <Routes>
+                <Route
+                  element={
+                    <Layout>
+                      <Outlet />
+                    </Layout>
+                  }
                 >
-                    <Routes>
-                        <Route
-                            element={
-                                <Layout>
-                                    <Outlet />
-                                </Layout>
-                            }
-                        >
-                            <Route
-                                index
-                                element={
-                                    <NavigateToResource resource="employees" />
-                                }
-                            />
+                  <Route
+                    index
+                    element={<NavigateToResource resource="employees" />}
+                  />
 
-                            <Route
-                                path="/employees"
-                                element={<EmployeeList />}
-                            />
-
-                            <Route path="*" element={<ErrorComponent />} />
-                        </Route>
-                    </Routes>
-                    <UnsavedChangesNotifier />
-                </Refine>
-            </ThemeProvider>
-        </BrowserRouter>
-    );
+                  <Route path="/employees" element={<EmployeeList />} />
+                </Route>
+              </Routes>
+              <RefineKbar />
+              <UnsavedChangesNotifier />
+              <DocumentTitleHandler />
+            </Refine>
+          </RefineSnackbarProvider>
+        </ColorModeContextProvider>
+      </RefineKbarProvider>
+    </BrowserRouter>
+  );
 }
 
 export default App;

@@ -14,7 +14,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
         </h1>
         <div>
           <button>
-            Posts List
+            Posts
           </button>
         </div>
       </div>
@@ -249,6 +249,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
     </div>
   </div>
   <div
+    class="refine-inferencer--code-viewer"
     style="position: sticky; bottom: 24px; padding-top: 24px; left: 0px; right: 0px; width: 100%; z-index: 10; display: flex; justify-content: center; transition: all 0.2s ease; opacity: 1; transform: translateY(0);"
   >
     <div
@@ -326,6 +327,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
     </div>
   </div>
   <div
+    class="refine-inferencer--code-viewer-modal"
     style="position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 9999; background-color: rgba(0, 0, 0, 0.5); transition: all 0.2s ease; opacity: 0; pointer-events: none; display: flex; justify-content: center; align-items: center;"
   >
     <div
@@ -839,7 +841,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                 queryResult 
+                 query 
               </span>
               <span
                 class="token punctuation"
@@ -902,7 +904,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                        resetField
+                        setValue
               </span>
               <span
                 class="token punctuation"
@@ -1061,7 +1063,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                 queryResult
+                 query
               </span>
               <span
                 class="token operator"
@@ -1407,7 +1409,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
                 class="token function"
                 style="color: rgb(220, 220, 170);"
               >
-                resetField
+                setValue
               </span>
               <span
                 class="token punctuation"
@@ -1420,6 +1422,39 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
                 style="color: rgb(206, 145, 120);"
               >
                 "category.id"
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                ,
+              </span>
+              <span
+                class="token plain"
+              >
+                 postsData
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                category
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                id
               </span>
               <span
                 class="token punctuation"
@@ -1844,7 +1879,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
                 class="token function"
                 style="color: rgb(220, 220, 170);"
               >
-                resetField
+                setValue
               </span>
               <span
                 class="token punctuation"
@@ -1857,6 +1892,39 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
                 style="color: rgb(206, 145, 120);"
               >
                 "user.id"
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                ,
+              </span>
+              <span
+                class="token plain"
+              >
+                 postsData
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                user
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                id
               </span>
               <span
                 class="token punctuation"
@@ -2234,7 +2302,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
                 class="token function"
                 style="color: rgb(220, 220, 170);"
               >
-                resetField
+                setValue
               </span>
               <span
                 class="token punctuation"
@@ -2247,6 +2315,28 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
                 style="color: rgb(206, 145, 120);"
               >
                 "tags"
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                ,
+              </span>
+              <span
+                class="token plain"
+              >
+                 postsData
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                tags
               </span>
               <span
                 class="token punctuation"
@@ -2880,7 +2970,7 @@ exports[`HeadlessEditInferencer should match the snapshot 1`] = `
               <span
                 class="token plain-text"
               >
-                                        Posts List
+                                        Posts
               </span>
             </div>
             <div

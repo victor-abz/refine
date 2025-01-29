@@ -10,13 +10,13 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
         style="display: flex; align-items: center; justify-content: space-between;"
       >
         <h1>
-          Post
+          Post Show
         </h1>
         <div
           style="display: flex; gap: 8px;"
         >
           <button>
-            Posts List
+            Posts
           </button>
         </div>
       </div>
@@ -118,7 +118,7 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
             Created At
           </h5>
           <div>
-            4/2/2022, 4:25:44 AM
+            4/2/2022, 8:25:44 AM
           </div>
         </div>
         <div
@@ -175,6 +175,7 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
     </div>
   </div>
   <div
+    class="refine-inferencer--code-viewer"
     style="position: sticky; bottom: 24px; padding-top: 24px; left: 0px; right: 0px; width: 100%; z-index: 10; display: flex; justify-content: center; transition: all 0.2s ease; opacity: 1; transform: translateY(0);"
   >
     <div
@@ -252,6 +253,7 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
     </div>
   </div>
   <div
+    class="refine-inferencer--code-viewer-modal"
     style="position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; z-index: 9999; background-color: rgba(0, 0, 0, 0.5); transition: all 0.2s ease; opacity: 0; pointer-events: none; display: flex; justify-content: center; align-items: center;"
   >
     <div
@@ -816,7 +818,7 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                 queryResult 
+                 query 
               </span>
               <span
                 class="token punctuation"
@@ -930,7 +932,7 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                 queryResult
+                 query
               </span>
               <span
                 class="token punctuation"
@@ -2007,7 +2009,57 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
+                record 
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                &&
+              </span>
+              <span
+                class="token plain"
+              >
+                 
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                !
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                !
+              </span>
+              <span
+                class="token plain"
+              >
                 record
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                tags
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                length
               </span>
               <span
                 class="token punctuation"
@@ -2479,7 +2531,7 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
               <span
                 class="token plain-text"
               >
-                Post
+                Post Show
               </span>
               <span
                 class="token tag punctuation"
@@ -2750,7 +2802,7 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
               <span
                 class="token plain-text"
               >
-                Posts List
+                Posts
               </span>
               <span
                 class="token tag punctuation"
@@ -7561,6 +7613,39 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
                 class="token operator"
                 style="color: rgb(212, 212, 212);"
               >
+                &&
+              </span>
+              <span
+                class="token plain"
+              >
+                 record
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                tags
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                length 
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
                 ?
               </span>
               <span
@@ -7704,7 +7789,59 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                tagsData
+                record
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                tags
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?.
+              </span>
+              <span
+                class="token plain"
+              >
+                length 
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                ?
+              </span>
+              <span
+                class="token plain"
+              >
+                 
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                (
+              </span>
+              <span
+                class="token plain"
+              />
+            </div>
+            <div
+              class="token-line"
+              style="color: rgb(156, 220, 254);"
+            >
+              <span
+                class="token plain"
+              >
+                                                    tagsData
               </span>
               <span
                 class="token operator"
@@ -7802,7 +7939,7 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
-                                                    
+                                                        
               </span>
               <span
                 class="token tag punctuation"
@@ -7927,6 +8064,31 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
               <span
                 class="token plain"
               >
+                                                    
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                )
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                )
+              </span>
+              <span
+                class="token plain"
+              />
+            </div>
+            <div
+              class="token-line"
+              style="color: rgb(156, 220, 254);"
+            >
+              <span
+                class="token plain"
+              >
                                                 
               </span>
               <span
@@ -7934,6 +8096,78 @@ exports[`HeadlessShowInferencer should match the snapshot 1`] = `
                 style="color: rgb(212, 212, 212);"
               >
                 )
+              </span>
+              <span
+                class="token plain"
+              >
+                 
+              </span>
+              <span
+                class="token operator"
+                style="color: rgb(212, 212, 212);"
+              >
+                :
+              </span>
+              <span
+                class="token plain"
+              >
+                 
+              </span>
+              <span
+                class="token punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                (
+              </span>
+              <span
+                class="token plain"
+              />
+            </div>
+            <div
+              class="token-line"
+              style="color: rgb(156, 220, 254);"
+            >
+              <span
+                class="token plain"
+              >
+                                                    
+              </span>
+              <span
+                class="token tag punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                &lt;
+              </span>
+              <span
+                class="token tag punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                &gt;
+              </span>
+              <span
+                class="token tag punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                &lt;/
+              </span>
+              <span
+                class="token tag punctuation"
+                style="color: rgb(212, 212, 212);"
+              >
+                &gt;
+              </span>
+              <span
+                class="token plain"
+              />
+            </div>
+            <div
+              class="token-line"
+              style="color: rgb(156, 220, 254);"
+            >
+              <span
+                class="token plain"
+              >
+                                                
               </span>
               <span
                 class="token punctuation"

@@ -3,7 +3,6 @@ id: mutation-mode
 title: Mutation Mode
 ---
 
-
 ## Overview
 
 Mutation mode determines which mode the mutation runs with. Mutations can run under three different modes: `pessimistic`, `optimistic` and `undoable`.  
@@ -19,14 +18,7 @@ The mutation runs immediately. Redirection and UI updates are executed after the
 
 <br />
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/mutation-mode/pessimistic.gif" alt="pessimistic mode" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/mutation-mode/pessimistic.gif" alt="pessimistic mode" />
 
 <br />
 
@@ -40,14 +32,7 @@ The mutation is applied locally, redirection and UI updates are executed immedia
 
 <br />
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/mutation-mode/optimistic.gif" alt="optimistic mode" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/mutation-mode/optimistic.gif" alt="optimistic mode" />
 
 <br />
 
@@ -61,14 +46,7 @@ The mutation is applied locally, redirection and UI updates are executed immedia
 
 <br />
 
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/mutation-mode/undoable.gif" alt="undoable mode" />
-</div>
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/guides-and-concepts/mutation-mode/undoable.gif" alt="undoable mode" />
 
 <br />
 
@@ -89,7 +67,7 @@ Mutation mode can be set application-wide in [`<Refine>`](/api-reference/core/co
 
 <br />
 
-It can also be set in supported [data hooks](/docs/api-reference/core/hooks/data/useUpdate#mutation-mode) and [form hooks](/docs/api-reference/core/hooks/useForm.md#properties) for fine-grained configuration.
+It can also be set in supported [data hooks](/docs/3.xx.xx/api-reference/core/hooks/data/useUpdate#mutation-mode) and [form hooks](/api-reference/core/hooks/useForm.md#properties) for fine-grained configuration.
 
 ```tsx
 import { useUpdate } from "@pankod/refine-core";
@@ -97,11 +75,11 @@ import { useUpdate } from "@pankod/refine-core";
 const { mutate } = useUpdate();
 
 mutate({
-    resource: "categories",
-    id: "2",
-    values: { title: "New Category Title" },
-    // highlight-next-line
-    mutationMode: "optimistic",
+  resource: "categories",
+  id: "2",
+  values: { title: "New Category Title" },
+  // highlight-next-line
+  mutationMode: "optimistic",
 });
 ```
 
@@ -109,10 +87,10 @@ mutate({
 
 ### Supported data hooks
 
--   [`useUpdate` &#8594](/docs/api-reference/core/hooks/data/useUpdate/)
--   [`useUpdateMany` &#8594](/docs/api-reference/core/hooks/data/useUpdateMany/)
--   [`useDelete` &#8594](/docs/api-reference/core/hooks/data/useDelete/)
--   [`useDeleteMany` &#8594](/docs/api-reference/core/hooks/data/useDeleteMany/)
+- [`useUpdate` &#8594](/docs/3.xx.xx/api-reference/core/hooks/data/useUpdate/)
+- [`useUpdateMany` &#8594](/docs/3.xx.xx/api-reference/core/hooks/data/useUpdateMany/)
+- [`useDelete` &#8594](/docs/3.xx.xx/api-reference/core/hooks/data/useDelete/)
+- [`useDeleteMany` &#8594](/docs/3.xx.xx/api-reference/core/hooks/data/useDeleteMany/)
 
 <br />
 

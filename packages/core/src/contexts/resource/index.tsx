@@ -1,34 +1,24 @@
 import React from "react";
 
-import { IResourceContext } from "./IResourceContext";
-import {
-    IResourceItem,
-    ResourceProps,
-} from "../../interfaces/bindings/resource";
-import { useDeepMemo } from "@hooks/deepMemo";
 import { legacyResourceTransform } from "@definitions/helpers";
+import { useDeepMemo } from "@hooks/deepMemo";
 
-export {
-    IResourceItem,
-    IResourceComponents,
-    IResourceComponentsProps,
-    IResourceContext,
-} from "../../interfaces/bindings/resource";
+import type { IResourceContext, IResourceItem, ResourceProps } from "./types";
 
 export const ResourceContext = React.createContext<IResourceContext>({
-    resources: [],
+  resources: [],
 });
 
 export const ResourceContextProvider: React.FC<
-    React.PropsWithChildren<{ resources: ResourceProps[] }>
+  React.PropsWithChildren<{ resources: ResourceProps[] }>
 > = ({ resources: providedResources, children }) => {
-    const resources: IResourceItem[] = useDeepMemo(() => {
-        return legacyResourceTransform(providedResources ?? []);
-    }, [providedResources]);
+  const resources: IResourceItem[] = useDeepMemo(() => {
+    return legacyResourceTransform(providedResources ?? []);
+  }, [providedResources]);
 
-    return (
-        <ResourceContext.Provider value={{ resources }}>
-            {children}
-        </ResourceContext.Provider>
-    );
+  return (
+    <ResourceContext.Provider value={{ resources }}>
+      {children}
+    </ResourceContext.Provider>
+  );
 };

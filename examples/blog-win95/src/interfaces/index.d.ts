@@ -1,15 +1,18 @@
 export interface IPost {
+  id: string;
+  title: string;
+  category: {
     id: string;
-    title: string;
+  };
 }
 
 export interface ICategory {
-    id: string;
-    title: string;
+  id: string;
+  title: string;
 }
 
 export interface ICsvPost {
-    title: string;
-    content: string;
-    categoryId: string;
+  title: string;
+  content: string;
+  categoryId: string;
 }

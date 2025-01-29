@@ -4,30 +4,30 @@ import { Typography } from "antd";
 
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 
-dayjs.extend(LocalizedFormat);
-
-const defaultLocale = dayjs.locale();
-
-import { DateFieldProps } from "../types";
+import type { DateFieldProps } from "../types";
 
 /**
  * This field is used to display dates. It uses {@link https://day.js.org/docs/en/display/format `Day.js`} to display date format.
  *
- * @see {@link https://refine.dev/docs/ui-frameworks/antd/components/fields/date} for more details.
+ * @see {@link https://refine.dev/docs/api-reference/antd/components/fields/date} for more details.
  */
 export const DateField: React.FC<DateFieldProps> = ({
-    value,
-    locales,
-    format: dateFormat = "L",
-    ...rest
+  value,
+  locales,
+  format: dateFormat = "L",
+  ...rest
 }) => {
-    const { Text } = Typography;
+  dayjs.extend(LocalizedFormat);
 
-    return (
-        <Text {...rest}>
-            {dayjs(value)
-                .locale(locales || defaultLocale)
-                .format(dateFormat)}
-        </Text>
-    );
+  const defaultLocale = dayjs.locale();
+
+  return (
+    <Typography.Text {...rest}>
+      {value
+        ? dayjs(value)
+            .locale(locales || defaultLocale)
+            .format(dateFormat)
+        : ""}
+    </Typography.Text>
+  );
 };

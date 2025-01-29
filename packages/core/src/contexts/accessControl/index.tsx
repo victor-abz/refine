@@ -1,22 +1,46 @@
-import React from "react";
+import React, { type PropsWithChildren } from "react";
 
-import { IAccessControlContext } from "./IAccessControlContext";
+import type {
+  IAccessControlContext,
+  IAccessControlContextReturnType,
+} from "./types";
 
 /** @deprecated default value for access control context has no use and is an empty object. */
-export const defaultAccessControlContext: IAccessControlContext = {};
+export const defaultAccessControlContext = {} as IAccessControlContext;
 
-export const AccessControlContext = React.createContext<IAccessControlContext>(
-    {},
-);
+export const AccessControlContext =
+  React.createContext<IAccessControlContextReturnType>({
+    options: {
+      buttons: { enableAccessControl: true, hideIfUnauthorized: false },
+    },
+  });
 
 export const AccessControlContextProvider: React.FC<
-    IAccessControlContext & {
-        children?: React.ReactNode;
-    }
-> = ({ can, children }) => {
-    return (
-        <AccessControlContext.Provider value={{ can }}>
-            {children}
-        </AccessControlContext.Provider>
-    );
+  PropsWithChildren<IAccessControlContext>
+> = ({ can, children, options }) => {
+  return (
+    <AccessControlContext.Provider
+      value={{
+        can,
+        options: options
+          ? {
+              ...options,
+              buttons: {
+                enableAccessControl: true,
+                hideIfUnauthorized: false,
+                ...options.buttons,
+              },
+            }
+          : {
+              buttons: {
+                enableAccessControl: true,
+                hideIfUnauthorized: false,
+              },
+              queryOptions: undefined,
+            },
+      }}
+    >
+      {children}
+    </AccessControlContext.Provider>
+  );
 };

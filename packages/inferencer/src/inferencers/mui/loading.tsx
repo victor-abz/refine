@@ -1,21 +1,22 @@
 import React from "react";
 
-import { Box, CircularProgress } from "@mui/material";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 
-import { CreateInferencerConfig } from "@/types";
+import type { CreateInferencerConfig } from "../../types";
 
 export const LoadingComponent: CreateInferencerConfig["loadingComponent"] =
-    () => {
-        return (
-            <Box
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    minHeight: "300px",
-                }}
-            >
-                <CircularProgress size="large" />
-            </Box>
-        );
-    };
+  () => {
+    return (
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "300px",
+        }}
+      >
+        <CircularProgress size="large" />
+      </Box>
+    );
+  };

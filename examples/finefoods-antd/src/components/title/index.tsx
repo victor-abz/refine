@@ -1,32 +1,40 @@
 import { useLink } from "@refinedev/core";
-import { Logo } from "./styled";
-import { BikeWhiteIcon, FineFoodsIcon } from "components";
-import { theme } from "antd";
+import { Space, theme } from "antd";
 
-const { useToken } = theme;
+import { FinefoodsLogoIcon, FinefoodsLogoText } from "../../components";
+import { Logo } from "./styled";
 
 type TitleProps = {
-    collapsed: boolean;
+  collapsed: boolean;
 };
 
 export const Title: React.FC<TitleProps> = ({ collapsed }) => {
-    const { token } = useToken();
-    const Link = useLink();
+  const { token } = theme.useToken();
+  const Link = useLink();
 
-    return (
-        <Logo>
-            <Link to="/">
-                {collapsed ? (
-                    <BikeWhiteIcon
-                        style={{
-                            fontSize: "32px",
-                            color: token.colorTextHeading,
-                        }}
-                    />
-                ) : (
-                    <FineFoodsIcon style={{ color: token.colorTextHeading }} />
-                )}
-            </Link>
-        </Logo>
-    );
+  return (
+    <Logo>
+      <Link to="/">
+        {collapsed ? (
+          <FinefoodsLogoIcon />
+        ) : (
+          <Space size={12}>
+            <FinefoodsLogoIcon
+              style={{
+                fontSize: "32px",
+                color: token.colorTextHeading,
+              }}
+            />
+            <FinefoodsLogoText
+              style={{
+                color: token.colorTextHeading,
+                width: "100%",
+                height: "auto",
+              }}
+            />
+          </Space>
+        )}
+      </Link>
+    </Logo>
+  );
 };

@@ -1,32 +1,58 @@
-import { useEffect } from "react";
+import React from "react";
 
 import { useTelemetryData } from "@hooks/useTelemetryData";
 
-import { ITelemetryData } from "../../interfaces/telementry";
+import type { ITelemetryData } from "./types";
 
-const encode = (payload: ITelemetryData): string => {
-    const stringifyedPayload = JSON.stringify(payload || {});
+const encode = (payload: ITelemetryData): string | undefined => {
+  try {
+    const stringifiedPayload = JSON.stringify(payload || {});
 
     if (typeof btoa !== "undefined") {
-        return btoa(stringifyedPayload);
+      return btoa(stringifiedPayload);
     }
 
-    return Buffer.from(stringifyedPayload).toString("base64");
+    return Buffer.from(stringifiedPayload).toString("base64");
+  } catch (err) {
+    return undefined;
+  }
+};
+
+const throughImage = (src: string) => {
+  const img = new Image();
+
+  img.src = src;
+};
+
+const throughFetch = (src: string) => {
+  fetch(src);
+};
+
+const transport = (src: string) => {
+  if (typeof Image !== "undefined") {
+    throughImage(src);
+  } else if (typeof fetch !== "undefined") {
+    throughFetch(src);
+  }
 };
 
 export const Telemetry: React.FC<{}> = () => {
-    const payload = useTelemetryData();
+  const payload = useTelemetryData();
+  const sent = React.useRef(false);
 
-    useEffect(() => {
-        if (typeof window === "undefined" && !Image) {
-            return;
-        }
+  React.useEffect(() => {
+    if (sent.current) {
+      return;
+    }
+    const encoded = encode(payload);
 
-        const img = new Image();
-        img.src = `https://telemetry.refine.dev/telemetry?payload=${encode(
-            payload,
-        )}`;
-    }, []);
+    if (!encoded) {
+      return;
+    }
 
-    return null;
+    transport(`https://telemetry.refine.dev/telemetry?payload=${encoded}`);
+    sent.current = true;
+  }, []);
+
+  return null;
 };

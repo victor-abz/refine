@@ -1,48 +1,44 @@
 import React from "react";
-import { IconButton, ExtendButtonBase, IconButtonTypeMap } from "@mui/material";
-import { Menu } from "@mui/icons-material";
 
-import { useSiderVisible } from "@hooks";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/icons-material/Menu";
 
-const HamburgerIcon: ExtendButtonBase<IconButtonTypeMap<{}, "button">> = (
-    props: React.PropsWithChildren,
-) => (
-    <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        edge="start"
-        {...props}
-    >
-        <Menu />
-    </IconButton>
+import type { IconButtonProps } from "@mui/material/IconButton";
+
+import { useThemedLayoutContext } from "@hooks";
+
+const HamburgerIcon = (props: IconButtonProps) => (
+  <IconButton color="inherit" aria-label="open drawer" edge="start" {...props}>
+    <Menu />
+  </IconButton>
 );
 
 export const HamburgerMenu: React.FC = () => {
-    const {
-        siderVisible,
-        setSiderVisible,
-        drawerSiderVisible,
-        setDrawerSiderVisible,
-    } = useSiderVisible();
+  const {
+    siderCollapsed,
+    setSiderCollapsed,
+    mobileSiderOpen,
+    setMobileSiderOpen,
+  } = useThemedLayoutContext();
 
-    return (
-        <>
-            <HamburgerIcon
-                onClick={() => setDrawerSiderVisible?.(!drawerSiderVisible)}
-                sx={{
-                    mr: 2,
-                    display: { xs: "none", md: "flex" },
-                    ...(drawerSiderVisible && { display: "none" }),
-                }}
-            />
-            <HamburgerIcon
-                onClick={() => setSiderVisible?.(!siderVisible)}
-                sx={{
-                    mr: 2,
-                    display: { xs: "flex", md: "none" },
-                    ...(siderVisible && { display: "none" }),
-                }}
-            />
-        </>
-    );
+  return (
+    <>
+      <HamburgerIcon
+        onClick={() => setSiderCollapsed(!siderCollapsed)}
+        sx={{
+          mr: 2,
+          display: { xs: "none", md: "flex" },
+          ...(!siderCollapsed && { display: "none" }),
+        }}
+      />
+      <HamburgerIcon
+        onClick={() => setMobileSiderOpen(!mobileSiderOpen)}
+        sx={{
+          mr: 2,
+          display: { xs: "flex", md: "none" },
+          ...(mobileSiderOpen && { display: "none" }),
+        }}
+      />
+    </>
+  );
 };

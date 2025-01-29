@@ -1,22 +1,29 @@
 import { useContext } from "react";
 
 import { ThemedLayoutContext } from "../../contexts/themedLayoutContext";
-import { IThemedLayoutContext } from "../../contexts/themedLayoutContext/IThemedLayoutContext";
 
-export type UseSiderVisibleType = IThemedLayoutContext;
+export type UseSiderVisibleType = {
+  siderVisible: boolean;
+  drawerSiderVisible: boolean;
+  setSiderVisible: (visible: boolean) => void;
+  setDrawerSiderVisible: (visible: boolean) => void;
+};
 
+/**
+ * @deprecated Please use `useThemedLayoutContext` instead.
+ */
 export const useSiderVisible = (): UseSiderVisibleType => {
-    const {
-        siderVisible,
-        setSiderVisible,
-        drawerSiderVisible,
-        setDrawerSiderVisible,
-    } = useContext(ThemedLayoutContext);
+  const {
+    mobileSiderOpen,
+    siderCollapsed,
+    setMobileSiderOpen,
+    setSiderCollapsed,
+  } = useContext(ThemedLayoutContext);
 
-    return {
-        siderVisible,
-        setSiderVisible,
-        drawerSiderVisible,
-        setDrawerSiderVisible,
-    };
+  return {
+    siderVisible: mobileSiderOpen,
+    setSiderVisible: setMobileSiderOpen,
+    drawerSiderVisible: !siderCollapsed,
+    setDrawerSiderVisible: (visible) => setSiderCollapsed(!visible),
+  };
 };

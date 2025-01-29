@@ -1,74 +1,61 @@
-import { HttpError, useForm } from "@refinedev/core";
+import { type HttpError, useForm } from "@refinedev/core";
 
-import { IPost } from "interfaces";
-import { useEffect, useState } from "react";
+import type { IPost } from "../../interfaces";
 
 type FormValues = Omit<IPost, "id">;
 
 export const PostCreate: React.FC = () => {
-    const { formLoading, onFinish, queryResult } = useForm<
-        IPost,
-        HttpError,
-        FormValues
-    >();
-    const defaultValues = queryResult?.data?.data;
+  const {
+    formLoading,
+    onFinish,
+    query: queryResult,
+  } = useForm<IPost, HttpError, FormValues>();
 
-    const [formValues, seFormValues] = useState<FormValues>({
-        title: defaultValues?.title || "",
-        content: defaultValues?.content || "",
-    });
+  // if action is "clone", we'll have defaultValues
+  const defaultValues = queryResult?.data?.data;
 
-    const handleOnChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
-        seFormValues({
-            ...formValues,
-            [e.target.name]: e.target.value,
-        });
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const values = {
+      title: formData.get("title") as string,
+      content: formData.get("content") as string,
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        onFinish(formValues);
-    };
+    onFinish(values).catch(() => {});
+  };
 
-    useEffect(() => {
-        seFormValues({
-            title: defaultValues?.title || "",
-            content: defaultValues?.content || "",
-        });
-    }, [defaultValues]);
-
-    return (
+  return (
+    <div>
+      <form onSubmit={(event) => submit(event)}>
         <div>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="title">Title</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        placeholder="Title"
-                        value={formValues.title}
-                        onChange={handleOnChange}
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="content">Content</label>
-                    <textarea
-                        id="content"
-                        name="content"
-                        placeholder="Content"
-                        value={formValues.content}
-                        onChange={handleOnChange}
-                    />
-                </div>
-                <button type="submit" disabled={formLoading}>
-                    {formLoading && <div>Loading...</div>}
-                    <span>Save</span>
-                </button>
-            </form>
+          <label htmlFor="title">Title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="Title"
+            defaultValue={defaultValues?.title || ""}
+          />
         </div>
-    );
+
+        <div>
+          <label htmlFor="content">Content</label>
+          <textarea
+            id="content"
+            name="content"
+            placeholder="Content"
+            rows={10}
+            defaultValue={defaultValues?.content || ""}
+          />
+        </div>
+        <button type="submit" disabled={formLoading}>
+          {formLoading && <div>Loading...</div>}
+          <span>Save</span>
+        </button>
+      </form>
+    </div>
+  );
 };

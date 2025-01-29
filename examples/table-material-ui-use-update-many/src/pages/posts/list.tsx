@@ -1,123 +1,117 @@
+import { type BaseOption, useSelect, useUpdateMany } from "@refinedev/core";
+import { List, useDataGrid } from "@refinedev/mui";
 import React from "react";
-import { Option, useSelect, useUpdateMany } from "@refinedev/core";
-import { useDataGrid, List } from "@refinedev/mui";
 
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import {
-    DataGrid,
-    GridColumns,
-    GridValueFormatterParams,
+  DataGrid,
+  type GridColDef,
+  type GridRowSelectionModel,
 } from "@mui/x-data-grid";
 
-import { ICategory, IPost } from "interfaces";
+import type { ICategory, IPost } from "../../interfaces";
 
 export const PostList: React.FC = () => {
-    const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>(
-        [],
-    );
-    const hasSelected = selectedRowKeys.length > 0;
+  const [selectedRowKeys, setSelectedRowKeys] =
+    React.useState<GridRowSelectionModel>([]);
+  const hasSelected = selectedRowKeys.length > 0;
 
-    const { mutate } = useUpdateMany<IPost>();
+  const { mutate } = useUpdateMany<IPost>({
+    resource: "posts",
+    ids: selectedRowKeys.map(String),
+    mutationOptions: {
+      onSuccess: () => {
+        setSelectedRowKeys([]);
+      },
+    },
+  });
 
-    const updateSelectedItems = () => {
-        mutate(
-            {
-                resource: "posts",
-                ids: selectedRowKeys.map(String),
-                values: {
-                    status: "approved",
-                },
-            },
-            {
-                onSuccess: () => {
-                    setSelectedRowKeys([]);
-                },
-            },
-        );
-    };
-
-    const { dataGridProps } = useDataGrid<IPost>({
-        initialPageSize: 10,
+  const updateSelectedItems = () => {
+    mutate({
+      values: {
+        status: "approved",
+      },
     });
+  };
 
-    const {
-        options,
-        queryResult: { isLoading },
-    } = useSelect<ICategory>({
-        resource: "categories",
-    });
+  const { dataGridProps } = useDataGrid<IPost>({
+    initialPageSize: 10,
+  });
 
-    const columns = React.useMemo<GridColumns<IPost>>(
-        () => [
-            {
-                field: "id",
-                headerName: "ID",
-                type: "number",
-                width: 50,
-            },
-            { field: "title", headerName: "Title", minWidth: 400, flex: 1 },
-            {
-                field: "category.id",
-                headerName: "Category",
-                type: "singleSelect",
-                headerAlign: "left",
-                align: "left",
-                minWidth: 250,
-                flex: 0.5,
-                valueOptions: options,
-                valueFormatter: (params: GridValueFormatterParams<Option>) => {
-                    return params.value;
-                },
-                renderCell: function render({ row }) {
-                    if (isLoading) {
-                        return "Loading...";
-                    }
+  const {
+    options,
+    query: { isLoading },
+  } = useSelect<ICategory>({
+    resource: "categories",
+  });
 
-                    const category = options.find(
-                        (item) =>
-                            item.value.toString() ===
-                            row.category.id.toString(),
-                    );
-                    return category?.label;
-                },
-            },
-            {
-                field: "status",
-                headerName: "Status",
-                minWidth: 120,
-                flex: 0.3,
-                type: "singleSelect",
-                valueOptions: ["draft", "published", "rejected"],
-            },
-        ],
-        [options, isLoading],
-    );
+  const columns = React.useMemo<GridColDef<IPost>[]>(
+    () => [
+      {
+        field: "id",
+        headerName: "ID",
+        type: "number",
+        width: 50,
+      },
+      { field: "title", headerName: "Title", minWidth: 400, flex: 1 },
+      {
+        field: "category.id",
+        headerName: "Category",
+        type: "singleSelect",
+        headerAlign: "left",
+        align: "left",
+        minWidth: 250,
+        flex: 0.5,
+        valueOptions: options,
+        display: "flex",
+        renderCell: function render({ row }) {
+          if (isLoading) {
+            return "Loading...";
+          }
 
-    return (
-        <List
-            wrapperProps={{ sx: { paddingX: { xs: 2, md: 0 } } }}
-            headerButtons={
-                <Button
-                    onClick={() => updateSelectedItems()}
-                    disabled={!hasSelected}
-                    size="small"
-                    variant="contained"
-                >
-                    Update Status to Approved
-                </Button>
-            }
+          const category = options.find(
+            (item) => item.value.toString() === row.category.id.toString(),
+          );
+          return category?.label;
+        },
+      },
+      {
+        field: "status",
+        headerName: "Status",
+        minWidth: 120,
+        flex: 0.3,
+        type: "singleSelect",
+        valueOptions: ["draft", "published", "rejected"],
+      },
+    ],
+    [options, isLoading],
+  );
+
+  return (
+    <List
+      wrapperProps={{ sx: { paddingX: { xs: 2, md: 0 } } }}
+      headerButtons={
+        <Button
+          id="update-selected"
+          onClick={() => updateSelectedItems()}
+          disabled={!hasSelected}
+          size="small"
+          variant="contained"
         >
-            <DataGrid
-                {...dataGridProps}
-                columns={columns}
-                autoHeight
-                checkboxSelection
-                onSelectionModelChange={(newSelectionModel) => {
-                    setSelectedRowKeys(newSelectionModel as React.Key[]);
-                }}
-                rowsPerPageOptions={[10, 20, 50, 100]}
-                selectionModel={selectedRowKeys}
-            />
-        </List>
-    );
+          Update Status to Approved
+        </Button>
+      }
+    >
+      <DataGrid
+        {...dataGridProps}
+        columns={columns}
+        checkboxSelection
+        onRowSelectionModelChange={(newSelectionModel) => {
+          setSelectedRowKeys(newSelectionModel);
+        }}
+        pageSizeOptions={[10, 20, 50, 100]}
+        rowSelectionModel={selectedRowKeys}
+      />
+    </List>
+  );
 };

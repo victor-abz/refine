@@ -1,130 +1,137 @@
 import { useForm } from "@refinedev/react-hook-form";
 
-import { createInferencer } from "@/create-inferencer";
+import { createInferencer } from "../../create-inferencer";
 import {
-    jsx,
-    componentName,
-    prettyString,
-    accessor,
-    printImports,
-    toSingular,
-    isIDKey,
-    dotAccessor,
-    getOptionLabel,
-    noOp,
-    getVariableName,
-    toPlural,
-} from "@/utilities";
+  jsx,
+  componentName,
+  accessor,
+  printImports,
+  toSingular,
+  isIDKey,
+  dotAccessor,
+  getOptionLabel,
+  noOp,
+  getVariableName,
+  translatePrettyString,
+  translateActionTitle,
+  translateButtonTitle,
+  getMetaProps,
+  idQuoteWrapper,
+  deepHasKey,
+} from "../../utilities";
 
 import { ErrorComponent } from "./error";
 import { LoadingComponent } from "./loading";
-import { SharedCodeViewer } from "@/components/shared-code-viewer";
+import { SharedCodeViewer } from "../../components/shared-code-viewer";
 
-import {
-    InferencerResultComponent,
-    InferField,
-    ImportElement,
-    RendererContext,
-} from "@/types";
-import { getMetaProps } from "@/utilities/get-meta-props";
+import type {
+  InferencerResultComponent,
+  InferField,
+  ImportElement,
+  RendererContext,
+} from "../../types";
 
 /**
  * a renderer function for edit page with unstyled html elements
  * @internal used internally from inferencer components
  */
 export const renderer = ({
-    resource,
-    fields,
-    meta,
-    isCustomPage,
-    id,
+  resource,
+  fields,
+  meta,
+  isCustomPage,
+  id,
+  i18n,
 }: RendererContext) => {
-    const COMPONENT_NAME = componentName(
-        resource.label ?? resource.name,
-        "edit",
-    );
-    const recordName = getVariableName(resource.label ?? resource.name, "Data");
-    const imports: Array<ImportElement> = [
-        ["React", "react", true],
-        ["useNavigation", "@refinedev/core"],
-        ["useForm", "@refinedev/react-hook-form"],
-    ];
+  const COMPONENT_NAME = componentName(resource.label ?? resource.name, "edit");
+  const recordName = getVariableName(resource.label ?? resource.name, "Data");
+  const imports: Array<ImportElement> = [
+    ["React", "react", true],
+    ["useNavigation", "@refinedev/core"],
+    ["useForm", "@refinedev/react-hook-form"],
+  ];
 
-    const relationFields: (InferField | null)[] = fields.filter(
-        (field) => field?.relation && !field?.fieldable && field?.resource,
-    );
+  if (i18n) {
+    imports.push(["useTranslate", "@refinedev/core"]);
+  }
 
-    const relationHooksCode = relationFields
-        .filter(Boolean)
-        .map((field) => {
-            if (field?.relation && !field.fieldable && field.resource) {
-                imports.push(["useSelect", "@refinedev/core"]);
-                let val = accessor(
-                    recordName,
-                    field.key,
-                    field.accessor,
-                    false,
-                );
+  // has gqlQuery or gqlMutation in "meta"
+  const hasGql = deepHasKey(meta || {}, ["gqlQuery", "gqlMutation"]);
+  if (hasGql) {
+    imports.push(["gql", "graphql-tag", true]);
+  }
 
-                if (field.multiple && field.accessor) {
-                    val = `${accessor(
-                        recordName,
-                        field.key,
-                    )}?.map((item: any) => ${accessor(
-                        "item",
-                        undefined,
-                        field.accessor,
-                    )})`;
-                }
+  const relationFields: (InferField | null)[] = fields.filter(
+    (field) => field?.relation && !field?.fieldable && field?.resource,
+  );
 
-                return `
+  const relationHooksCode = relationFields
+    .filter(Boolean)
+    .map((field) => {
+      if (field?.relation && !field.fieldable && field.resource) {
+        imports.push(["useSelect", "@refinedev/core"]);
+        let val = accessor(recordName, field.key, field.accessor, false);
+
+        if (field.multiple && field.accessor) {
+          val = `${accessor(
+            recordName,
+            field.key,
+          )}?.map((item: any) => ${accessor(
+            "item",
+            undefined,
+            field.accessor,
+          )})`;
+        }
+
+        return `
                 const { options: ${getVariableName(field.key, "Options")} } =
                 useSelect({
                     resource: "${field.resource.name}",
                     defaultValue: ${val},
                     ${getOptionLabel(field)}
                     ${getMetaProps(
-                        field?.resource?.identifier ?? field?.resource?.name,
-                        meta,
-                        "getList",
+                      field?.resource?.identifier ?? field?.resource?.name,
+                      meta,
+                      ["getList"],
                     )}
                 });
 
                 React.useEffect(() => {
-                    resetField("${dotAccessor(
-                        field.key,
-                        undefined,
-                        field.accessor,
-                    )}");
+                    setValue("${dotAccessor(
+                      field.key,
+                      undefined,
+                      field.accessor,
+                    )}", ${val});
                 }, [${getVariableName(field.key, "Options")}]);
             `;
-            }
-            return undefined;
-        })
-        .filter(Boolean);
+      }
+      return undefined;
+    })
+    .filter(Boolean);
 
-    const renderRelationFields = (field: InferField) => {
-        if (field.relation && field.resource) {
-            imports.push(["useSelect", "@refinedev/core"]);
+  const renderRelationFields = (field: InferField) => {
+    if (field.relation && field.resource) {
+      imports.push(["useSelect", "@refinedev/core"]);
 
-            const variableName = getVariableName(field.key, "Options");
+      const variableName = getVariableName(field.key, "Options");
 
-            return jsx`
+      return jsx`
             <label>
-                <span style={{ marginRight: "8px" }}>${prettyString(
-                    field.key,
-                )}</span>
+                <span style={{ marginRight: "8px" }}>${translatePrettyString({
+                  resource,
+                  field,
+                  i18n,
+                  noQuotes: true,
+                })}</span>
                 <select
                     placeholder="Select ${toSingular(field.resource.name)}"
                     {...register("${dotAccessor(
-                        field.key,
-                        undefined,
-                        field.accessor,
+                      field.key,
+                      undefined,
+                      field.accessor,
                     )}", {
                         required: ${
-                            field.multiple
-                                ? "false"
-                                : '"This field is required"'
+                          field.multiple ? "false" : '"This field is required"'
                         },
                     })}
                 >
@@ -136,58 +143,66 @@ export const renderer = ({
                 </select>
                 <span style={{ color: "red" }}>
                     {${accessor(
-                        "(errors as any)",
-                        field.key,
-                        field.accessor,
-                        false,
+                      "(errors as any)",
+                      field.key,
+                      field.accessor,
+                      false,
                     )}?.message as string}
                 </span>
             </label>
             `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const basicInputFields = (field: InferField) => {
-        if (
-            field.type === "text" ||
-            field.type === "url" ||
-            field.type === "email" ||
-            field.type === "number" ||
-            field.type === "date" ||
-            field.type === "richtext"
-        ) {
-            if (field.multiple) {
-                const val = dotAccessor(field.key, "${index}", field.accessor);
+  const basicInputFields = (field: InferField) => {
+    if (
+      field.type === "text" ||
+      field.type === "url" ||
+      field.type === "email" ||
+      field.type === "number" ||
+      field.type === "date" ||
+      field.type === "richtext"
+    ) {
+      if (field.multiple) {
+        const val = dotAccessor(field.key, "${index}", field.accessor);
 
-                const valError = accessor(
-                    accessor("(errors as any)", field.key, undefined, false) +
-                        "?.[index]",
-                    undefined,
-                    field.accessor,
-                );
+        const valError = accessor(
+          `${accessor(
+            "(errors as any)",
+            field.key,
+            undefined,
+            false,
+          )}?.[index]`,
+          undefined,
+          field.accessor,
+        );
 
-                return `
+        return `
                     <>
-                        {${accessor(
-                            recordName,
-                            field.key,
-                        )}?.map((item: any, index: number) => (
+                        {${accessor(recordName, field.key)}?.map((item: any, index: number) => (
                             <label key={index}>
                                 <span style={{ marginRight: "8px" }}>
-                                    ${prettyString(field.key)} #{index + 1}
+                                    ${translatePrettyString({
+                                      resource,
+                                      field,
+                                      i18n,
+                                      noQuotes: true,
+                                    })}
                                 </span>
                                 <input ${
-                                    field.type !== "richtext"
-                                        ? `
+                                  field.type !== "richtext"
+                                    ? `
                                 type="${
-                                    field.type !== "date" ? field.type : "text"
+                                  field.type !== "date" ? field.type : "text"
                                 }"
                                 `
-                                        : ""
+                                    : ""
                                 } {...register(\`${val}\`, { required: "This field is required", ${
-                    field.type === "number" ? "valueAsNumber: true," : ""
-                } })} />
+                                  field.type === "number"
+                                    ? "valueAsNumber: true,"
+                                    : ""
+                                } })} />
                                 <span style={{color: "red"}}>
                                 {${accessor(valError, "message")} as string}
                                 </span>
@@ -195,33 +210,36 @@ export const renderer = ({
                         ))}
                     </>
                 `;
-            }
-            const inp = field.type === "richtext" ? "textarea" : "input";
-            return jsx`
+      }
+      const inp = field.type === "richtext" ? "textarea" : "input";
+      return jsx`
             <label>
-                <span style={{ marginRight: "8px" }}>${prettyString(
-                    field.key,
-                )}</span>
+                <span style={{ marginRight: "8px" }}>${translatePrettyString({
+                  resource,
+                  field,
+                  i18n,
+                  noQuotes: true,
+                })}</span>
                 <${inp}
                 ${isIDKey(field.key) ? "disabled" : ""}
                 ${
-                    field.type !== "date" && field.type !== "richtext"
-                        ? `type="${field.type}"`
-                        : ""
+                  field.type !== "date" && field.type !== "richtext"
+                    ? `type="${field.type}"`
+                    : ""
                 }
                 ${
-                    inp === "textarea"
-                        ? `
+                  inp === "textarea"
+                    ? `
                     rows={5}
                     cols={33}
                     style={{ verticalAlign: "top" }}
                 `
-                        : ""
+                    : ""
                 }
                 {...register("${dotAccessor(
-                    field.key,
-                    undefined,
-                    field.accessor,
+                  field.key,
+                  undefined,
+                  field.accessor,
                 )}", {
                     required: "This field is required",
                     ${field.type === "number" ? "valueAsNumber: true," : ""}
@@ -229,36 +247,41 @@ export const renderer = ({
                 />
                 <span style={{ color: "red" }}>
                 {${accessor(
-                    "(errors as any)",
-                    field.key,
-                    field.accessor,
-                    false,
+                  "(errors as any)",
+                  field.key,
+                  field.accessor,
+                  false,
                 )}?.message as string}
                 </span>
             </label>
             `;
-        }
-        return undefined;
-    };
+    }
+    return undefined;
+  };
 
-    const booleanFields = (field: InferField) => {
-        if (field.type === "boolean") {
-            if (field.multiple) {
-                const val = dotAccessor(field.key, undefined, field.accessor);
+  const booleanFields = (field: InferField) => {
+    if (field.type === "boolean") {
+      if (field.multiple) {
+        const val = dotAccessor(field.key, undefined, field.accessor);
 
-                const errorVal =
-                    accessor("(errors as any)", field.key, undefined, false) +
-                    "?.[index]";
+        const errorVal = `${accessor(
+          "(errors as any)",
+          field.key,
+          undefined,
+          false,
+        )}?.[index]`;
 
-                return `
+        return `
                     <>
-                        {${accessor(
-                            recordName,
-                            field.key,
-                        )}?.map((item: any, index: number) => (
+                        {${accessor(recordName, field.key)}?.map((item: any, index: number) => (
                             <label key={index}>
                             <span style={{ marginRight: "8px" }}>
-                            ${prettyString(field.key)} #{index + 1}
+                            ${translatePrettyString({
+                              resource,
+                              field,
+                              i18n,
+                              noQuotes: true,
+                            })}
                             </span>
                             <input
                                 type="checkbox"
@@ -272,144 +295,146 @@ export const renderer = ({
                         ))}
                     </>
                 `;
-            }
+      }
 
-            return jsx`
+      return jsx`
             <label>
-                <span style={{ marginRight: "8px" }}>${prettyString(
-                    field.key,
-                )}</span>
+                <span style={{ marginRight: "8px" }}>${translatePrettyString({
+                  resource,
+                  field,
+                  i18n,
+                  noQuotes: true,
+                })}</span>
                 <input type="checkbox" {...register("${dotAccessor(
-                    field.key,
-                    undefined,
-                    field.accessor,
+                  field.key,
+                  undefined,
+                  field.accessor,
                 )}", {
                     required: "This field is required",
                 })} />
                 <span style={{ color: "red" }}>
-                    {${accessor(
-                        "errors",
-                        field.key,
-                        field.accessor,
-                        false,
-                    )}?.message as string}
+                    {${accessor("errors", field.key, field.accessor, false)}?.message as string}
                 </span>
             </label>
             `;
-        }
+    }
+    return undefined;
+  };
+
+  const renderedFields: Array<string | undefined> = fields.map((field) => {
+    switch (field?.type) {
+      case "text":
+      case "number":
+      case "email":
+      case "url":
+      case "richtext":
+      case "date":
+        return basicInputFields(field);
+      case "boolean":
+        return booleanFields(field);
+      case "relation":
+        return renderRelationFields(field);
+      default:
         return undefined;
-    };
+    }
+  });
 
-    const renderedFields: Array<string | undefined> = fields.map((field) => {
-        switch (field?.type) {
-            case "text":
-            case "number":
-            case "email":
-            case "url":
-            case "richtext":
-            case "date":
-                return basicInputFields(field);
-            case "boolean":
-                return booleanFields(field);
-            case "relation":
-                return renderRelationFields(field);
-            default:
-                return undefined;
-        }
-    });
+  const canList = !!resource.list;
 
-    const canList = !!resource.list;
+  noOp(imports);
+  const useTranslateHook = i18n && "const translate = useTranslate();";
 
-    noOp(imports);
-
-    return jsx`
+  return jsx`
     ${printImports(imports)}
     
     export const ${COMPONENT_NAME} = () => {
+        ${useTranslateHook}
         ${
-            canList
-                ? `
+          canList
+            ? `
         const { list } = useNavigation();
         `
-                : ""
+            : ""
         }
         const {
-            refineCore: { onFinish, formLoading, queryResult },
+            refineCore: { onFinish, formLoading, query },
             register,
             handleSubmit,
-            resetField,
+            setValue,
             formState: { errors },
         } = useForm(
             ${
-                isCustomPage
-                    ? `
+              isCustomPage
+                ? `
             { 
                 refineCoreProps: {
                     resource: "${resource.name}",
-                    id: ${id},
+                    id: ${idQuoteWrapper(id)},
                     action: "edit",
                     ${getMetaProps(
-                        resource?.identifier ?? resource?.name,
-                        meta,
-                        "getOne",
+                      resource?.identifier ?? resource?.name,
+                      meta,
+                      ["update", "getOne"],
                     )}
                 }
             }`
-                    : getMetaProps(
+                : getMetaProps(resource?.identifier ?? resource?.name, meta, [
+                      "update",
+                      "getOne",
+                    ])
+                  ? `{ refineCoreProps: {
+                        ${getMetaProps(
                           resource?.identifier ?? resource?.name,
                           meta,
-                          "getOne",
-                      )
-                    ? `{ refineCoreProps: {
-                        ${getMetaProps(
-                            resource?.identifier ?? resource?.name,
-                            meta,
-                            "getOne",
+                          ["update", "getOne"],
                         )}
                     } }`
-                    : ""
+                  : ""
             }
         );
     
-        const ${recordName} = queryResult?.data?.data;
+        const ${recordName} = query?.data?.data;
     
         ${relationHooksCode}
 
         return (
             <div style={{ padding: "16px" }}>
                 <div style={{ display: "flex", justifyContent: ${
-                    canList ? '"space-between"' : '"flex-start"'
+                  canList ? '"space-between"' : '"flex-start"'
                 } }}>
-                    <h1>
-                        ${prettyString(
-                            toSingular(resource.label ?? resource.name) +
-                                " Edit",
-                        )}
-                    </h1>
+                    <h1>${translateActionTitle({
+                      resource,
+                      action: "edit",
+                      i18n,
+                    })}</h1>
                     ${
-                        canList
-                            ? jsx`
+                      canList
+                        ? jsx`
                     <div>
                         <button
                                 onClick={() => {
                                     list("${resource.name}");
                                 }}
                         >
-                            ${prettyString(
-                                toPlural(resource.label ?? resource.name) +
-                                    " List",
-                            )}
+                            ${translateActionTitle({
+                              resource,
+                              action: "list",
+                              i18n,
+                            })}
                         </button>
                     </div>
                     `
-                            : ""
+                        : ""
                     }
                 </div>
                 <form onSubmit={handleSubmit(onFinish)}>
                     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                         ${renderedFields.join("")}
                         <div>
-                            <input type="submit" value="Save" />
+                            <input type="submit" value=${translateButtonTitle({
+                              action: "save",
+                              i18n,
+                            })} />
                         </div>
                     </div>
                 </form>
@@ -423,12 +448,12 @@ export const renderer = ({
  * @experimental This is an experimental component
  */
 export const EditInferencer: InferencerResultComponent = createInferencer({
-    type: "edit",
-    additionalScope: [
-        ["@refinedev/react-hook-form", "RefineReactHookForm", { useForm }],
-    ],
-    codeViewerComponent: SharedCodeViewer,
-    loadingComponent: LoadingComponent,
-    errorComponent: ErrorComponent,
-    renderer,
+  type: "edit",
+  additionalScope: [
+    ["@refinedev/react-hook-form", "RefineReactHookForm", { useForm }],
+  ],
+  codeViewerComponent: SharedCodeViewer,
+  loadingComponent: LoadingComponent,
+  errorComponent: ErrorComponent,
+  renderer,
 });

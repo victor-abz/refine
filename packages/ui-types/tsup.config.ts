@@ -1,73 +1,19 @@
 import { defineConfig } from "tsup";
-import { NodeResolvePlugin } from "@esbuild-plugins/node-resolve";
 
-import * as fs from "fs";
-import path from "path";
+import { markAsExternalPlugin } from "../shared/mark-as-external-plugin";
 
-const JS_EXTENSIONS = new Set(["js", "cjs", "mjs"]);
-
-export default defineConfig({
-    entry: ["src/index.tsx"],
-    splitting: false,
-    sourcemap: true,
-    clean: false,
-    platform: "browser",
-    esbuildPlugins: [
-        {
-            name: "textReplace",
-            setup: (build) => {
-                // original code: https://github.com/josteph/esbuild-plugin-lodash
-                if (build.initialOptions.format === "cjs") {
-                    return;
-                }
-                build.onLoad({ filter: /.(ts|tsx)$/ }, async (args) => {
-                    const contents = await fs.promises.readFile(
-                        args.path,
-                        "utf8",
-                    );
-
-                    const lodashImportRegex =
-                        /import\s+?(?:(?:(?:[\w*\s{},]*)\s+from\s+?)|)[\'\"](?:(?:lodash\/?.*?))[\'\"][\s]*?(?:;|$|)/g;
-                    const extension = path.extname(args.path).replace(".", "");
-
-                    const loader = JS_EXTENSIONS.has(extension)
-                        ? "jsx"
-                        : (extension as any);
-
-                    const lodashImports = contents.match(lodashImportRegex);
-                    if (!lodashImports) {
-                        return {
-                            loader,
-                            contents,
-                        };
-                    }
-
-                    const finalContents = contents.replaceAll(
-                        "lodash",
-                        "lodash-es",
-                    );
-
-                    return {
-                        loader,
-                        contents: finalContents,
-                    };
-                });
-            },
-        },
-        NodeResolvePlugin({
-            extensions: [".js", "ts", "tsx", "jsx"],
-            onResolved: (resolved) => {
-                if (resolved.includes("node_modules")) {
-                    return {
-                        external: true,
-                    };
-                }
-                return resolved;
-            },
-        }),
-    ],
-    loader: {
-        ".svg": "dataurl",
-    },
-    onSuccess: "tsc --project tsconfig.declarations.json",
-});
+export default defineConfig((options) => ({
+  entry: ["src/index.tsx"],
+  splitting: false,
+  sourcemap: true,
+  clean: false,
+  minify: true,
+  format: ["cjs", "esm"],
+  outExtension: ({ format }) => ({ js: format === "cjs" ? ".cjs" : ".mjs" }),
+  platform: "browser",
+  esbuildPlugins: [markAsExternalPlugin],
+  loader: {
+    ".svg": "dataurl",
+  },
+  onSuccess: options.watch ? "pnpm types" : undefined,
+}));

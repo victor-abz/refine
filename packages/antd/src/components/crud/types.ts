@@ -1,74 +1,59 @@
-import { CardProps, SpaceProps } from "antd";
-import {
-    CreateButtonProps,
-    DeleteButtonProps,
-    EditButtonProps,
-    ListButtonProps,
-    RefreshButtonProps,
-    SaveButtonProps,
+import type { CardProps, SpaceProps } from "antd";
+import type {
+  CreateButtonProps,
+  DeleteButtonProps,
+  EditButtonProps,
+  ListButtonProps,
+  RefreshButtonProps,
+  SaveButtonProps,
 } from "../buttons/types";
-import {
-    RefineCrudCreateProps,
-    RefineCrudEditProps,
-    RefineCrudListProps,
-    RefineCrudShowProps,
+import type {
+  RefineCrudCreateProps,
+  RefineCrudEditProps,
+  RefineCrudListProps,
+  RefineCrudShowProps,
 } from "@refinedev/ui-types";
-import { PageHeaderProps } from "../pageHeader";
+import type { PageHeaderProps } from "../pageHeader";
 
 export type CreateProps = RefineCrudCreateProps<
-    SaveButtonProps,
-    SpaceProps,
-    SpaceProps,
-    React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-    >,
-    PageHeaderProps,
-    CardProps
+  SaveButtonProps,
+  SpaceProps,
+  SpaceProps,
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  PageHeaderProps,
+  CardProps
 >;
 
 export type EditProps = RefineCrudEditProps<
-    SaveButtonProps,
-    DeleteButtonProps,
-    SpaceProps,
-    SpaceProps,
-    React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-    >,
-    PageHeaderProps,
-    CardProps,
-    {},
-    RefreshButtonProps,
-    ListButtonProps
+  SaveButtonProps,
+  DeleteButtonProps,
+  SpaceProps,
+  SpaceProps,
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  PageHeaderProps,
+  CardProps,
+  {},
+  RefreshButtonProps,
+  ListButtonProps
 >;
 
 export type ListProps = RefineCrudListProps<
-    CreateButtonProps,
-    SpaceProps,
-    React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-    >,
-    PageHeaderProps,
-    React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-    >
+  CreateButtonProps,
+  SpaceProps,
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  PageHeaderProps,
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 >;
 
 export type ShowProps = RefineCrudShowProps<
-    SpaceProps,
-    SpaceProps,
-    React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-    >,
-    PageHeaderProps,
-    CardProps,
-    {},
-    EditButtonProps,
-    DeleteButtonProps,
-    RefreshButtonProps,
-    ListButtonProps
+  SpaceProps,
+  SpaceProps,
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  PageHeaderProps,
+  CardProps,
+  {},
+  EditButtonProps,
+  DeleteButtonProps,
+  RefreshButtonProps,
+  ListButtonProps
 >;

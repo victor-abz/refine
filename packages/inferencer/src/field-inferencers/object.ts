@@ -1,86 +1,106 @@
-import { getFieldableKeys } from "@/utilities";
-import { FieldInferencer } from "@/types";
+import { getFieldableKeys } from "../utilities";
+import type { FieldInferencer } from "../types";
 
 const idPropertyRegexp = /id$/i;
 
-export const objectInfer: FieldInferencer = (key, value, record, infer) => {
-    const isNotNull = value !== null;
-    const isNotArray = !Array.isArray(value);
-    const isObject = typeof value === "object";
+export const objectInfer: FieldInferencer = (
+  key,
+  value,
+  record,
+  infer,
+  type,
+) => {
+  const isNotNull = value !== null;
+  const isNotArray = !Array.isArray(value);
+  const isObject = typeof value === "object";
 
-    if (isNotNull && isNotArray && isObject) {
-        const onlyHasId =
-            Object.keys(value).length === 1 &&
-            idPropertyRegexp.test(Object.keys(value)[0]);
+  if (isNotNull && isNotArray && isObject) {
+    const onlyHasId =
+      Object.keys(value).length === 1 &&
+      idPropertyRegexp.test(Object.keys(value)[0]);
 
-        if (onlyHasId) {
-            return {
-                key,
-                type: "relation",
-                relation: true,
-                accessor: "id",
-                priority: 1,
-            };
-        }
+    const hasId = Object.keys(value).some((k) => idPropertyRegexp.test(k));
 
-        const fieldableKeys = getFieldableKeys(
-            key,
-            value as Record<string, unknown>,
-        );
+    if (onlyHasId) {
+      return {
+        key,
+        type: "relation",
+        relation: true,
+        accessor: "id",
+        priority: 1,
+      };
+    }
 
-        const hasFieldableKeys = fieldableKeys
-            ? fieldableKeys.length > 0
-            : false;
+    const fieldableKeys = getFieldableKeys(
+      key,
+      value as Record<string, unknown>,
+    );
 
-        if (hasFieldableKeys && fieldableKeys) {
-            const innerFieldKey =
-                fieldableKeys && Array.isArray(fieldableKeys)
-                    ? fieldableKeys[0]
-                    : fieldableKeys;
+    const hasFieldableKeys = fieldableKeys ? fieldableKeys.length > 0 : false;
 
-            const innerFieldType = infer(
-                innerFieldKey,
-                (value as Record<string, unknown>)[innerFieldKey],
-                value as Record<string, unknown>,
-                infer,
-            );
+    if (hasFieldableKeys && fieldableKeys) {
+      const innerFieldKey =
+        fieldableKeys && Array.isArray(fieldableKeys)
+          ? fieldableKeys[0]
+          : fieldableKeys;
 
-            if (innerFieldType) {
-                const accessor = Array.isArray(fieldableKeys)
-                    ? fieldableKeys.map((el) => {
-                          if (innerFieldType.accessor) {
-                              return `${el}.${
-                                  Array.isArray(innerFieldType.accessor)
-                                      ? innerFieldType.accessor[0]
-                                      : innerFieldType.accessor
-                              }`;
-                          } else {
-                              return el;
-                          }
-                      })
+      const innerFieldType = infer(
+        innerFieldKey,
+        (value as Record<string, unknown>)[innerFieldKey],
+        value as Record<string, unknown>,
+        infer,
+        type,
+      );
+
+      if (innerFieldType) {
+        const accessor = Array.isArray(fieldableKeys)
+          ? fieldableKeys.map((el) => {
+              if (innerFieldType.accessor) {
+                return `${el}.${
+                  Array.isArray(innerFieldType.accessor)
+                    ? innerFieldType.accessor[0]
                     : innerFieldType.accessor
-                    ? Array.isArray(innerFieldType.accessor)
-                        ? `${fieldableKeys}.${innerFieldType.accessor[0]}`
-                        : `${fieldableKeys}.${innerFieldType.accessor}`
-                    : fieldableKeys;
+                }`;
+              }
+              return el;
+            })
+          : innerFieldType.accessor
+            ? Array.isArray(innerFieldType.accessor)
+              ? `${fieldableKeys}.${innerFieldType.accessor[0]}`
+              : `${fieldableKeys}.${innerFieldType.accessor}`
+            : fieldableKeys;
 
-                return {
-                    ...innerFieldType,
-                    fieldable: true,
-                    key,
-                    accessor: accessor,
-                    priority: 1,
-                };
-            }
+        if (
+          innerFieldType?.type === "text" &&
+          (type === "create" || type === "edit") &&
+          hasId
+        ) {
+          return {
+            key,
+            type: "relation",
+            relation: true,
+            accessor: "id",
+            priority: 1,
+          };
         }
 
         return {
-            key,
-            fieldable: false,
-            type: "object",
-            priority: 1,
+          ...innerFieldType,
+          fieldable: true,
+          key,
+          accessor: accessor,
+          priority: 1,
         };
+      }
     }
 
-    return false;
+    return {
+      key,
+      fieldable: false,
+      type: "object",
+      priority: 1,
+    };
+  }
+
+  return false;
 };

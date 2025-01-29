@@ -1,16 +1,16 @@
 import { useContext } from "react";
 
 import { UndoableQueueContext } from "@contexts/undoableQueue";
-import { IUndoableQueue, IUndoableQueueContext } from "../../../interfaces";
+import type { IUndoableQueue } from "../../../contexts/undoableQueue/types";
 
 export type UseCancelNotificationType = () => {
-    notifications: IUndoableQueue[];
-    notificationDispatch: React.Dispatch<any>;
+  notifications: IUndoableQueue[];
+  notificationDispatch: React.Dispatch<any>;
 };
 
 export const useCancelNotification: UseCancelNotificationType = () => {
-    const { notifications, notificationDispatch } =
-        useContext<IUndoableQueueContext>(UndoableQueueContext);
+  const { notifications, notificationDispatch } =
+    useContext(UndoableQueueContext);
 
-    return { notifications, notificationDispatch };
+  return { notifications, notificationDispatch };
 };

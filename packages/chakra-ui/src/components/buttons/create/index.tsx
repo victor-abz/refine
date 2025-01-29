@@ -1,112 +1,79 @@
 import React from "react";
+import { useCreateButton } from "@refinedev/core";
 import {
-    useNavigation,
-    useTranslate,
-    useCan,
-    useResource,
-    useRouterContext,
-    useRouterType,
-    useLink,
-} from "@refinedev/core";
-import {
-    RefineButtonClassNames,
-    RefineButtonTestIds,
+  RefineButtonClassNames,
+  RefineButtonTestIds,
 } from "@refinedev/ui-types";
 import { Button, IconButton } from "@chakra-ui/react";
-import { IconSquarePlus } from "@tabler/icons";
+import { IconSquarePlus } from "@tabler/icons-react";
 
-import { CreateButtonProps } from "../types";
+import type { CreateButtonProps } from "../types";
 
 export const CreateButton: React.FC<CreateButtonProps> = ({
-    resource: resourceNameFromProps,
-    resourceNameOrRouteName,
-    hideText = false,
-    accessControl,
-    svgIconProps,
-    meta,
-    children,
-    onClick,
-    ...rest
+  resource: resourceNameFromProps,
+  resourceNameOrRouteName,
+  hideText = false,
+  accessControl,
+  svgIconProps,
+  meta,
+  children,
+  onClick,
+  ...rest
 }) => {
-    const accessControlEnabled = accessControl?.enabled ?? true;
-    const hideIfUnauthorized = accessControl?.hideIfUnauthorized ?? false;
-    const translate = useTranslate();
-    const routerType = useRouterType();
-    const Link = useLink();
-    const { Link: LegacyLink } = useRouterContext();
+  const { to, label, title, hidden, disabled, LinkComponent } = useCreateButton(
+    {
+      resource: resourceNameFromProps ?? resourceNameOrRouteName,
+      accessControl,
+      meta,
+    },
+  );
 
-    const ActiveLink = routerType === "legacy" ? LegacyLink : Link;
+  const isDisabled = disabled || rest.disabled;
+  const isHidden = hidden || rest.hidden;
 
-    const { createUrl: generateCreateUrl } = useNavigation();
+  if (isHidden) return null;
 
-    const { resource } = useResource(
-        resourceNameFromProps ?? resourceNameOrRouteName,
-    );
-
-    const { data } = useCan({
-        resource: resource?.name,
-        action: "create",
-        queryOptions: {
-            enabled: accessControlEnabled,
-        },
-        params: {
-            resource,
-        },
-    });
-
-    const disabledTitle = () => {
-        if (data?.can) return "";
-        else if (data?.reason) return data.reason;
-        else
-            return translate(
-                "buttons.notAccessTitle",
-                "You don't have permission to access",
-            );
-    };
-
-    const createUrl = resource ? generateCreateUrl(resource, meta) : "";
-
-    if (accessControlEnabled && hideIfUnauthorized && !data?.can) {
-        return null;
-    }
-
-    return (
-        <ActiveLink
-            to={createUrl}
-            replace={false}
-            onClick={(e: React.PointerEvent<HTMLButtonElement>) => {
-                if (onClick) {
-                    e.preventDefault();
-                    onClick(e);
-                }
-            }}
+  return (
+    <LinkComponent
+      to={to}
+      replace={false}
+      onClick={(e: React.PointerEvent<HTMLButtonElement>) => {
+        if (isDisabled) {
+          e.preventDefault();
+          return;
+        }
+        if (onClick) {
+          e.preventDefault();
+          onClick(e);
+        }
+      }}
+    >
+      {hideText ? (
+        <IconButton
+          colorScheme="brand"
+          variant="outline"
+          isDisabled={isDisabled}
+          aria-label={label}
+          title={title}
+          data-testid={RefineButtonTestIds.CreateButton}
+          className={RefineButtonClassNames.CreateButton}
+          {...rest}
         >
-            {hideText ? (
-                <IconButton
-                    colorScheme="brand"
-                    variant="outline"
-                    aria-label={translate("buttons.create", "Create")}
-                    title={disabledTitle()}
-                    isDisabled={data?.can === false}
-                    data-testid={RefineButtonTestIds.CreateButton}
-                    className={RefineButtonClassNames.CreateButton}
-                    {...rest}
-                >
-                    <IconSquarePlus size={20} {...svgIconProps} />
-                </IconButton>
-            ) : (
-                <Button
-                    colorScheme="brand"
-                    isDisabled={data?.can === false}
-                    leftIcon={<IconSquarePlus size={20} />}
-                    title={disabledTitle()}
-                    data-testid={RefineButtonTestIds.CreateButton}
-                    className={RefineButtonClassNames.CreateButton}
-                    {...rest}
-                >
-                    {children ?? translate("buttons.create", "Create")}
-                </Button>
-            )}
-        </ActiveLink>
-    );
+          <IconSquarePlus size={20} {...svgIconProps} />
+        </IconButton>
+      ) : (
+        <Button
+          colorScheme="brand"
+          isDisabled={isDisabled}
+          leftIcon={<IconSquarePlus size={20} />}
+          title={title}
+          data-testid={RefineButtonTestIds.CreateButton}
+          className={RefineButtonClassNames.CreateButton}
+          {...rest}
+        >
+          {children ?? label}
+        </Button>
+      )}
+    </LinkComponent>
+  );
 };

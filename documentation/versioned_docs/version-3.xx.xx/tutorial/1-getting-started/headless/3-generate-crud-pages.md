@@ -2,8 +2,8 @@
 id: generate-crud-pages
 title: 4. Generate CRUD pages automatically with Inferencer
 tutorial:
-    prev: tutorial/getting-started/{preferredUI}/create-project
-    next: tutorial/getting-started/store-your-repository
+  prev: 3.xx.xx/tutorial/getting-started/{preferredUI}/create-project
+  next: 3.xx.xx/tutorial/getting-started/store-your-repository
 ---
 
 import Tabs from '@theme/Tabs';
@@ -27,8 +27,8 @@ Overall, using Inferencer can greatly speed up development time and reduce the a
 
 #### Learn Inferencer
 
--   Learn about [how Inferencer works](/docs/packages/documentation/inferencer).
--   Learn about [how to use headless Inferencer](/docs/api-reference/core/components/inferencer/).
+- Learn about [how Inferencer works](/docs/3.xx.xx/packages/documentation/inferencer).
+- Learn about [how to use headless Inferencer](/docs/3.xx.xx/api-reference/core/components/inferencer/).
 
 ## How to use Inferencer
 
@@ -36,41 +36,13 @@ The `@pankod/refine-inferencer` package provides the `<HeadlessInferencer/>` com
 
 Before we start using Inferencer, we need to add `@pankod/refine-react-hook-form` and `@pankod/refine-react-table` packages to our project. Since these packages are used by Inferencer to generate forms and tables, they need to be installed in our project.
 
-<Tabs
-defaultValue="npm"
-values={[ {label: 'npm', value: 'npm'}, {label: 'pnpm', value: 'pnpm'}, {label: 'yarn', value: 'yarn'} ]}>
-
-<TabItem value="npm">
-
-```bash
-npm i @pankod/refine-react-table @pankod/refine-react-hook-form
-```
-
-</TabItem>
-
-<TabItem value="pnpm">
-
-```bash
-pnpm i @pankod/refine-react-table @pankod/refine-react-hook-form
-```
-
-</TabItem>
-
-<TabItem value="yarn">
-
-```bash
-yarn add @pankod/refine-react-table @pankod/refine-react-hook-form
-```
-
-</TabItem>
-
-</Tabs>
+<InstallPackagesCommand args="@pankod/refine-react-table @pankod/refine-react-hook-form"/>
 
 Then, we need to add the `<HeadlessInferencer/>` component is used by passing to appropriate values in the `resources` prop of the `<Refine/>` component in `App.tsx` as shown below:
 
 :::info
 
-In [Unit 4](/docs/tutorial/understanding-resources/index), the resources concept will be explained in detail. For now, you can assume that the resource is a collection of data on your API used in the app.
+In [Unit 4](/docs/3.xx.xx/tutorial/understanding-resources/index), the resources concept will be explained in detail. For now, you can assume that the resource is a collection of data on your API used in the app.
 
 :::
 
@@ -82,23 +54,23 @@ import dataProvider from "@pankod/refine-simple-rest";
 import { HeadlessInferencer } from "@pankod/refine-inferencer/headless";
 
 const App = () => {
-    return (
-        <Refine
-            routerProvider={routerProvider}
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-            //highlight-start
-            resources={[
-                {
-                    name: "blog_posts",
-                    list: HeadlessInferencer,
-                    show: HeadlessInferencer,
-                    create: HeadlessInferencer,
-                    edit: HeadlessInferencer,
-                },
-            ]}
-            //highlight-end
-        />
-    );
+  return (
+    <Refine
+      routerProvider={routerProvider}
+      dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+      //highlight-start
+      resources={[
+        {
+          name: "blog_posts",
+          list: HeadlessInferencer,
+          show: HeadlessInferencer,
+          create: HeadlessInferencer,
+          edit: HeadlessInferencer,
+        },
+      ]}
+      //highlight-end
+    />
+  );
 };
 export default App;
 ```
@@ -113,7 +85,7 @@ Before we start, let's understand the API that we will be using in this tutorial
 
 :::info
 
-In [Unit 3](/docs/tutorial/understanding-dataprovider/index), it will be explained in detail how **refine** apps communicate with the API via the `dataProvider`.
+In [Unit 3](/docs/3.xx.xx/tutorial/understanding-dataprovider/index), it will be explained in detail how **refine** apps communicate with the API via the `dataProvider`.
 
 :::
 
@@ -138,21 +110,21 @@ import dataProvider from "@pankod/refine-simple-rest";
 import { HeadlessInferencer } from "@pankod/refine-inferencer/headless";
 
 const App = () => {
-    return (
-        <Refine
-            routerProvider={routerProvider}
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-            resources={[
-                {
-                    name: "blog_posts",
-                    list: HeadlessInferencer,
-                    show: HeadlessInferencer,
-                    create: HeadlessInferencer,
-                    edit: HeadlessInferencer,
-                },
-            ]}
-        />
-    );
+  return (
+    <Refine
+      routerProvider={routerProvider}
+      dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+      resources={[
+        {
+          name: "blog_posts",
+          list: HeadlessInferencer,
+          show: HeadlessInferencer,
+          create: HeadlessInferencer,
+          edit: HeadlessInferencer,
+        },
+      ]}
+    />
+  );
 };
 render(<App />);
 ```
@@ -172,21 +144,21 @@ import dataProvider from "@pankod/refine-simple-rest";
 import { HeadlessInferencer } from "@pankod/refine-inferencer/headless";
 
 const App = () => {
-    return (
-        <Refine
-            routerProvider={routerProvider}
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-            resources={[
-                {
-                    name: "blog_posts",
-                    list: HeadlessInferencer,
-                    show: HeadlessInferencer,
-                    create: HeadlessInferencer,
-                    edit: HeadlessInferencer,
-                },
-            ]}
-        />
-    );
+  return (
+    <Refine
+      routerProvider={routerProvider}
+      dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+      resources={[
+        {
+          name: "blog_posts",
+          list: HeadlessInferencer,
+          show: HeadlessInferencer,
+          create: HeadlessInferencer,
+          edit: HeadlessInferencer,
+        },
+      ]}
+    />
+  );
 };
 render(<App />);
 ```
@@ -206,21 +178,21 @@ import dataProvider from "@pankod/refine-simple-rest";
 import { HeadlessInferencer } from "@pankod/refine-inferencer/headless";
 
 const App = () => {
-    return (
-        <Refine
-            routerProvider={routerProvider}
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-            resources={[
-                {
-                    name: "blog_posts",
-                    list: HeadlessInferencer,
-                    show: HeadlessInferencer,
-                    create: HeadlessInferencer,
-                    edit: HeadlessInferencer,
-                },
-            ]}
-        />
-    );
+  return (
+    <Refine
+      routerProvider={routerProvider}
+      dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+      resources={[
+        {
+          name: "blog_posts",
+          list: HeadlessInferencer,
+          show: HeadlessInferencer,
+          create: HeadlessInferencer,
+          edit: HeadlessInferencer,
+        },
+      ]}
+    />
+  );
 };
 render(<App />);
 ```
@@ -240,21 +212,21 @@ import dataProvider from "@pankod/refine-simple-rest";
 import { HeadlessInferencer } from "@pankod/refine-inferencer/headless";
 
 const App = () => {
-    return (
-        <Refine
-            routerProvider={routerProvider}
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-            resources={[
-                {
-                    name: "blog_posts",
-                    list: HeadlessInferencer,
-                    show: HeadlessInferencer,
-                    create: HeadlessInferencer,
-                    edit: HeadlessInferencer,
-                },
-            ]}
-        />
-    );
+  return (
+    <Refine
+      routerProvider={routerProvider}
+      dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+      resources={[
+        {
+          name: "blog_posts",
+          list: HeadlessInferencer,
+          show: HeadlessInferencer,
+          create: HeadlessInferencer,
+          edit: HeadlessInferencer,
+        },
+      ]}
+    />
+  );
 };
 render(<App />);
 ```
@@ -262,7 +234,7 @@ render(<App />);
 <br/>
 <br/>
 
-In [Unit 5](/docs/tutorial/adding-crud-pages/headless/index), you will learn how to create CRUD pages manually using the code generated by Inferencer as a reference.
+In [Unit 5](/docs/3.xx.xx/tutorial/adding-crud-pages/headless/index), you will learn how to create CRUD pages manually using the code generated by Inferencer as a reference.
 
 <Checklist>
 

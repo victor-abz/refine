@@ -3,27 +3,27 @@ id: custom-form-validation
 title: Custom Form Validation
 ---
 
-In **refine**, we can use the form validation that comes with `Ant Design` with the [rules](https://ant.design/components/form/#Rule) property of the [Form.Item](https://ant.design/components/form/#Form.Item) component.
+In **Refine**, we can use the form validation that comes with `Ant Design` with the [rules](https://ant.design/components/form/#Rule) property of the [Form.Item](https://ant.design/components/form/#Form.Item) component.
 
 ```tsx
 <Form>
-    <Form.Item
-        label="Title"
-        name="title"
-        // highlight-start
-        rules={[
-            {
-                required: true,
-            },
-            {
-                min: 5,
-            },
-        ]}
-        // highlight-end
-    >
-        <Input />
-    </Form.Item>
-    ...
+  <Form.Item
+    label="Title"
+    name="title"
+    // highlight-start
+    rules={[
+      {
+        required: true,
+      },
+      {
+        min: 5,
+      },
+    ]}
+    // highlight-end
+  >
+    <Input />
+  </Form.Item>
+  ...
 </Form>
 ```
 
@@ -35,106 +35,131 @@ Now let's prepare a rule that checks if the titles of the posts are unique. We h
 
 ```json title="https://api.fake-rest.refine.dev/posts-unique-check?title=Example"
 {
-    "isAvailable": true
+  "isAvailable": true
 }
 ```
 
-```tsx
-import { useState } from "react";
-// highlight-start
-import { useApiUrl, useCustom, HttpError } from "@refinedev/core";
-import { useForm, Create } from "@refinedev/antd";
+```tsx live hideCode url=http://localhost:3000/posts/create
+setInitialRoutes(["/posts/create"]);
+
+// visible-block-start
+import { useForm, Create, CreateButton } from "@refinedev/antd";
 import { Form, Input } from "antd";
-//highlight-end
+// highlight-next-line
+import { useApiUrl, useCustom, HttpError } from "@refinedev/core";
 
-export const PostCreate = () => {
-    const { formProps, saveButtonProps } = useForm<IPost>();
-
-    // highlight-start
-    const [title, setTitle] = useState("");
-
-    const apiUrl = useApiUrl();
-    const url = `${apiUrl}/posts-unique-check`;
-    const { refetch } = useCustom<
-        PostUniqueCheckResponse,
-        HttpError,
-        PostUniqueCheckRequestQuery
-    >({
-        url,
-        method: "get",
-        config: {
-            query: {
-                title,
-            },
-        },
-        queryOptions: {
-            enabled: false,
-        },
-    });
-    // highlight-end
-
-    return (
-        <Create saveButtonProps={saveButtonProps}>
-            <Form {...formProps} layout="vertical">
-                <Form.Item
-                    label="Title"
-                    name="title"
-                    // highlight-start
-                    rules={[
-                        {
-                            required: true,
-                        },
-                        {
-                            validator: async (_, value) => {
-                                if (!value) return;
-                                const { data } = await refetch();
-                                if (data && data.data.isAvailable) {
-                                    return Promise.resolve();
-                                }
-                                return Promise.reject(
-                                    new Error("'title' must be unique"),
-                                );
-                            },
-                        },
-                    ]}
-                    // highlight-end
-                >
-                    // highlight-next-line
-                    <Input onChange={(event) => setTitle(event.target.value)} />
-                </Form.Item>
-                ...
-            </Form>
-        </Create>
-    );
-};
-
+// highlight-start
 interface IPost {
-    title: string;
+  title: string;
 }
 
 interface PostUniqueCheckResponse {
-    isAvailable: boolean;
+  isAvailable: boolean;
 }
 
 interface PostUniqueCheckRequestQuery {
-    title: string;
+  title: string;
 }
+// highlight-end
+
+const PostCreate: React.FC = () => {
+  const { formProps, saveButtonProps } = useForm<IPost>({
+    defaultFormValues: {
+      title: "Test",
+    },
+  });
+
+  // highlight-next-line
+  const [title, setTitle] = useState("Test");
+
+  // highlight-start
+  const apiUrl = useApiUrl();
+  const url = `${apiUrl}/posts-unique-check`;
+  const { refetch } = useCustom<
+    PostUniqueCheckResponse,
+    HttpError,
+    PostUniqueCheckRequestQuery
+  >({
+    url,
+    method: "get",
+    config: {
+      query: {
+        title,
+      },
+    },
+    queryOptions: {
+      enabled: false,
+    },
+  });
+  // highlight-end
+
+  return (
+    <Create saveButtonProps={saveButtonProps}>
+      <Form {...formProps} layout="vertical">
+        <Form.Item
+          label="Title"
+          name="title"
+          // highlight-start
+          rules={[
+            {
+              required: true,
+            },
+            {
+              validator: async (_, value) => {
+                if (!value)
+                  return Promise.reject(new Error("Please enter a title"));
+                const { data } = await refetch();
+                if (data && data.data.isAvailable) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error("'title' must be unique"));
+              },
+            },
+          ]}
+          // highlight-end
+        >
+          <Input
+            defaultValue="Test"
+            // highlight-next-line
+            onChange={(event) => setTitle(event.target.value)}
+          />
+        </Form.Item>
+      </Form>
+    </Create>
+  );
+};
+// visible-block-end
+
+render(
+  <ReactRouter.BrowserRouter>
+    <RefineAntdDemo
+      resources={[
+        {
+          name: "posts",
+          list: "/posts",
+          create: "/posts/create",
+        },
+      ]}
+    >
+      <ReactRouter.Routes>
+        <ReactRouter.Route
+          path="/posts"
+          element={
+            <div>
+              <p>This page is empty.</p>
+              <CreateButton />
+            </div>
+          }
+        />
+        <ReactRouter.Route path="/posts/create" element={<PostCreate />} />
+      </ReactRouter.Routes>
+    </RefineAntdDemo>
+  </ReactRouter.BrowserRouter>,
+);
 ```
 
-<>
-
-<div class="img-container">
-    <div class="window">
-        <div class="control red"></div>
-        <div class="control orange"></div>
-        <div class="control green"></div>
-    </div>
-    <img src="https://refine.ams3.cdn.digitaloceanspaces.com/website/static/img/examples/form/custom-form-validation.gif" alt="custom form validation" />
-</div>
-<br/>
-</>
-
 :::danger important
+
 Value must be kept in the state.
 
 ```tsx

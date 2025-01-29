@@ -1,25 +1,28 @@
-import { RouterBindingsContext } from "@contexts/router";
+import { RouterContext } from "@contexts/router";
 import React, { useContext } from "react";
-import { ParseFunction, ParseResponse } from "src/interfaces";
+import type {
+  ParseFunction,
+  ParseResponse,
+} from "../../../contexts/router/types";
 
 type UseParseType = () => <
-    TParams extends Record<string, any> = Record<string, any>,
+  TParams extends Record<string, any> = Record<string, any>,
 >() => ParseResponse<TParams>;
 
 export const useParse: UseParseType = () => {
-    const bindings = useContext(RouterBindingsContext);
+  const routerContext = useContext(RouterContext);
 
-    const useParse = React.useMemo(
-        () =>
-            bindings?.parse ??
-            (() =>
-                (() => {
-                    return {};
-                }) as ParseFunction),
-        [bindings?.parse],
-    );
+  const useParse = React.useMemo(
+    () =>
+      routerContext?.parse ??
+      (() =>
+        (() => {
+          return {};
+        }) as ParseFunction),
+    [routerContext?.parse],
+  );
 
-    const parse = useParse();
+  const parse = useParse();
 
-    return parse as ReturnType<UseParseType>;
+  return parse as ReturnType<UseParseType>;
 };

@@ -8,26 +8,11 @@ image: https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-05-02-high-quali
 hide_table_of_contents: false
 ---
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-##     10 High-Quality Free Resources That Will Make Every Web Developer's Life Easier
-
+## 10 High-Quality Free Resources That Will Make Every Web Developer's Life Easier
 
 There are so many ways to make web development more efficient, and I found some amazing resources that will help you save time⌛
 
 <!--truncate-->
-
 
 Table of Contents
 
@@ -37,21 +22,20 @@ Table of Contents
 4. [Supabase](#supabase)
 5. [Tailwind](#tailwind)
 6. [Ant Design](#antd)
-7. [Material-UI](#mui)
+7. [Material UI](#material-ui)
 8. [auth0](#auth0)
 9. [cerbos](#cerbos)
-10. [Refine](#refine)
+10. [Refine](#Refine)
 
 ### 1. Lorem Ipsum and Lorem Picsum <a name="lorem"></a>
 
 **[Lorem Ipsum](https://www.lipsum.com/)** is defined as a block of imitation writing.
 
 <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-05-02-high-quality-free-resources/lorem-ipsum.jpg" alt="lorem-ipsum" />
- 
-If you need dummy photos for your content, **[Lorem Picsum](https://picsum.photos/)** is the place for you.
- 
-<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-05-02-high-quality-free-resources/lorem-picsum.jpg" alt="lorem-picsum" />
 
+If you need dummy photos for your content, **[Lorem Picsum](https://picsum.photos/)** is the place for you.
+
+<img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-05-02-high-quality-free-resources/lorem-picsum.jpg" alt="lorem-picsum" />
 
 ### 2. Squoosh <a name="squoosh"></a>
 
@@ -89,19 +73,17 @@ It's fast, flexible, and reliable — with zero-runtime.
 
 <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-05-02-high-quality-free-resources/antd.jpg" alt="antd" />
 
-### 7. Material UI <a name="mui"></a>
+### 7. Material UI <a name="material-ui"></a>
 
-**[Material UI](https://mui.com/)** offers a comprehensive suite of UI tools to help you ship new features faster. Start with Material UI, our fully-loaded component library, or bring your own design system to our production-ready components.
+**[Material UI](https://mui.com/material-ui/getting-started/overview/)** offers a comprehensive suite of UI tools to help you ship new features faster. Start with Material UI, our fully-loaded component library, or bring your own design system to our production-ready components.
 
 <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-05-02-high-quality-free-resources/mui.jpg" alt="mui" />
-  
 
 ### 8. auth0 <a name="auth0"></a>
- 
+
 **[The Auth0](https://auth0.com/)** identity platform provides a secure, streamlined way to manage your users with ease.
 
 <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-05-02-high-quality-free-resources/auth0.jpg" alt="auth0" />
- 
 
 ### 9. Cerbos <a name="cerbos"></a>
 
@@ -115,16 +97,15 @@ In fact, I've included most of the resources we'll need when building a website.
 
 But apart from all these, there is one last item that I want to talk to you about. You wrote a title saying it will make our life easier, but you may say how adding all these to a project will make our life easier. At this point, we come across "refine" 💪
 
-### 10. refine <a name="refine"></a> 
+### 10. Refine <a name="refine"></a>
 
-**[refine](https://refine.dev/)** is a React-based framework for rapid building of internal tools. It's is a a collection of helper hooks, components and providers. They are all decoupled from your UI components and business logic, so they never keep you from customizing your UI or coding your own flow.
+**[Refine](https://refine.dev/)** is a React-based framework for rapid building of internal tools. It's is a a collection of helper hooks, components and providers. They are all decoupled from your UI components and business logic, so they never keep you from customizing your UI or coding your own flow.
 
-**refine** offers lots of out-of-the box functionality for rapid development, without compromising extreme customizability. Use-cases include, but are not limited to admin panels, B2B applications and dashboards.
+**Refine** offers lots of out-of-the box functionality for rapid development, without compromising extreme customizability. Use-cases include, but are not limited to admin panels, B2B applications and dashboards.
 
 <img src="https://refine.ams3.cdn.digitaloceanspaces.com/blog/2022-05-02-high-quality-free-resources/refine.jpg" alt="refine" />
- 
 
-If you're looking for a framework that will let your data- intensive application run at top speeds with extreme customizability, then look no further than refine. This React based headless system has been designed specifically for speed - allowing users to bring their own UI and update it via [refine's](https://refine.dev/docs/) powerful interface!
+If you're looking for a framework that will let your data- intensive application run at top speeds with extreme customizability, then look no further than refine. This React based headless system has been designed specifically for speed - allowing users to bring their own UI and update it via [Refine's](https://refine.dev/docs/) powerful interface!
 
 **Key features**
 ​
@@ -134,16 +115,14 @@ If you're looking for a framework that will let your data- intensive application
 
 📦 **Out-of-the-box** : Routing, networking, authentication, state management, i18n and UI.
 
-🔌 **Backend Agnostic** : Connects to any custom backend. Built-in support for [REST API](https://github.com/refinedev/refine/tree/master/packages/simple-rest), [GraphQL](https://github.com/refinedev/refine/tree/master/packages/graphql), [NestJs CRUD](https://github.com/refinedev/refine/tree/master/packages/nestjsx-crud), [Airtable](https://github.com/refinedev/refine/tree/master/packages/airtable), [Strapi](https://github.com/refinedev/refine/tree/master/packages/strapi), [Strapi v4](https://github.com/refinedev/refine/tree/master/packages/strapi-v4), [Strapi GraphQL](https://github.com/refinedev/refine/tree/master/packages/strapi-graphql), [Supabase](https://github.com/refinedev/refine/tree/master/packages/supabase), [Hasura](https://github.com/refinedev/refine/tree/master/packages/hasura), [Appwrite](https://github.com/refinedev/refine/tree/master/packages/appwrite), [Medusa](https://github.com/refinedev/refine/tree/master/packages/medusa), and [Firebase](https://firebase.google.com/).
+🔌 **Backend Agnostic** : Connects to any custom backend. Built-in support for [REST API](https://github.com/refinedev/refine/tree/main/packages/simple-rest), [GraphQL](https://github.com/refinedev/refine/tree/main/packages/graphql), [NestJs CRUD](https://github.com/refinedev/refine/tree/main/packages/nestjsx-crud), [Airtable](https://github.com/refinedev/refine/tree/main/packages/airtable), [Strapi](https://github.com/refinedev/refine/tree/main/packages/strapi), [Strapi v4](https://github.com/refinedev/refine/tree/main/packages/strapi-v4), [Supabase](https://github.com/refinedev/refine/tree/main/packages/supabase), [Hasura](https://github.com/refinedev/refine/tree/main/packages/hasura), [Appwrite](https://github.com/refinedev/refine/tree/main/packages/appwrite), [Medusa](https://github.com/refinedev/refine/tree/main/packages/medusa), and [Firebase](https://firebase.google.com/).
 
 📝 **Native Typescript Core** : You can always opt out for plain JavaScript.
 
-🐜 **Enterprise UI** : Works seamlessly with Ant Design System. (Support for multiple UI frameworks is on the Roadmap)
+🐜 **Enterprise UI** : Works seamlessly with Ant Design. (Support for multiple UI frameworks is on the Roadmap)
 
 📝 **Boilerplate-free Code** : Keeps your codebase clean and readable.
-
 
 👩‍💻 🧑‍💻 Thank you very much for reading and taking the time, I hope my article was helpful.
 
 See you in the next articles. 🙋‍♂️
- 

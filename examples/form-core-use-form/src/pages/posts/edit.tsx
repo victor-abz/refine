@@ -1,69 +1,72 @@
-import { useForm } from "@refinedev/core";
-import { IPost } from "interfaces";
-import { useEffect, useState } from "react";
+import { AutoSaveIndicator, useForm } from "@refinedev/core";
+
+import type { IPost } from "../../interfaces";
 
 type FormValues = Omit<IPost, "id">;
 
 export const PostEdit: React.FC = () => {
-    const { formLoading, onFinish, queryResult } = useForm<FormValues>();
-    const defaultValues = queryResult?.data?.data;
+  const {
+    formLoading,
+    onFinish,
+    query: queryResult,
+    autoSaveProps,
+    onFinishAutoSave,
+  } = useForm<FormValues>({
+    autoSave: {
+      enabled: true,
+    },
+  });
 
-    const [formValues, seFormValues] = useState<FormValues>({
-        title: defaultValues?.title || "",
-        content: defaultValues?.content || "",
-    });
+  const defaultValues = queryResult?.data?.data;
 
-    const handleOnChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
-        seFormValues({
-            ...formValues,
-            [e.target.name]: e.target.value,
-        });
+  const submit = (
+    event: React.FormEvent<HTMLFormElement>,
+    isAutosave?: boolean,
+  ) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const values = {
+      title: formData.get("title") as string,
+      content: formData.get("content") as string,
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        onFinish(formValues);
-    };
+    (isAutosave ? onFinishAutoSave : onFinish)(values).catch(() => {});
+  };
 
-    useEffect(() => {
-        seFormValues({
-            title: defaultValues?.title || "",
-            content: defaultValues?.content || "",
-        });
-    }, [defaultValues]);
-
-    return (
+  return (
+    <div>
+      <AutoSaveIndicator {...autoSaveProps} />
+      <form
+        onSubmit={(event) => submit(event)}
+        onChange={(event) => submit(event, true)}
+      >
         <div>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="title">Title</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        placeholder="Title"
-                        value={formValues.title}
-                        onChange={handleOnChange}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="content">Content</label>
-                    <textarea
-                        id="content"
-                        name="content"
-                        placeholder="Content"
-                        rows={10}
-                        value={formValues.content}
-                        onChange={handleOnChange}
-                    />
-                </div>
-                <button type="submit" disabled={formLoading}>
-                    {formLoading && <div>Loading...</div>}
-                    <span>Save</span>
-                </button>
-            </form>
+          <label htmlFor="title">Title</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="Title"
+            defaultValue={defaultValues?.title || ""}
+          />
         </div>
-    );
+        <div>
+          <label htmlFor="content">Content</label>
+          <textarea
+            id="content"
+            name="content"
+            placeholder="Content"
+            rows={10}
+            defaultValue={defaultValues?.content || ""}
+          />
+        </div>
+        <button type="submit" disabled={formLoading}>
+          {formLoading && <div>Loading...</div>}
+          <span>Save</span>
+        </button>
+      </form>
+    </div>
+  );
 };
